@@ -1,10 +1,10 @@
-package pl.ecommerce.ecommerceservice;
+package pl.ecommerce.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.ecommerce.ecommercedomain.Product;
-import pl.ecommerce.ecommerceexceptions.exceptions.ItemNotFoundException;
-import pl.ecommerce.ecommercerepository.ProductRepository;
+import pl.ecommerce.domain.entity.Product;
+import pl.ecommerce.exceptions.exceptions.ItemNotFoundException;
+import pl.ecommerce.repository.ProductRepository;
 
 @Service
 @AllArgsConstructor

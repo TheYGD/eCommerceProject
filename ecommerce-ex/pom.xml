@@ -9,10 +9,10 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ecommerce-exceptions</artifactId>
+    <artifactId>ecommerce-ex</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ecommerce-exceptions</name>
-    <description>ecommerce-exceptions</description>
+    <name>ecommerce-ex</name>
+    <description>ecommerce-ex</description>
 
     <properties>
         <java.version>17</java.version>
