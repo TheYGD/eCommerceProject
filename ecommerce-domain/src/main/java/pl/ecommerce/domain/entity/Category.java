@@ -1,9 +1,8 @@
-package pl.ecommerce.ecommercedomain;
+package pl.ecommerce.domain.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.ecommerce.ecommercedomain.entity.BaseEntity;
 
 import javax.persistence.*;
 import java.util.LinkedList;

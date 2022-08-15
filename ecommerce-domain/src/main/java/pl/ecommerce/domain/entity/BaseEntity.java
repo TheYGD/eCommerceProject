@@ -1,4 +1,4 @@
-package pl.ecommerce.ecommercedomain.entity;
+package pl.ecommerce.domain.entity;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,10 +1,9 @@
-package pl.ecommerce.ecommercedomain;
+package pl.ecommerce.domain.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.ecommerce.ecommercedomain.entity.BaseEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -13,6 +12,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Product extends BaseEntity {
 
     private String name;
@@ -22,16 +22,7 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    private int amount;
     private BigDecimal price;
     private String imageUrl;
-
-
-    public Product(String name, String description, Category category, BigDecimal price, String imageUrl) {
-        this.name = name;
-        this.description = description;
-        this.category = category;
-        this.price = price;
-        this.imageUrl = imageUrl;
-    }
-
 }
