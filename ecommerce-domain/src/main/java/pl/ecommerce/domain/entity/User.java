@@ -30,5 +30,4 @@ public class User extends BaseEntity {
     private List<Address> shippingAddressList;
     private String imageUrl;
 
-
 }
