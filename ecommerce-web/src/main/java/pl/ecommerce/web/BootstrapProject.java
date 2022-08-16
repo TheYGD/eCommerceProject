@@ -37,7 +37,7 @@ public class BootstrapProject implements ApplicationListener<ContextRefreshedEve
     public void bootstrap1() {
         Category category1 = new Category("Samochody", "Znajdują się tutaj samochody");
         Product product1 = new Product("Audi1", "szybkie audi", category1, null, 1,
-                BigDecimal.valueOf(100000), "");
+                BigDecimal.valueOf(100000), null);
         category1.getProducts().add(product1);
 
         productRepository.save(product1);
