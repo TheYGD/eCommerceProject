@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import pl.ecommerce.exceptions.exceptions.InvalidUserCredentialsException;
+import pl.ecommerce.exceptions.InvalidUserCredentialsException;
 import pl.ecommerce.repository.UserCredentialsRepository;
 
 @Service

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.ecommerce.admin.service.CategoryService;
-import pl.ecommerce.domain.dto.CategoryDto;
+import pl.ecommerce.data.dto.CategoryDto;
 
 @Controller
 @RequestMapping("/admin/categories")

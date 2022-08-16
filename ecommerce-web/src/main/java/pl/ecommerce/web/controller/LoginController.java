@@ -6,8 +6,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import pl.ecommerce.domain.dto.UserRegisterDto;
-import pl.ecommerce.service.LoginService;
+import pl.ecommerce.data.dto.UserRegisterDto;
+import pl.ecommerce.web.service.LoginService;
 
 import javax.validation.Valid;
 

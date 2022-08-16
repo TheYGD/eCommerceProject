@@ -6,8 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.ecommerce.domain.entity.Product;
-import pl.ecommerce.service.ProductService;
+import pl.ecommerce.data.entity.Product;
+import pl.ecommerce.web.service.ProductService;
 
 @Controller
 @RequestMapping("/products")

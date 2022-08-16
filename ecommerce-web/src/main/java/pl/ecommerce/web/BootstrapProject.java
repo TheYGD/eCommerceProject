@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
-import pl.ecommerce.domain.entity.Category;
-import pl.ecommerce.domain.entity.Product;
+import pl.ecommerce.data.entity.Category;
+import pl.ecommerce.data.entity.Product;
 import pl.ecommerce.repository.CategoryRepository;
 import pl.ecommerce.repository.ProductRepository;
 
