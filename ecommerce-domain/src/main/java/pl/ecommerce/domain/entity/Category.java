@@ -17,7 +17,7 @@ public class Category extends BaseEntity {
     private String name;
     private String description;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "category")
     private List<Product> products = new LinkedList<>();
 
 

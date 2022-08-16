@@ -22,6 +22,10 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private int amount;
     private BigDecimal price;
     private String imageUrl;
