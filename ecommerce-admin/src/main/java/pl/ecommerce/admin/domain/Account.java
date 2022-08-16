@@ -6,6 +6,8 @@ import pl.ecommerce.domain.entity.BaseEntity;
 
 import javax.management.relation.Role;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @Entity
 @Getter
@@ -18,5 +20,6 @@ public class Account extends BaseEntity {
     private String firstName;
     private String lastName;
 
+    @Enumerated(value = EnumType.STRING)
     private Role role;
 }
