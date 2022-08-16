@@ -11,6 +11,7 @@ import pl.ecommerce.domain.entity.Product;
 import pl.ecommerce.repository.CategoryRepository;
 import pl.ecommerce.repository.ProductRepository;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
 /**
@@ -32,9 +33,10 @@ public class BootstrapProject implements ApplicationListener<ContextRefreshedEve
         log.debug("Bootstrapping done!");
     }
 
+    @Transactional
     public void bootstrap1() {
         Category category1 = new Category("Samochody", "Znajdują się tutaj samochody");
-        Product product1 = new Product("Audi1", "szybkie audi", category1, 1,
+        Product product1 = new Product("Audi1", "szybkie audi", category1, null, 1,
                 BigDecimal.valueOf(100000), "");
         category1.getProducts().add(product1);
 
