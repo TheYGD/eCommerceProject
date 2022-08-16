@@ -24,7 +24,6 @@
         <module>ecommerce-service</module>
         <module>ecommerce-exceptions</module>
         <module>ecommerce-admin</module>
-        <module>ecommerce-ex</module>
     </modules>
 
     <properties>
