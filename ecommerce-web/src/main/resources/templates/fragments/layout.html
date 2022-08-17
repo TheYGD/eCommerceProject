@@ -7,10 +7,11 @@
   <link rel="stylesheet"
         th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
   <link rel="stylesheet" th:href="@{/webjars/font-awesome/6.1.2/css/all.css}"/>
-<!--  <link rel="stylesheet" th:href="@{/webjars/font-awesome/6.1.2/css/all.css}"/>-->
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
+
 <body>
-  <nav class="navbar navbar-expand-sm navbar-dark bg-dark px-3">
+  <nav class="navbar navbar-expand-sm sticky-md-top navbar-dark bg-dark px-3 mb-5">
     <a class="navbar-brand" th:href="@{/}">eCommerce</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,24 +21,33 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <form class="form-check-inline" id="nav-search-form" th:action="@{/products}" method="post">
         <div class="input-group">
-          <input class="form-control input-small" id="nav-search-input" type="text" placeholder="product..." th:object="${query}"> <br>
+          <input class="form-control input-small" id="nav-search-input" type="text" placeholder="product..." th:value="${searchQuery?:''}">
           <button class="btn btn-info btn-dark" id="nav-search-button"><i class="fa fa-search"></i></button>
         </div>
       </form>
-      <ul class="navbar-nav mr-auto">
+      <ul class="navbar-nav ms-auto">
         <li class="nav-item">
           <a class="nav-link" th:href="@{/products}">Products</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" th:text="${username ?: 'logIn' }" th:href="@{__(${username != null ? '/profile' : '/login' })__}">username</a>
+          <a class="nav-link" th:href="@{/cart}"> <i class="fa fa-cart-shopping ms-2"></i> </a>
+        </li>
+        <div th:text="${cartAmount < 10 ? cartAmount : '+'}" class="cart-badge d-flex align-items-center justify-content-center">0</div>
+        <li class="nav-item">
+          <a class="nav-link" th:text="${username ?: 'Log In' }" th:href="@{__(${username != null ? '/profile' : '/login' })__}">username</a>
         </li>
       </ul>
     </div>
-    <i class="fa fa-pencil" title="Edit"></i>
   </nav>
 
 
   <th:block th:replace="${template}" />
+
+
+  <footer class="footer bg-dark mt-5">
+
+  </footer>
+
 
   <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
   <script th:src="@{/webjars/jquery/jquery.min.js}"></script>

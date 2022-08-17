@@ -1,0 +1,15 @@
+
+.cart-badge {
+    font-size: .6rem;
+    position: relative;
+    right: 0.5rem;
+    width: 15px;
+    height: 15px;
+    color: #fff;
+    background-color: #418deb;
+    border-radius: 50%;
+}
+
+.hover-dark:hover {
+    background: #f6f6f6;
+}

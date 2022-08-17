@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{fragments/layout :: layout (~{::body}, ${title?:'Product'})}">
+
+<body>
+  <div class="container-md">
+    <div class="card d-flex flex-row shadow-sm hover-dark m-1" th:each="product : ${productList}">
+      <a class="stretched-link" th:href="@{__(${'/products/' + product.id})__}"></a>
+      <div class="d-flex align-items-center justify-content-center" style="height: 12rem; width: 12rem;">
+        <img src="/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;">
+      </div>
+
+      <div class="card-body">
+        <h4 class="card-title" th:text="${product.name}">Product name</h4>
+        <h4 class="display-6" th:text="${product.price + ' $'}">Price</h4>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
