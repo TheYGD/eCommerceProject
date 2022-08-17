@@ -22,10 +22,11 @@ public class SecurityConfiguration {
 //                .loginPage("/login.html")
                 .and()
                 .authorizeRequests()
-                .mvcMatchers("/register", "").permitAll()
-                .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/login*").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().permitAll();
+//                .mvcMatchers("/register", "").permitAll()
+//                .antMatchers("/h2-console/**").permitAll()
+//                .antMatchers("/login*").permitAll()
+//                .anyRequest().authenticated();
 
         return http.build();
     }
