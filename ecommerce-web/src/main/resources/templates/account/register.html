@@ -1,9 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org" >
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html lang="en" th:replace="~{fragments/layout :: layout (~{::body}, 'Register')}">
+
 <body>
   <h1>Register</h1>
 
@@ -15,7 +12,7 @@
     <input type="text" id="username" th:min="6" th:max="20" th:field="*{username}">
 
     <label for="password">Password</label>
-    <input type="text" id="password" th:min="8" th:max="50" th:field="*{password}">
+    <input type="password" id="password" th:min="8" th:max="50" th:field="*{password}">
 
     <label for="first-name">First name</label>
     <input type="text" id="first-name" th:min="2" th:max="30" th:field="*{firstName}">
@@ -30,7 +27,7 @@
     <input type="tel" id="phone-number" th:field="*{phoneNumber}">
 
     <button type="submit">Register</button>
-
   </form>
 </body>
+
 </html>

@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" >
-<head>
-    <meta charset="UTF-8">
-    <title th:text="|${product.name} - eCommerce.pl|"></title>
-</head>
+<html lang="en" th:replace="~{fragments/layout :: layout (~{::body}, ${product.name})}">
+
 <body>
     <h2 th:text="${product.name}">Product name</h2>
     <h4 th:text="${product.category.name}">Category name</h4>
     <p th:text="${product.description}">Product description</p>
 </body>
+
 </html>
