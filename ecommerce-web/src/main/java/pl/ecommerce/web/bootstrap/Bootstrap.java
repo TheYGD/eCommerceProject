@@ -68,7 +68,19 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
                 BigDecimal.valueOf(100000), null);
         category1.getProducts().add(product1);
 
-        productRepository.save(product1);
+        Product product2 = new Product("BMW1", "szybkie bmw", category1, null, 1,
+                BigDecimal.valueOf(120000), null);
+        category1.getProducts().add(product2);
+
+
+        Product product3 = new Product("Mercedes1", "szybki mercedes", category1, null, 1,
+                BigDecimal.valueOf(150000), null);
+        category1.getProducts().add(product3);
+
         categoryRepository.save(category1);
+        productRepository.save(product1);
+        productRepository.save(product2);
+        productRepository.save(product3);
+//        categoryRepository.save(category1);
     }
 }

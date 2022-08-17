@@ -6,6 +6,8 @@ import pl.ecommerce.data.entity.Product;
 import pl.ecommerce.exceptions.ItemNotFoundException;
 import pl.ecommerce.repository.ProductRepository;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class ProductService {
@@ -18,4 +20,11 @@ public class ProductService {
                 .orElseThrow( () -> new ItemNotFoundException("No item found with id=" + id) );
     }
 
+    public List<Product> findAll() {
+        return productRepository.findAll();
+    }
+
+    public List<Product> findByQuery(String query) {
+        return productRepository.findAll();
+    }
 }

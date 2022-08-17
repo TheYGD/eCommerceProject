@@ -7,11 +7,17 @@ import pl.ecommerce.data.entity.UserCredentials;
 import pl.ecommerce.web.controller.IndexController;
 import pl.ecommerce.web.controller.ProductController;
 
+
 @ControllerAdvice(basePackageClasses = {IndexController.class, ProductController.class})
 public class AdviceController {
 
     @ModelAttribute("username")
     public String attachUserToModel(@AuthenticationPrincipal UserCredentials userCredentials) {
         return userCredentials != null ? userCredentials.getUsername() : null;
+    }
+
+    @ModelAttribute("cartAmount")
+    public Integer attachCartAmount() {
+        return (int) (Math.random() * 20);
     }
 }
