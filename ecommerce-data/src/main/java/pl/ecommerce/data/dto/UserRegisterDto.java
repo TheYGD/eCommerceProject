@@ -39,7 +39,6 @@ public class UserRegisterDto {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private String dateOfBirth;
 
-    @NotNull
     @Pattern(regexp = "((00|\\+) ?\\d{1,3})?(\\d{9}|\\d{3} \\d{3} \\d{3})") // not sure if it works, test will appear soon
     // todo this should be extended
     private String phoneNumber;
