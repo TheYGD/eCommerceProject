@@ -3,19 +3,12 @@ package pl.ecommerce.web.bootstrap;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import pl.ecommerce.data.entity.Category;
-import pl.ecommerce.data.entity.Product;
-import pl.ecommerce.data.entity.User;
-import pl.ecommerce.data.entity.UserCredentials;
-import pl.ecommerce.repository.CategoryRepository;
-import pl.ecommerce.repository.ProductRepository;
-import pl.ecommerce.repository.UserCredentialsRepository;
-import pl.ecommerce.repository.UserRepository;
+import pl.ecommerce.data.entity.*;
+import pl.ecommerce.repository.*;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -32,6 +25,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final UserCredentialsRepository userCredentialsRepository;
+    private final CartRepository cartRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -45,7 +39,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     }
 
 
-    private void createUser() { // easy login
+    @Transactional
+    public void createUser() { // easy login
         UserCredentials userCredentials = new UserCredentials();
         userCredentials.setUsername(" ");
         userCredentials.setPassword(passwordEncoder.encode(" "));
@@ -53,9 +48,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         userCredentials.setLocked(false);
 
         User user = new User();
+        Cart cart = cartRepository.save(new Cart());
+        cart.setOwner(user);
 
         user.setCredentials(userCredentials);
         userCredentials.setUserAccount(user);
+        user.setCart(cart);
 
         userRepository.save(user);
         userCredentialsRepository.save(userCredentials);
@@ -81,6 +79,5 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         productRepository.save(product1);
         productRepository.save(product2);
         productRepository.save(product3);
-//        categoryRepository.save(category1);
     }
 }
