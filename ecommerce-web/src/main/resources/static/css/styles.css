@@ -13,3 +13,7 @@
 .hover-dark:hover {
     background: #f6f6f6;
 }
+
+.z-top {
+    z-index: 2;
+}
