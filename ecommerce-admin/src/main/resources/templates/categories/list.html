@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{fragments/layout :: layout (~{::body}, 'Profile')}">
+
+<body>
+<div class="container-md">
+  <h1 class="my-4">All categories</h1>
+  <ul class="list-group">
+    <li class="list-group-item p-4 pb-3" th:each="category : ${categoryList}">
+      <h4 th:text="${category.name}">Category name</h4>
+      <p th:text="${category.description}">Category description</p>
+    </li>
+  </ul>
+</div>
+</body>
+
+</html>

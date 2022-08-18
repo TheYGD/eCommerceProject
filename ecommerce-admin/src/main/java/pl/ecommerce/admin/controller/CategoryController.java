@@ -2,12 +2,16 @@ package pl.ecommerce.admin.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.ecommerce.admin.service.CategoryService;
 import pl.ecommerce.data.dto.CategoryDto;
+import pl.ecommerce.data.entity.Category;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/categories")
@@ -18,7 +22,10 @@ public class CategoryController {
 
 
     @GetMapping("")
-    public String listCategories() {
+    public String listCategories(Model model) {
+        List<Category> categoryList = categoryService.findAll();
+        model.addAttribute("categoryList", categoryList);
+
         return "category/list";
     }
 
@@ -29,7 +36,7 @@ public class CategoryController {
 
     @PostMapping("/new")
     public String postCategory(@ModelAttribute("category") CategoryDto categoryDTO) {
-        categoryService.postCategory(categoryDTO);
+        categoryService.addCategory(categoryDTO);
 
         return "redirect:/admin/categories";
     }
