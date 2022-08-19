@@ -4,11 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import pl.ecommerce.data.entity.Cart;
-import pl.ecommerce.data.entity.Product;
 import pl.ecommerce.data.entity.UserCredentials;
+import pl.ecommerce.data.other.StringResponse;
 import pl.ecommerce.web.service.CartService;
 
 @Controller
@@ -24,5 +23,24 @@ public class CartController {
         model.addAttribute("cart", cart);
 
         return "cart/show";
+    }
+
+
+    @PostMapping("/change/{id}")
+    @ResponseBody
+    public StringResponse changeProductsQuantity(@AuthenticationPrincipal UserCredentials userCredentials,
+                                         @PathVariable Long id, @RequestParam Integer quantity) {
+        cartService.changeProductsQuantity(userCredentials, id, quantity);
+
+        return new StringResponse("Quantity changed");
+    }
+
+
+    @DeleteMapping("/delete/{id}")
+    @ResponseBody
+    public StringResponse removeProductFromCart(@AuthenticationPrincipal UserCredentials userCredentials, @PathVariable Long id) {
+        cartService.removeProduct(userCredentials, id);
+
+        return new StringResponse("Product deleted");
     }
 }
