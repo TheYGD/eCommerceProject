@@ -2,11 +2,11 @@
 <html lang="en" th:replace="~{fragments/layout :: layout (template=~{::body}, script=~{::script}, title='Cart')}">
 
 <body>
-    <div class="container-md">
-        <div class="row">
+    <div class="container-md d-flex flex-row">
+
             <div class="container-md col-9">
               <ul class="list-group shadow-sm">
-                  <li class="list-group-item d-flex flex-row" th:each="productInCart : ${cart.productList}">
+                  <li class="list-group-item d-flex flex-row product-in-cart" th:each="productInCart : ${cart.productList}">
                       <a class="stretched-link product-link" th:href="@{__(${'/products/' + productInCart.product.id})__}"></a>
                       <div class="d-flex align-items-center justify-content-center" style="height: 12rem; width: 12rem;">
                           <img src="/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;">
@@ -14,11 +14,12 @@
 
                       <div class="card-body">
                           <h4 class="card-title" th:text="${productInCart.product.name}">Product name</h4>
-                          <h4 class="display-6" th:text="${productInCart.product.price + ' $'}">Price</h4>
+                          <h4 class="display-6 product-in-cart-price" th:text="${productInCart.product.price + ' $'}">Price</h4>
                       </div>
 
                       <div class="float-end d-flex align-items-center">
-                          <input class="col-3 z-top me-3" type="number" th:value="${productInCart.quantity}">
+                          <input class="col-3 z-top me-3 product-in-cart-quantity" type="number"
+                                 th:value="${productInCart.quantity}" min="1">
 
                           <button type="button" class="btn btn-danger py-2 px-3 z-top remove-btn">
                               <i class="fa fa-remove"></i>
@@ -31,35 +32,85 @@
             <div class="container-md col border shadow-sm">
                 <div>
                     <h2 class="">Total</h2>
-                    <h2 class="display-6">123123$</h2>
+                    <h2 class="display-6" id="total-sum"></h2>
                 </div>
                 <div>
                 </div>
 
             </div>
-        </div>
+
     </div>
 </body>
 
 <script>
   <!-- todo-->
-  let fullUrl = $('.product-link')[0].getAttribute('href');
-  let defaultUrl = fullUrl.substring(0, fullUrl.substring(0, fullUrl.lastIndexOf('/')).lastIndexOf('/') );
+  $(document).ready( function() {
+      calculateTotalSum()
+      initDeleteButtonsAndChangeInputs();
+  })
 
-  let removeButtons = $('.remove-btn');
-  for (let btn of removeButtons) {
-      let aHref = btn.parentNode.parentNode.children[0].href;
-      let id = aHref.substring(aHref.lastIndexOf('/') + 1);
 
-      btn.onclick = function() {
-          let url = defaultUrl + '/cart/delete/' + id;
 
-          deleteRequest(url)
-              .then( res => {
-                  this.parentNode.parentNode.remove()
-              })
+
+  const initDeleteButtonsAndChangeInputs = function() {
+      if ($('.product-in-cart').length == 0) {
+          return;
       }
 
+      let fullUrl = $('.product-link')[0].getAttribute('href');
+      let defaultUrl = fullUrl.substring(0, fullUrl.substring(0, fullUrl.lastIndexOf('/')).lastIndexOf('/') );
+
+      let removeButtons = $('.remove-btn');
+      let changeInput = $('.product-in-cart-quantity');
+
+      for (let i = 0; i < removeButtons.length; i++ ) {
+          let btn = removeButtons[i];
+          let input = changeInput[i];
+
+          let aHref = btn.parentNode.parentNode.children[0].href;
+          let id = aHref.substring(aHref.lastIndexOf('/') + 1);
+
+          btn.onclick = function() {
+              let url = defaultUrl + '/cart/delete/' + id;
+
+              deleteRequest(url)
+                  .then( res => {
+                      this.parentNode.parentNode.remove()
+                      calculateTotalSum();
+                      updateCartAmount();
+                  })
+          }
+
+          input.onchange = function() {
+              let quantity = input.value;
+              let url = defaultUrl + '/cart/change/' + id + '?quantity=' + quantity;
+
+              postData(url)
+                  .then( res => {
+                      calculateTotalSum();
+                  })
+          }
+
+      }
+  }
+
+  const calculateTotalSum = function() {
+      let products = $('.product-in-cart');
+      let sum = 0;
+
+      for (let product of products) {
+          let productPrice = parseInt(product.getElementsByClassName('product-in-cart-price')[0].innerText);
+          let productQuantity = product.getElementsByClassName('product-in-cart-quantity')[0].value;
+
+          if (productPrice < 1 || productQuantity < 1) {
+              sum = '???';
+              break;
+          }
+
+          sum += productPrice * productQuantity;
+      }
+
+      $('#total-sum').text(sum + ' $');
   }
 
 </script>

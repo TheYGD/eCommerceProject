@@ -57,6 +57,10 @@ public class CartService {
 
 
     public Cart getCartByUserCredentials(UserCredentials userCredentials) {
+        if (userCredentials == null) {
+            throw new ItemNotFoundException("User not logged in!");
+        }
+
         return cartRepository.findByOwner(userCredentials.getUserAccount())
                 .orElseThrow( () -> {
                     log.error("Account with email %s is not associated with a cart!"

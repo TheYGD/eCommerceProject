@@ -43,4 +43,13 @@ public class CartController {
 
         return new StringResponse("Product deleted");
     }
+
+
+    @GetMapping("/size")
+    @ResponseBody
+    public StringResponse getCartSize(@AuthenticationPrincipal UserCredentials userCredentials) {
+        int size = cartService.getCartByUserCredentials(userCredentials).getProductList().size();
+
+        return new StringResponse(String.valueOf(size));
+    }
 }

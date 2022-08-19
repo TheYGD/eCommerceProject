@@ -32,7 +32,7 @@
         <li class="nav-item">
           <a class="nav-link" th:href="@{/cart}"> <i class="fa fa-cart-shopping ms-2"></i> </a>
         </li>
-        <div th:text="${cartAmount < 10 ? cartAmount : '+'}" class="cart-badge d-flex align-items-center justify-content-center">0</div>
+        <div class="d-flex align-items-center justify-content-center" id="cart-badge"></div>
         <li class="nav-item">
           <a class="nav-link" th:text="${username ?: 'Log In' }" th:href="@{__(${username != null ? '/profile' : '/login' })__}">username</a>
         </li>
@@ -57,6 +57,8 @@
   </th:block>
   <script>
     $(document).ready(function() {
+      updateCartAmount();
+
       $("#nav-search-btn").click(function() {
         $("#nav-search-form").attr('action', $("#nav-search-form").attr('action') + '?search=' + $("#nav-search-input").val() );
       });
