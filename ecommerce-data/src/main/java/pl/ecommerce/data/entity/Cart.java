@@ -21,5 +21,5 @@ public class Cart extends BaseEntity {
             name="products_in_carts",
             joinColumns = @JoinColumn(name="cart_id"),
             inverseJoinColumns = @JoinColumn(name="product_id"))
-    private List<Product> productList = new LinkedList<>();
+    private List<ProductInCart> productList = new LinkedList<>();
 }
