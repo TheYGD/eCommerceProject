@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{fragments/layout :: layout (template=~{::body}, script=~{::script}, title='Cart')}">
+
+<body>
+    <div class="container-md">
+      <ul class="list-group">
+          <li class="list-group-item d-flex flex-row" th:each="productInCart : ${cart.productList}">
+              <a class="stretched-link" th:href="@{__(${'/products/' + productInCart.product.id})__}"></a>
+              <div class="d-flex align-items-center justify-content-center" style="height: 12rem; width: 12rem;">
+                  <img src="/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;">
+              </div>
+
+              <div class="card-body">
+                  <h4 class="card-title" th:text="${productInCart.product.name}">Product name</h4>
+                  <h4 class="display-6" th:text="${productInCart.product.price + ' $'}">Price</h4>
+              </div>
+
+              <div class="float-end d-flex align-items-center">
+                  <input class="col-3 z-top me-3" type="number" th:value="${productInCart.quantity}">
+
+                  <button type="button" class="btn btn-danger py-2 px-3 z-top"><i class="fa fa-remove"></i></button>
+              </div>
+          </li>
+      </ul>
+    </div>
+</body>
+
+<script>
+  <!-- todo-->
+</script>
+
+</html>

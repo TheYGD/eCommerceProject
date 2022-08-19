@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org"
-  th:fragment="layout (template, title)">
+  th:fragment="layout (template, title)" th:with="script=${script ?: 'no-script'}">
 <head>
   <meta charset="UTF-8">
   <title th:text="${title + ' - eCommerce.pl'}">Title</title>
@@ -22,7 +22,7 @@
       <form class="form-check-inline" id="nav-search-form" th:action="@{/products}" method="post">
         <div class="input-group">
           <input class="form-control input-small" id="nav-search-input" type="text" placeholder="product..." th:value="${searchQuery?:''}">
-          <button class="btn btn-info btn-dark" id="nav-search-button"><i class="fa fa-search"></i></button>
+          <button class="btn btn-info btn-dark" id="nav-search-btn"><i class="fa fa-search"></i></button>
         </div>
       </form>
       <ul class="navbar-nav ms-auto">
@@ -51,9 +51,13 @@
 
   <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
   <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+  <script src="/js/script.js"></script>
+  <th:block th:if="${script != 'no-script'}" >
+    <th:block th:replace="${script}"></th:block>
+  </th:block>
   <script>
     $(document).ready(function() {
-      $("#nav-search-button").click(function() {
+      $("#nav-search-btn").click(function() {
         $("#nav-search-form").attr('action', $("#nav-search-form").attr('action') + '?search=' + $("#nav-search-input").val() );
       });
     });
