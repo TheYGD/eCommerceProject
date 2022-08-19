@@ -7,10 +7,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.ecommerce.data.entity.Product;
 import pl.ecommerce.data.entity.UserCredentials;
+import pl.ecommerce.data.other.StringResponse;
 import pl.ecommerce.web.service.ProductService;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/products")
@@ -52,9 +56,10 @@ public class ProductController {
     // todo storing carts in cookies for non-logged
     @PostMapping("/add/{id}")
     @ResponseBody
-    public String addProductToCart(@AuthenticationPrincipal UserCredentials userCredentials,
-                                   @PathVariable("id") Long productId) {
+    public StringResponse addProductToCart(@AuthenticationPrincipal UserCredentials userCredentials,
+                                           @PathVariable("id") Long productId, @RequestParam Integer quantity) {
 
-        return productService.addProductToCart(userCredentials, productId);
+        String result = productService.addProductToCart(userCredentials, productId, quantity);
+        return new StringResponse(result);
     }
 }
