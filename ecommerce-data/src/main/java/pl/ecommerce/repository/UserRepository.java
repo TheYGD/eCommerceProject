@@ -8,4 +8,7 @@ import pl.ecommerce.data.entity.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     User save(User user);
+
+
+    boolean existsByImageId(String id);
 }

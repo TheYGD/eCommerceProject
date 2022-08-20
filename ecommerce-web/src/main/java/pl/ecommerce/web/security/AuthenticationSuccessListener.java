@@ -29,6 +29,10 @@ public class AuthenticationSuccessListener implements ApplicationListener<Authen
                         currentRequestAttributes()).
                         getRequest();
 
+        if (request.getCookies() == null) {
+            return;
+        }
+
         Arrays.stream(request.getCookies())
                 .filter(cookie -> cookie.getName().equals(CART_COOKIE))
                 .findFirst()

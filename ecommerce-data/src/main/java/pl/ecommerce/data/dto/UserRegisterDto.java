@@ -19,20 +19,20 @@ public class UserRegisterDto {
     private String email;
 
     @NotNull
-    @Pattern(regexp = "[\\w+]{6,20}")
+    @Pattern(regexp = "\\w{6,20}")
     private String username;
 
     @NotNull
-    @Pattern(regexp = "[\\w+]{8,50}")
+    @Pattern(regexp = ".{8,50}")
     private String password;
 
 
     @NotNull
-    @Pattern(regexp = "[\\w+]{2,30}")
+    @Pattern(regexp = "\\w{2,30}")
     private String firstName;
 
     @NotNull
-    @Pattern(regexp = "[\\w+]{2,30}")
+    @Pattern(regexp = "\\w{2,30}")
     private String lastName;
 
     @NotNull

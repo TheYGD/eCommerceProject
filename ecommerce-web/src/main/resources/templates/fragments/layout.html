@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org"
-  th:fragment="layout (template, title)" th:with="script=${script ?: 'no-script'}">
+  th:fragment="layout (body, title)" th:with="script=${script ?: 'no-script'}">
 <head>
   <meta charset="UTF-8">
   <title th:text="${title + ' - eCommerce.pl'}">Title</title>
@@ -41,7 +41,7 @@
   </nav>
 
 
-  <th:block th:replace="${template}" />
+  <th:block th:replace="${body}" />
 
 
   <footer class="footer bg-dark mt-5">
@@ -57,7 +57,7 @@
   </th:block>
   <script>
     $(document).ready(function() {
-      updateCartAmount();
+      updateCartQuantity();
 
       $("#nav-search-btn").click(function() {
         $("#nav-search-form").attr('action', $("#nav-search-form").attr('action') + '?search=' + $("#nav-search-input").val() );

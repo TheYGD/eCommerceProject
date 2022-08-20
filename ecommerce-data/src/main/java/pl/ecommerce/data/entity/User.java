@@ -34,6 +34,6 @@ public class User extends BaseEntity {
             joinColumns = @JoinColumn(name="user_id"),
             inverseJoinColumns = @JoinColumn(name="shipping_adress_id"))
     private List<Address> shippingAddressList;
-    private String imageUrl;
+    private String imageId;
 
 }

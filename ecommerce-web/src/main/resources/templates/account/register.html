@@ -2,32 +2,50 @@
 <html lang="en" th:replace="~{fragments/layout :: layout (~{::body}, 'Register')}">
 
 <body>
-  <h1>Register</h1>
+  <div class="container-md">
+    <h1>Register</h1>
 
-  <form action="/register" method="post" th:object="${user}">
-    <label for="email">Email</label>
-    <input type="email" id="email" th:field="*{email}">
+    <form class="border shadow rounded-2 p-5 my-5" action="/register" method="post" th:object="${user}">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input class="form-control" type="email" id="email" th:field="*{email}">
+      </div>
 
-    <label for="username">Username</label>
-    <input type="text" id="username" th:min="6" th:max="20" th:field="*{username}">
 
-    <label for="password">Password</label>
-    <input type="password" id="password" th:min="8" th:max="50" th:field="*{password}">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input class="form-control mt-1 mb-3" type="text" id="username" th:min="6" th:max="20" th:field="*{username}">
+      </div>
 
-    <label for="first-name">First name</label>
-    <input type="text" id="first-name" th:min="2" th:max="30" th:field="*{firstName}">
 
-    <label for="last-name">Last name</label>
-    <input type="text" id="last-name" th:min="2" th:max="30" th:field="*{lastName}">
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input class="form-control mt-1 mb-3" type="password" id="password" th:min="8" th:max="50" th:field="*{password}">
+      </div>
 
-    <label for="date-of-birth">Date of birth</label>
-    <input type="date" id="date-of-birth" th:field="*{dateOfBirth}">
+      <div class="form-group">
+        <label for="first-name">First name</label>
+        <input class="form-control mt-1 mb-3" type="text" id="first-name" th:min="2" th:max="30" th:field="*{firstName}">
+      </div>
 
-    <label for="phone-number">Phone number</label>
-    <input type="tel" id="phone-number" th:field="*{phoneNumber}">
+      <div class="form-group">
+        <label for="last-name">Last name</label>
+        <input class="form-control mt-1 mb-3" type="text" id="last-name" th:min="2" th:max="30" th:field="*{lastName}">
+      </div>
 
-    <button type="submit">Register</button>
-  </form>
+      <div class="form-group">
+        <label for="date-of-birth">Date of birth</label>
+        <input class="form-control mt-1 mb-3" type="date" id="date-of-birth" th:field="*{dateOfBirth}">
+      </div>
+
+      <div class="form-group">
+        <label for="phone-number">Phone number</label>
+        <input class="form-control mt-1 mb-3" type="tel" id="phone-number" th:field="*{phoneNumber}">
+      </div>
+
+      <button class="btn btn-primary my-3" type="submit">Register</button>
+    </form>
+  </div>
 </body>
 
 </html>

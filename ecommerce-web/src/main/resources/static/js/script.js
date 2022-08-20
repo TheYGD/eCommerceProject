@@ -27,7 +27,7 @@ async function makeRequest(method, url, data) {
 /**
  *  Methods for fragments/layout.html
  */
-const updateCartAmount = function() {
+const updateCartQuantity = function() {
     let cartBadge = $('#cart-badge');
     let urlWithAdditionalSlash = $('#nav-search-form').attr('action');
     let url = urlWithAdditionalSlash.substring(0, urlWithAdditionalSlash.lastIndexOf('/')) + '/cart/size';

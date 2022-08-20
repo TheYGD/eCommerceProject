@@ -22,11 +22,15 @@ public class SecurityConfiguration {
 //                .loginPage("/login.html")
                 .and()
                 .authorizeRequests()
-                .anyRequest().permitAll();
-//                .mvcMatchers("/register", "").permitAll()
+                .mvcMatchers("/js/**", "/css/**", "/webjars/**").permitAll()
+                .mvcMatchers("/images/**").permitAll()
+                .mvcMatchers("/").permitAll()
+                .mvcMatchers("/register").permitAll()
+                .mvcMatchers("/cart/**").permitAll()
+                .mvcMatchers("/products/**").permitAll()
 //                .antMatchers("/h2-console/**").permitAll()
 //                .antMatchers("/login*").permitAll()
-//                .anyRequest().authenticated();
+                .anyRequest().authenticated();
 
         return http.build();
     }

@@ -5,6 +5,8 @@
     <h2 th:text="${product.name}">Product name</h2>
     <h4 th:text="${product.category.name}">Category name</h4>
     <p th:text="${product.description}">Product description</p>
+    <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
+         th:src="${ product.imageId != null ? ('/images/products/' + product.imageId) : '/images/test-img.png' }" >
 </body>
 
 </html>

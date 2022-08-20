@@ -26,7 +26,7 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private int amount;
+    private int quantity;
     private BigDecimal price;
-    private String imageUrl;
+    private String imageId;
 }

@@ -54,7 +54,7 @@ public class LoginService {
     @Transactional
     public void saveUser(UserRegisterDto userRegisterDto) {
         userRegisterDto.setPassword( passwordEncoder.encode(userRegisterDto.getPassword()) );
-        User user = UserMapper.INSTANCE.userRegisterDtoToUser( userRegisterDto );
+        User user = UserMapper.INSTANCE.dtoToEntity( userRegisterDto );
 
         UserCredentials userCredentials = user.getCredentials();
         userCredentials.setUserAccount(user);

@@ -38,12 +38,6 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>pl.ecommerce</groupId>
-            <artifactId>ecommerce-data</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
     <build>

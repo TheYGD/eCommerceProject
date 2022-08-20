@@ -15,5 +15,5 @@ public interface UserMapper {
     @Mapping(source = "email", target = "credentials.email")
     @Mapping(source = "username", target = "credentials.username")
     @Mapping(source = "password", target = "credentials.password")
-    User userRegisterDtoToUser(UserRegisterDto userRegisterDto);
+    User dtoToEntity(UserRegisterDto userRegisterDto);
 }
