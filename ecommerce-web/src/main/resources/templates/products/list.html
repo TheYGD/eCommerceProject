@@ -38,6 +38,7 @@
         let urlAdd = url.substring(0, lastSlashIndex) + '/add' + url.substring(lastSlashIndex) + '?quantity=' + quantity;
 
         postData(urlAdd).then(data => {
+          console.log(data);
           updateCartAmount();
         });
       }

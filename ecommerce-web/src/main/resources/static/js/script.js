@@ -19,6 +19,8 @@ async function makeRequest(method, url, data) {
         body: JSON.stringify(data)
     });
 
+    console.log(document.cookie);
+
     return response.json();
 }
 

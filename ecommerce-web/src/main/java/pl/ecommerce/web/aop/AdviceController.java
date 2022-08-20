@@ -23,15 +23,4 @@ public class AdviceController {
     public String attachUserToModel(@AuthenticationPrincipal UserCredentials userCredentials) {
         return userCredentials != null ? userCredentials.getUsername() : null;
     }
-
-//    @ModelAttribute("cartAmount")
-//    public int attachCartAmount(@AuthenticationPrincipal UserCredentials userCredentials) {
-//        // todo - just temporary
-//        if (userCredentials == null) {
-//            return 0;
-//        }
-//
-//        return cartService.getCartByUserCredentials(userCredentials)
-//                .getProductList().size();
-//    }
 }

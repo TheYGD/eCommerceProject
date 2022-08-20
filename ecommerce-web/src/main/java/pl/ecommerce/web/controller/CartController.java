@@ -10,6 +10,9 @@ import pl.ecommerce.data.entity.UserCredentials;
 import pl.ecommerce.data.other.StringResponse;
 import pl.ecommerce.web.service.CartService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 @Controller
 @RequestMapping("/cart")
 @AllArgsConstructor
@@ -18,8 +21,9 @@ public class CartController {
     private final CartService cartService;
 
     @GetMapping
-    public String showCart(@AuthenticationPrincipal UserCredentials userCredentials, Model model) {
-        Cart cart = cartService.findByUserCredentials(userCredentials);
+    public String showCart(@AuthenticationPrincipal UserCredentials userCredentials, Model model,
+                           HttpServletRequest request, HttpServletResponse response) {
+        Cart cart = cartService.getCart(userCredentials, request, response);
         model.addAttribute("cart", cart);
 
         return "cart/show";
@@ -29,8 +33,9 @@ public class CartController {
     @PostMapping("/change/{id}")
     @ResponseBody
     public StringResponse changeProductsQuantity(@AuthenticationPrincipal UserCredentials userCredentials,
-                                         @PathVariable Long id, @RequestParam Integer quantity) {
-        cartService.changeProductsQuantity(userCredentials, id, quantity);
+                                                 @PathVariable Long id, @RequestParam Integer quantity,
+                                                 HttpServletRequest request, HttpServletResponse response) {
+        cartService.changeProductsQuantity(userCredentials, id, quantity, request, response);
 
         return new StringResponse("Quantity changed");
     }
@@ -38,8 +43,9 @@ public class CartController {
 
     @DeleteMapping("/delete/{id}")
     @ResponseBody
-    public StringResponse removeProductFromCart(@AuthenticationPrincipal UserCredentials userCredentials, @PathVariable Long id) {
-        cartService.removeProduct(userCredentials, id);
+    public StringResponse removeProductFromCart(@AuthenticationPrincipal UserCredentials userCredentials, @PathVariable Long id,
+                                                HttpServletRequest request, HttpServletResponse response) {
+        cartService.removeProduct(userCredentials, id, request, response);
 
         return new StringResponse("Product deleted");
     }
@@ -47,8 +53,9 @@ public class CartController {
 
     @GetMapping("/size")
     @ResponseBody
-    public StringResponse getCartSize(@AuthenticationPrincipal UserCredentials userCredentials) {
-        int size = cartService.getCartByUserCredentials(userCredentials).getProductList().size();
+    public StringResponse getCartSize(@AuthenticationPrincipal UserCredentials userCredentials,
+                                      HttpServletRequest request, HttpServletResponse response) {
+        int size = cartService.getCart(userCredentials, request, response).getProductList().size();
 
         return new StringResponse(String.valueOf(size));
     }

@@ -10,6 +10,7 @@ import pl.ecommerce.data.entity.UserCredentials;
 import pl.ecommerce.data.other.StringResponse;
 import pl.ecommerce.web.service.ProductService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
@@ -52,14 +53,13 @@ public class ProductController {
     }
 
 
-    // currently assuming that the user is logged in
-    // todo storing carts in cookies for non-logged
     @PostMapping("/add/{id}")
     @ResponseBody
     public StringResponse addProductToCart(@AuthenticationPrincipal UserCredentials userCredentials,
-                                           @PathVariable("id") Long productId, @RequestParam Integer quantity) {
+                                           @PathVariable("id") Long productId, @RequestParam Integer quantity,
+                                           HttpServletRequest request, HttpServletResponse response) {
 
-        String result = productService.addProductToCart(userCredentials, productId, quantity);
+        String result = productService.addProductToCart(userCredentials, productId, quantity, request, response);
         return new StringResponse(result);
     }
 }
