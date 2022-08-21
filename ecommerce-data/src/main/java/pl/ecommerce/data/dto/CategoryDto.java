@@ -3,7 +3,7 @@ package pl.ecommerce.data.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.ecommerce.data.entity.Product;
+import pl.ecommerce.data.domain.Product;
 
 import java.util.List;
 

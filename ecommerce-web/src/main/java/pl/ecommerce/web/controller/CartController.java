@@ -5,8 +5,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import pl.ecommerce.data.entity.Cart;
-import pl.ecommerce.data.entity.UserCredentials;
+import pl.ecommerce.data.domain.Cart;
+import pl.ecommerce.data.domain.UserCredentials;
 import pl.ecommerce.data.other.StringResponse;
 import pl.ecommerce.web.service.CartService;
 

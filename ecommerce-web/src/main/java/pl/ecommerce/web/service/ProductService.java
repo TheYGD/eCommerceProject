@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
-import pl.ecommerce.data.entity.*;
+import pl.ecommerce.data.domain.Product;
+import pl.ecommerce.data.domain.UserCredentials;
 import pl.ecommerce.exceptions.ItemNotFoundException;
 import pl.ecommerce.repository.ProductRepository;
 
@@ -31,7 +32,7 @@ public class ProductService {
     }
 
     public List<Product> findByQuery(String query) {
-        return productRepository.findAll();
+        return productRepository.findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(query, query);
     }
 
 

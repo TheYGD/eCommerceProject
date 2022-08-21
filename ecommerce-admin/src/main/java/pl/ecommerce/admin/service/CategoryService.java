@@ -3,7 +3,7 @@ package pl.ecommerce.admin.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.ecommerce.data.dto.CategoryDto;
-import pl.ecommerce.data.entity.Category;
+import pl.ecommerce.data.domain.Category;
 import pl.ecommerce.data.mapper.CategoryMapper;
 import pl.ecommerce.exceptions.InvalidArgumentException;
 import pl.ecommerce.exceptions.ItemAlreadyExistsException;

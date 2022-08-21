@@ -2,7 +2,7 @@ package pl.ecommerce.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pl.ecommerce.data.entity.Category;
+import pl.ecommerce.data.domain.Category;
 
 import java.util.Optional;
 

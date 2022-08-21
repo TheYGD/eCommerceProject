@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.ecommerce.admin.service.CategoryService;
 import pl.ecommerce.data.dto.CategoryDto;
-import pl.ecommerce.data.entity.Category;
+import pl.ecommerce.data.domain.Category;
 
 import java.util.List;
 

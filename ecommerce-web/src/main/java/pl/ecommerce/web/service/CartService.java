@@ -3,7 +3,7 @@ package pl.ecommerce.web.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pl.ecommerce.data.entity.*;
+import pl.ecommerce.data.domain.*;
 import pl.ecommerce.exceptions.InvalidQuantityException;
 import pl.ecommerce.exceptions.ItemNotFoundException;
 import pl.ecommerce.repository.CartRepository;
@@ -138,7 +138,7 @@ public class CartService {
             return createCartCookie(response);
         }
 
-        return cartRepository.findByOwner(userCredentials.getUserAccount())
+        return cartRepository.findByOwnerId(userCredentials.getUserAccount().getId())
                 .orElseThrow( () -> {
                     log.error("Account with email %s is not associated with a cart!"
                             .formatted(userCredentials.getEmail()));
@@ -146,10 +146,19 @@ public class CartService {
                 });
     }
 
+    public Cart getCartLogged(UserCredentials userCredentials) {
+        if (userCredentials == null) {
+            log.error("UserCredentials cannot be null!");
+            throw new RuntimeException("USER_CREDENTIALS CANNOT BE NULL");
+        }
+
+        return getCart(userCredentials, null, null);
+    }
+
 
     @Transactional
     public void mergeCartsAfterLogin(UserCredentials userCredentials, Long id) {
-        Cart mainCart = getCart(userCredentials, null, null); // nulls, because user MUST be logged in
+        Cart mainCart = getCartLogged(userCredentials);
 
         cartRepository.findById(id)
                 .ifPresent( otherCart -> {

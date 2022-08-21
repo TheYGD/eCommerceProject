@@ -6,8 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.ecommerce.data.dto.ProductDto;
-import pl.ecommerce.data.entity.Category;
-import pl.ecommerce.data.entity.UserCredentials;
+import pl.ecommerce.data.domain.Category;
+import pl.ecommerce.data.domain.UserCredentials;
 import pl.ecommerce.web.service.AddProductService;
 
 import javax.validation.Valid;

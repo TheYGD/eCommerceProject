@@ -2,7 +2,7 @@ package pl.ecommerce.web.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.ecommerce.data.entity.UserCredentials;
+import pl.ecommerce.data.domain.UserCredentials;
 import pl.ecommerce.exceptions.InvalidUserCredentialsException;
 import pl.ecommerce.repository.UserCredentialsRepository;
 

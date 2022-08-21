@@ -2,7 +2,7 @@ package pl.ecommerce.admin.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.ecommerce.data.entity.BaseEntity;
+import pl.ecommerce.data.domain.BaseEntity;
 
 import javax.management.relation.Role;
 import javax.persistence.Entity;

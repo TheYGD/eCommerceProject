@@ -22,6 +22,7 @@ public class SecurityConfiguration {
 //                .loginPage("/login.html")
                 .and()
                 .authorizeRequests()
+                .antMatchers("/h2-console/**").permitAll()                              // for now
                 .mvcMatchers("/js/**", "/css/**", "/webjars/**").permitAll()
                 .mvcMatchers("/images/**").permitAll()
                 .mvcMatchers("/").permitAll()

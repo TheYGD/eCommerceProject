@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import pl.ecommerce.data.entity.*;
+import pl.ecommerce.data.domain.*;
 import pl.ecommerce.repository.*;
 
 import javax.transaction.Transactional;
@@ -62,16 +62,16 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     @Transactional
     public void bootstrap1() {
         Category category1 = new Category("Samochody", "Znajdują się tutaj samochody");
-        Product product1 = new Product("Audi1", "szybkie audi", category1, null, 1,
+        Product product1 = new Product("Audi1", "szybkie 2 audi", category1, null, 1,
                 BigDecimal.valueOf(100000), null);
         category1.getProducts().add(product1);
 
-        Product product2 = new Product("BMW1", "szybkie bmw", category1, null, 1,
+        Product product2 = new Product("BMW1", "szybkie 2 bmw", category1, null, 1,
                 BigDecimal.valueOf(120000), null);
         category1.getProducts().add(product2);
 
 
-        Product product3 = new Product("Mercedes1", "szybki mercedes", category1, null, 1,
+        Product product3 = new Product("Mercedes1", "szybki 2 mercedes", category1, null, 1,
                 BigDecimal.valueOf(150000), null);
         category1.getProducts().add(product3);
 

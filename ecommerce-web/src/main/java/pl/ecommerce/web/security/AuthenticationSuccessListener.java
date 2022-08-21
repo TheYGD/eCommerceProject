@@ -6,7 +6,7 @@ import org.springframework.security.authentication.event.AuthenticationSuccessEv
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import pl.ecommerce.data.entity.UserCredentials;
+import pl.ecommerce.data.domain.UserCredentials;
 import pl.ecommerce.web.service.CartService;
 
 import javax.servlet.http.HttpServletRequest;

@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import pl.ecommerce.data.dto.UserRegisterDto;
-import pl.ecommerce.data.entity.User;
+import pl.ecommerce.data.domain.User;
 
 @Mapper
 public interface UserMapper {

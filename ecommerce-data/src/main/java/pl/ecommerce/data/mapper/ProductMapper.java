@@ -2,7 +2,7 @@ package pl.ecommerce.data.mapper;
 
 import org.springframework.stereotype.Component;
 import pl.ecommerce.data.dto.ProductDto;
-import pl.ecommerce.data.entity.Product;
+import pl.ecommerce.data.domain.Product;
 
 import java.math.BigDecimal;
 
