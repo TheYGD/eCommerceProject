@@ -7,20 +7,21 @@
         <div class="container-md col-9">
             <ul class="list-group shadow-sm">
                 <li class="list-group-item d-flex flex-row product-in-cart" th:each="productInCart : ${cart.productList}">
-                    <a class="stretched-link product-link" th:href="@{__(${'/products/' + productInCart.product.id})__}"></a>
+                    <a class="stretched-link product-link" th:href="@{__(${'/products/' + productInCart.getProduct().id})__}"></a>
                     <div class="d-flex align-items-center justify-content-center" style="height: 12rem; width: 12rem;">
                         <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
-                             th:src="${ productInCart.product.imageId != null ? ('/images/products/' + productInCart.product.imageId) : '/images/test-img.png' }" >
+                             th:src="${ productInCart.getProduct().imageId != null ? ('/images/products/' +
+                             productInCart.getProduct().imageId) : '/images/test-img.png' }" >
                     </div>
 
                     <div class="card-body">
-                        <h4 class="card-title" th:text="${productInCart.product.name}">Product name</h4>
-                        <h4 class="display-6 product-in-cart-price" th:text="${productInCart.product.price + ' $'}">Price</h4>
+                        <h4 class="card-title" th:text="${productInCart.getProduct().name}">Product name</h4>
+                        <h4 class="display-6 product-in-cart-price" th:text="${productInCart.getProduct().price + ' $'}">Price</h4>
                     </div>
 
                     <div class="float-end d-flex align-items-center">
                         <input class="col-3 z-top me-3 product-in-cart-quantity" type="number"
-                               th:value="${productInCart.quantity}" min="1">
+                               th:value="${productInCart.getQuantity()}" min="1">
 
                         <button type="button" class="btn btn-danger py-2 px-3 z-top remove-btn">
                             <i class="fa fa-remove"></i>

@@ -2,14 +2,13 @@ package pl.ecommerce.web.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import pl.ecommerce.data.domain.*;
+import pl.ecommerce.data.dto.OrderDto;
 import pl.ecommerce.exceptions.InvalidQuantityException;
 import pl.ecommerce.exceptions.ItemNotFoundException;
-import pl.ecommerce.repository.CartRepository;
-import pl.ecommerce.repository.CartToExpireRepository;
-import pl.ecommerce.repository.ProductInCartRepository;
-import pl.ecommerce.repository.ProductRepository;
+import pl.ecommerce.repository.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +29,7 @@ public class CartService {
     private final ProductRepository productRepository;
     private final ProductInCartRepository productInCartRepository;
     private final CartToExpireRepository cartToExpireRepository;
+    private final ProductWithQuantityRepository productWithQuantityRepository;
 
 
     public void changeProductsQuantity(UserCredentials userCredentials, Long id, Integer quantity,
@@ -41,7 +41,7 @@ public class CartService {
         Cart cart = getCart(userCredentials, request, response);
         ProductInCart productInCart = getProductInCart(cart, id);
 
-        productInCart.setQuantity(quantity);
+        productInCart.getProductWithQuantity().setQuantity(quantity);
 
         productInCartRepository.save(productInCart);
     }
@@ -64,7 +64,7 @@ public class CartService {
                 .orElseThrow( () -> new ItemNotFoundException("No such product found!") );
 
         ProductInCart productInCart = cart.getProductList().stream()
-                .filter( prod -> prod.getProduct().equals(product) )
+                .filter( prod -> prod.getProductWithQuantity().getProduct().equals(product) )
                 .findFirst()
                 .orElseThrow( () -> new ItemNotFoundException("No such product in cart!") );
 
@@ -92,17 +92,19 @@ public class CartService {
     public String addProduct(Cart cart, Product product, Integer quantity) {
 
         Optional<ProductInCart> productInCartOptional = cart.getProductList().stream()
-                .filter(product1 -> product1.getProduct().equals(product))
+                .filter(product1 -> product1.getProductWithQuantity().getProduct().equals(product))
                 .findFirst();
 
         if (productInCartOptional.isPresent()) {
             ProductInCart productInCart = productInCartOptional.get();
-            productInCart.setQuantity(productInCart.getQuantity() + quantity );
+            productInCart.getProductWithQuantity().setQuantity(productInCart.getProductWithQuantity().getQuantity() + quantity );
             productInCartRepository.save(productInCart);
         }
 
         else {
-            ProductInCart productInCart = new ProductInCart(cart, product, quantity);
+            ProductWithQuantity productWithQuantity = new ProductWithQuantity(product, quantity);
+            productWithQuantity = productWithQuantityRepository.save(productWithQuantity);
+            ProductInCart productInCart = new ProductInCart(cart, productWithQuantity);
             productInCart = productInCartRepository.save(productInCart);
             cart.getProductList().add(productInCart);
             cartRepository.save(cart);
@@ -163,8 +165,9 @@ public class CartService {
         cartRepository.findById(id)
                 .ifPresent( otherCart -> {
                     otherCart.getProductList()
-                            .forEach( productInCart -> addProduct(mainCart, productInCart.getProduct(),
-                                    productInCart.getQuantity()) );
+                            .forEach( productInCart -> addProduct(mainCart,
+                                    productInCart.getProductWithQuantity().getProduct(),
+                                    productInCart.getProductWithQuantity().getQuantity()) );
 
                     productInCartRepository.deleteAll(otherCart.getProductList());
 

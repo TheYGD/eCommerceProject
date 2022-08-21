@@ -47,7 +47,7 @@ public class AddProductService {
                 .orElseThrow( () -> new ItemNotFoundException("This category does not exist!"));
         String imgName = generateImgName();
 
-        product.setUser(user);
+        product.setSeller(user);
         product.setImageId(imgName);
         product.setCategory(category);
 

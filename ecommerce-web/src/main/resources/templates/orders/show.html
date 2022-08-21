@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title=${'Order ' + order.id})}">
+
+<body>
+  <div class="container-md">
+
+    <div class="row my-4">
+
+<!--      <h1 th:text="${'Order #' + order.id}">Order #???</h1>-->
+
+        <div class="col">
+
+          <h1 class="mb-5 mt-4" th:text="${'Order #' + order.id}">Order #???</h1>
+
+          <h6>Order placed on:</h6>
+          <p th:text="${{order.dateTime}}"></p>
+
+          <h6>Payment method:</h6>
+          <p th:text="${{order.paymentOption.name}}"></p>
+        </div>
+
+      <div class="col-6 row pt-3 offset-1">
+        <h3>Address</h3>
+
+        <div class="d-flex align-items-end mt-3">
+          <div class="col">
+            <h6>Address line 1</h6>
+            <p th:text="${order.address.addressLine1}"></p>
+
+            <h6>Address line 2</h6>
+            <p th:text="${order.address.addressLine2}"></p>
+
+            <h6>City</h6>
+            <p th:text="${order.address.city}"></p>
+          </div>
+
+          <div class="col">
+            <h6>State</h6>
+            <p th:text="${order.address.state}"></p>
+
+            <h6>Postal code</h6>
+            <p th:text="${order.address.postalCode}"></p>
+
+            <h6>Country</h6>
+            <p th:text="${order.address.country}"></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <ul class="list-group shadow-sm my-5">
+      <li class="list-group-item d-flex flex-row product-in-cart" th:each="soldProduct : ${order.productList}">
+        <a class="stretched-link product-link" th:href="@{__(${'/products/' + soldProduct.getProduct().id})__}"></a>
+        <div class="col d-flex align-items-center justify-content-center" style="min-height: 12rem; min-width: 12rem; max-height: 12rem; max-width: 12rem;">
+          <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
+               th:src="${ soldProduct.getProduct().imageId != null ? ('/images/products/' +
+                   soldProduct.getProduct().imageId) : '/images/test-img.png' }" >
+        </div>
+
+        <div class="col card-body">
+          <h4 class="card-title" th:text="${soldProduct.getProduct().name}">Product name</h4>
+          <h4 class="display-6 product-in-cart-price" th:text="${soldProduct.getProduct().price + ' $'}">Price</h4>
+        </div>
+
+        <div class="col-2 d-flex align-items-center">
+          <p class="fs-4 bold me-3 product-in-cart-quantity" th:text="${soldProduct.getQuantity()}"></p>
+        </div>
+
+        <div class="col-3 d-flex align-items-center justify-content-center flex-column">
+          <p class="fs-5 bold me-3">Seller</p>
+          <p class="me-3" th:text="${soldProduct.getProduct().seller.credentials.username}"></p>
+        </div>
+      </li>
+    </ul>
+
+  </div>
+</body>
+
+<script>
+
+</script>
+
+</html>

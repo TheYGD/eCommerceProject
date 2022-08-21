@@ -61,20 +61,30 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     @Transactional
     public void bootstrap1() {
+
+        User seller1 = new User();
+        UserCredentials sellerCredentials = new UserCredentials();
+        sellerCredentials.setUsername("sprzedawca1");
+        seller1.setCredentials(sellerCredentials);
+
+        userRepository.save(seller1);
+        userCredentialsRepository.save(new UserCredentials());
+
         Category category1 = new Category("Samochody", "Znajdują się tutaj samochody");
-        Product product1 = new Product("Audi1", "szybkie 2 audi", category1, null, 1,
+        Product product1 = new Product("Audi1", "szybkie 2 audi", category1, seller1, 1,
                 BigDecimal.valueOf(100000), null);
         category1.getProducts().add(product1);
 
-        Product product2 = new Product("BMW1", "szybkie 2 bmw", category1, null, 1,
+        Product product2 = new Product("BMW1", "szybkie 2 bmw", category1, seller1, 1,
                 BigDecimal.valueOf(120000), null);
         category1.getProducts().add(product2);
 
 
-        Product product3 = new Product("Mercedes1", "szybki 2 mercedes", category1, null, 1,
+        Product product3 = new Product("Mercedes1", "szybki 2 mercedes", category1, seller1, 1,
                 BigDecimal.valueOf(150000), null);
         category1.getProducts().add(product3);
 
+//        userRepository.save(seller1);
         categoryRepository.save(category1);
         productRepository.save(product1);
         productRepository.save(product2);
