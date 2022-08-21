@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package pl.ecommerce.data.domain;
 
 import lombok.AllArgsConstructor;
@@ -19,4 +20,7 @@ public class ProductWithQuantity extends BaseEntity {
     private Product product;
 
     private Integer quantity;
+=======
+package pl.ecommerce.data.domain;public class ProductWithQuantity {
+>>>>>>> d78251f8f37aee427c19d07ddd89cfeb0e56cd04
 }

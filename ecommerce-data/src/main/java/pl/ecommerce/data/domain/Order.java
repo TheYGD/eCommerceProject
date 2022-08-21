@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package pl.ecommerce.data.domain;
 
 import lombok.Getter;
@@ -28,3 +29,7 @@ public class Order extends BaseEntity {
     private PaymentOption paymentOption;
 
 }
+=======
+package pl.ecommerce.data.domain;public class Order {
+}
+>>>>>>> d78251f8f37aee427c19d07ddd89cfeb0e56cd04

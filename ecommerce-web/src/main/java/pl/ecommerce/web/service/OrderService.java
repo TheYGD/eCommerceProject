@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package pl.ecommerce.web.service;
 
 import lombok.AllArgsConstructor;
@@ -63,4 +64,7 @@ public class OrderService {
 
         return order.getId();
     }
+=======
+package pl.ecommerce.web.service;public class OrderService {
+>>>>>>> d78251f8f37aee427c19d07ddd89cfeb0e56cd04
 }

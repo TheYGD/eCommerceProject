@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package pl.ecommerce.web.service;
 
 import lombok.AllArgsConstructor;
@@ -24,4 +25,7 @@ public class CheckoutService {
 
         return orderService.postOrder(userCredentials, orderDto);
     }
+=======
+package pl.ecommerce.web.service;public class CheckoutService {
+>>>>>>> d78251f8f37aee427c19d07ddd89cfeb0e56cd04
 }

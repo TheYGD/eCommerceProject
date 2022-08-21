@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package pl.ecommerce.data.domain;
 
 import lombok.AllArgsConstructor;
@@ -33,4 +34,7 @@ public class SoldProduct extends BaseEntity {
     public Integer getQuantity() {
         return productWithQuantity.getQuantity();
     }
+=======
+package pl.ecommerce.data.domain;public class SoldProduct {
+>>>>>>> d78251f8f37aee427c19d07ddd89cfeb0e56cd04
 }
