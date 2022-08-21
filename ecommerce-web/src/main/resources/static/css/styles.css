@@ -17,3 +17,7 @@
 .z-top {
     z-index: 2;
 }
+
+.sticky-col-under-navbar{
+    top: 6.6rem;
+}

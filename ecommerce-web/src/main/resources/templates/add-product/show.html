@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title=${'Add product'})}" >
-<!--<html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title=${title?:'Product'})}">-->
+
 <body>
     <div class="container-md">
         <h1 class="mb-5">Add product</h1>
@@ -10,7 +10,8 @@
             <div class="col">
                 <div class="form-group my-3">
                     <label for="add-product-form-name">Name</label>
-                    <input class="form-control mt-1" id="add-product-form-name" type="text" required th:field="*{name}">
+                    <input class="form-control mt-1" id="add-product-form-name" type="text" required th:field="*{name}"
+                           minlength="5" maxlength="50">
                 </div>
 
                 <!--    for now, it will be replaced by a tree    -->
@@ -23,7 +24,8 @@
 
                 <div class="form-group my-3">
                     <label for="add-product-form-description">Description</label>
-                    <textarea class="form-control mt-1" id="add-product-form-description" required th:field="*{description}">
+                    <textarea class="form-control mt-1" id="add-product-form-description" required
+                              th:field="*{description}" minlength="20" maxlength="1000">
 
                     </textarea>
                 </div>
@@ -35,7 +37,8 @@
 
                 <div class="form-group my-3">
                     <label for="add-product-form-quantity">Quantity</label>
-                    <input class="form-control mt-1" id="add-product-form-quantity" type="number" required th:field="*{quantity}">
+                    <input class="form-control mt-1" id="add-product-form-quantity" type="number" min="1" max="1000000"
+                           required th:field="*{quantity}" value="1">
                 </div>
             </div>
             <div class="col d-flex flex-column justify-content-around">

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{ fragments/layout :: layout (body=~{::body}, script=~{::script}, title='Checkout') }">
+
+<body>
+  <div class="container-md d-flex flex-row">
+
+<!--  <h1>Checkout</h1>-->
+
+    <form class="container-md row m-0 p-0" method="post" th:action="@{/checkout/order}" th:object="${orderDto}">
+
+      <div class="container-md col-9">
+        <ul class="list-group shadow-sm m-0">
+          <li class="list-group-item d-flex flex-row product-in-cart" th:each="productInCart : ${cart.productList}">
+            <a class="stretched-link product-link" th:href="@{__(${'/products/' + productInCart.product.id})__}"></a>
+            <div class="d-flex align-items-center justify-content-center" style="height: 12rem; width: 12rem;">
+              <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
+                   th:src="${ productInCart.product.imageId != null ? ('/images/products/' + productInCart.product.imageId) : '/images/test-img.png' }" >
+            </div>
+
+            <div class="card-body">
+              <h4 class="card-title" th:text="${productInCart.product.name}">Product name</h4>
+              <h4 class="display-6 product-in-cart-price" th:text="${productInCart.product.price + ' $'}">Price</h4>
+            </div>
+
+            <div class="float-end d-flex align-items-center">
+              <p class="fs-4 bold me-3 product-in-cart-quantity" th:text="${productInCart.quantity}">
+            </div>
+          </li>
+        </ul>
+
+        <div class="shadow-sm border rounded-2 my-4 mx-0 row py-4 px-3">
+
+          <h1 class="display-6 mb-4">Delivery address</h1>
+
+          <div class="col">
+            <div class="form-group">
+              <label for="addressLine1">Address line 1</label>
+              <input class="form-control mt-1 mb-3" id="addressLine1" type="text" th:field="*{addressLine1}">
+            </div>
+
+            <div class="form-group">
+              <label for="addressLine2">Address line 2</label>
+              <input class="form-control mt-1 mb-3"  id="addressLine2" type="text" th:field="*{addressLine2}">
+            </div>
+
+            <div class="form-group">
+              <label for="city">City</label>
+              <input class="form-control mt-1 mb-3"  id="city" type="text" th:field="*{city}">
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-group">
+              <label for="state">State</label>
+              <input class="form-control mt-1 mb-3"  id="state" type="text" th:field="*{state}">
+            </div>
+
+            <div class="form-group">
+              <label for="postalCode">Postal code</label>
+              <input class="form-control mt-1 mb-3"  id="postalCode" type="text" th:field="*{postalCode}">
+            </div>
+
+            <div class="form-group">
+              <label for="country">Country</label>
+              <input class="form-control mt-1 mb-3"  id="country" type="text" th:field="*{country}">
+            </div>
+          </div>
+
+          <div>
+            <input type="hidden" id="payment_option" th:field="*{paymentOption}">
+          </div>
+
+        </div>
+      </div>
+
+      <div class="col-3" style="height: 100%;">
+        <div class="sticky-top col-3 shadow-sm border rounded-2 d-flex flex-column align-items-center justify-content-center sticky-col-under-navbar"
+             style="height: 13rem; width:100%;">
+          <h2 class="">Total</h2>
+          <h2 class="display-6" id="total-sum"></h2>
+
+          <button type="submit" class="btn btn-primary mt-2 col-6">Buy</button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</body>
+
+<script>
+  $(document).ready(function() {
+    calculateTotalSum();
+  })
+
+</script>
+
+</html>

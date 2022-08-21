@@ -4,41 +4,43 @@
 <body>
     <div class="container-md d-flex flex-row">
 
-            <div class="container-md col-9">
-              <ul class="list-group shadow-sm">
-                  <li class="list-group-item d-flex flex-row product-in-cart" th:each="productInCart : ${cart.productList}">
-                      <a class="stretched-link product-link" th:href="@{__(${'/products/' + productInCart.product.id})__}"></a>
-                      <div class="d-flex align-items-center justify-content-center" style="height: 12rem; width: 12rem;">
-                          <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
-                               th:src="${ productInCart.product.imageId != null ? ('/images/products/' + productInCart.product.imageId) : '/images/test-img.png' }" >
-                      </div>
+        <div class="container-md col-9">
+            <ul class="list-group shadow-sm">
+                <li class="list-group-item d-flex flex-row product-in-cart" th:each="productInCart : ${cart.productList}">
+                    <a class="stretched-link product-link" th:href="@{__(${'/products/' + productInCart.product.id})__}"></a>
+                    <div class="d-flex align-items-center justify-content-center" style="height: 12rem; width: 12rem;">
+                        <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
+                             th:src="${ productInCart.product.imageId != null ? ('/images/products/' + productInCart.product.imageId) : '/images/test-img.png' }" >
+                    </div>
 
-                      <div class="card-body">
-                          <h4 class="card-title" th:text="${productInCart.product.name}">Product name</h4>
-                          <h4 class="display-6 product-in-cart-price" th:text="${productInCart.product.price + ' $'}">Price</h4>
-                      </div>
+                    <div class="card-body">
+                        <h4 class="card-title" th:text="${productInCart.product.name}">Product name</h4>
+                        <h4 class="display-6 product-in-cart-price" th:text="${productInCart.product.price + ' $'}">Price</h4>
+                    </div>
 
-                      <div class="float-end d-flex align-items-center">
-                          <input class="col-3 z-top me-3 product-in-cart-quantity" type="number"
-                                 th:value="${productInCart.quantity}" min="1">
+                    <div class="float-end d-flex align-items-center">
+                        <input class="col-3 z-top me-3 product-in-cart-quantity" type="number"
+                               th:value="${productInCart.quantity}" min="1">
 
-                          <button type="button" class="btn btn-danger py-2 px-3 z-top remove-btn">
-                              <i class="fa fa-remove"></i>
-                          </button>
-                      </div>
-                  </li>
-              </ul>
+                        <button type="button" class="btn btn-danger py-2 px-3 z-top remove-btn">
+                            <i class="fa fa-remove"></i>
+                        </button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+
+
+        <div class="col-3" style=" padding: 0 12px;">
+            <div class="sticky-top col-3 shadow-sm border rounded-2 d-flex flex-column align-items-center justify-content-center sticky-col-under-navbar"
+                 style="height: 13rem; width:100%;">
+                <h2 class="">Total</h2>
+                <h2 class="display-6" id="total-sum"></h2>
+
+                <a class="btn btn-primary mt-2 col-6" th:href="@{/checkout}">Checkout</a>
             </div>
-
-            <div class="container-md col border shadow-sm">
-                <div>
-                    <h2 class="">Total</h2>
-                    <h2 class="display-6" id="total-sum"></h2>
-                </div>
-                <div>
-                </div>
-
-            </div>
+        </div>
 
     </div>
 </body>
@@ -93,33 +95,6 @@
           }
 
       }
-  }
-
-  const calculateTotalSum = function() {
-      let products = $('.product-in-cart');
-      let sum = 0;
-
-      for (let product of products) {
-          let productPrice = parseFloat(product.getElementsByClassName('product-in-cart-price')[0].innerText).toFixed(2);
-          let productQuantity = product.getElementsByClassName('product-in-cart-quantity')[0].value;
-
-          if (productPrice < 1 || productQuantity < 1) {
-              sum = '???';
-              break;
-          }
-
-          sum += productPrice * productQuantity;
-      }
-
-      let sumString = sum + "";
-      if (sumString.lastIndexOf('.') == -1) {
-          sum += ".00";
-      }
-      else if (sumString.lastIndexOf('.') == sumString.length - 2) {
-          sum += "0";
-      }
-
-      $('#total-sum').text(sum + ' $');
   }
 
 </script>

@@ -42,3 +42,33 @@ const updateCartQuantity = function() {
             cartBadge.text(res.response);
         } )
 }
+
+
+const calculateTotalSum = function() {
+    let products = $('.product-in-cart');
+    let sum = 0;
+
+    for (let product of products) {
+        let productPrice = parseFloat(product.getElementsByClassName('product-in-cart-price')[0].innerText).toFixed(2);
+        // ||, to make it work both with cart and checkout
+        let productQuantity = product.getElementsByClassName('product-in-cart-quantity')[0].value ||
+            parseInt(product.getElementsByClassName('product-in-cart-quantity')[0].innerText);
+
+        if (productPrice < 0 || productQuantity < 1) {
+            sum = '???';
+            break;
+        }
+
+        sum += productPrice * productQuantity;
+    }
+
+    let sumString = sum + "";
+    if (sumString.lastIndexOf('.') == -1) {
+        sum += ".00";
+    }
+    else if (sumString.lastIndexOf('.') == sumString.length - 2) {
+        sum += "0";
+    }
+
+    $('#total-sum').text(sum + ' $');
+}
