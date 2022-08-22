@@ -30,7 +30,6 @@ public class AddProductService {
     private final String IMAGES_FOLDER_PATH = "images/products/";
 
     private final CategoryRepository categoryRepository;
-    private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
 

@@ -2,10 +2,8 @@ package pl.ecommerce.web.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import pl.ecommerce.data.domain.*;
-import pl.ecommerce.data.dto.OrderDto;
 import pl.ecommerce.exceptions.InvalidQuantityException;
 import pl.ecommerce.exceptions.ItemNotFoundException;
 import pl.ecommerce.repository.*;
@@ -86,10 +84,14 @@ public class CartService {
 
         Cart cart = getCart(userCredentials, request, response);
 
-        return addProduct(cart, productOptional.get(), quantity);
+        return addProduct(cart, productOptional.get(), quantity, userCredentials);
     }
 
-    public String addProduct(Cart cart, Product product, Integer quantity) {
+    public String addProduct(Cart cart, Product product, Integer quantity, UserCredentials userCredentials) {
+
+        if (product.getSeller().getCredentials().equals(userCredentials)) {
+            return "Cannot add your own products to cart!";
+        }
 
         Optional<ProductInCart> productInCartOptional = cart.getProductList().stream()
                 .filter(product1 -> product1.getProductWithQuantity().getProduct().equals(product))
@@ -167,7 +169,7 @@ public class CartService {
                     otherCart.getProductList()
                             .forEach( productInCart -> addProduct(mainCart,
                                     productInCart.getProductWithQuantity().getProduct(),
-                                    productInCart.getProductWithQuantity().getQuantity()) );
+                                    productInCart.getProductWithQuantity().getQuantity(), userCredentials) );
 
                     productInCartRepository.deleteAll(otherCart.getProductList());
 
@@ -187,5 +189,9 @@ public class CartService {
         response.addCookie(cartCookie);
 
         return cart;
+    }
+
+    public boolean isCartEmpty(Cart cart) {
+        return cart.getProductList().size() == 0;
     }
 }

@@ -29,6 +29,7 @@ public class SecurityConfiguration {
                 .mvcMatchers("/register").permitAll()
                 .mvcMatchers("/cart/**").permitAll()
                 .mvcMatchers("/products/**").permitAll()
+                .antMatchers("/sellers/**").permitAll()
 //                .antMatchers("/h2-console/**").permitAll()
 //                .antMatchers("/login*").permitAll()
                 .anyRequest().authenticated();

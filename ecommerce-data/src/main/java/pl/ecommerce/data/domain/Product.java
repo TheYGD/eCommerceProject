@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 @Entity(name = "products")
@@ -29,4 +30,9 @@ public class Product extends BaseEntity {
     private int quantity;
     private BigDecimal price;
     private String imageId;
+
+
+    public String getDescription() {
+        return "<p>" + description.replaceAll("\n", "</p> <br> <p>");
+    }
 }

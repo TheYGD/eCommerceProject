@@ -2,7 +2,7 @@
 <html lang="en" th:replace="~{ fragments/layout :: layout (body=~{::body}, script=~{::script}, title=${title?:'Product'}) }">
 
 <body>
-  <div class="container-md">
+  <div class="container-lg">
     <div class="card d-flex flex-row shadow-sm hover-dark m-1" th:each="product : ${productList}">
       <a class="stretched-link" th:href="@{__(${'/products/' + product.id})__}"></a>
       <div class="d-flex align-items-center justify-content-center" style="height: 12rem; width: 12rem;">
@@ -16,9 +16,9 @@
       </div>
 
       <div class="float-end d-flex align-items-center">
-        <input class="col-3 z-top me-3" type="number" value="1">
+        <input class="col-3 z-top me-3" type="number" min="1" value="1">
 
-        <button type="button" class="btn btn-primary py-2 z-top add-to-cart-btn">Dodaj do koszyka</button>
+        <button type="button" class="btn btn-primary py-2 z-top add-to-cart-btn">Add to cart</button>
       </div>
 
     </div>

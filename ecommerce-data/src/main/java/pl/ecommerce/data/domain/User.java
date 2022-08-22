@@ -7,10 +7,12 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
 @Setter
+@Table(name="users")
 public class User extends BaseEntity implements Serializable {
 
     private String firstName;
@@ -37,4 +39,17 @@ public class User extends BaseEntity implements Serializable {
     private List<Address> shippingAddressList;
     private String imageId;
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(credentials, user.credentials);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(credentials);
+    }
 }

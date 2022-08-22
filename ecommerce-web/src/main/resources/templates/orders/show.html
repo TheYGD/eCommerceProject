@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
 <html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title=${'Order ' + order.id})}">
 
 <body>
-  <div class="container-md">
+  <div class="container-lg">
 
     <div class="row my-4">
-
-<!--      <h1 th:text="${'Order #' + order.id}">Order #???</h1>-->
 
         <div class="col">
 
@@ -28,8 +25,8 @@
             <h6>Address line 1</h6>
             <p th:text="${order.address.addressLine1}"></p>
 
-            <h6>Address line 2</h6>
-            <p th:text="${order.address.addressLine2}"></p>
+            <h6 th:if="${order.address.addressLine2 != ''}" >Address line 2</h6>
+            <p th:if="${order.address.addressLine2 != ''}" th:text="${order.address.addressLine2}"></p>
 
             <h6>City</h6>
             <p th:text="${order.address.city}"></p>
@@ -51,28 +48,31 @@
     </div>
 
     <ul class="list-group shadow-sm my-5">
-      <li class="list-group-item d-flex flex-row product-in-cart" th:each="soldProduct : ${order.productList}">
-        <a class="stretched-link product-link" th:href="@{__(${'/products/' + soldProduct.getProduct().id})__}"></a>
-        <div class="col d-flex align-items-center justify-content-center" style="min-height: 12rem; min-width: 12rem; max-height: 12rem; max-width: 12rem;">
-          <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
-               th:src="${ soldProduct.getProduct().imageId != null ? ('/images/products/' +
-                   soldProduct.getProduct().imageId) : '/images/test-img.png' }" >
-        </div>
+      <th:block th:each="productsGroup : ${order.productsGroupList}">
+        <li class="list-group-item d-flex flex-row product-in-cart hover-dark" th:each="soldProduct : ${productsGroup.soldProductList}">
+          <a class="stretched-link product-link" th:href="@{__(${'/products/' + soldProduct.product.id})__}"></a>
+          <div class="col d-flex align-items-center justify-content-center" style="min-height: 12rem; min-width: 12rem; max-height: 12rem; max-width: 12rem;">
+            <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
+                 th:src="${ soldProduct.product.imageId != null ? ('/images/products/' +
+                     soldProduct.product.imageId) : '/images/test-img.png' }" >
+          </div>
 
-        <div class="col card-body">
-          <h4 class="card-title" th:text="${soldProduct.getProduct().name}">Product name</h4>
-          <h4 class="display-6 product-in-cart-price" th:text="${soldProduct.getProduct().price + ' $'}">Price</h4>
-        </div>
+          <div class="col card-body">
+            <h4 class="card-title" th:text="${soldProduct.product.name}">Product name</h4>
+            <h4 class="display-6 product-in-cart-price" th:text="${soldProduct.product.price + ' $'}">Price</h4>
+          </div>
 
-        <div class="col-2 d-flex align-items-center">
-          <p class="fs-4 bold me-3 product-in-cart-quantity" th:text="${soldProduct.getQuantity()}"></p>
-        </div>
+          <div class="col-2 d-flex align-items-center justify-content-center">
+            <p class="fs-4 bold me-3 product-in-cart-quantity" th:text="${soldProduct.quantity}"></p>
+          </div>
 
-        <div class="col-3 d-flex align-items-center justify-content-center flex-column">
-          <p class="fs-5 bold me-3">Seller</p>
-          <p class="me-3" th:text="${soldProduct.getProduct().seller.credentials.username}"></p>
-        </div>
-      </li>
+          <div class="col-3 d-flex align-items-center justify-content-center flex-column">
+            <p class="fs-5 bold me-3">Seller</p>
+            <a class="me-3 z-top text-decoration-none" th:text="${soldProduct.product.seller.credentials.username}"
+               th:href="@{__${'/sellers/' + soldProduct.product.seller.id}__}"></a>
+          </div>
+        </li>
+      </th:block>
     </ul>
 
   </div>
@@ -82,14 +82,4 @@
 
 </script>
 
-=======
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
->>>>>>> d78251f8f37aee427c19d07ddd89cfeb0e56cd04
 </html>

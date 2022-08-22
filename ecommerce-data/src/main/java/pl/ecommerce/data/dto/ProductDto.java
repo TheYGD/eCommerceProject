@@ -16,11 +16,11 @@ import java.io.File;
 public class ProductDto {
 
     @NotBlank
-    @Pattern(regexp = ".{5,50}")
+    @Size(min=5, max=50)
     private String name;
 
     @NotBlank
-    @Pattern(regexp = ".{20,1000}")
+    @Size(min=20, max=20000)
     private String description;
 
     @NotBlank

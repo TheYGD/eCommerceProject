@@ -32,10 +32,13 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        bootstrap1();
-        createUser();
 
-        log.debug("Bootstrapping done!");
+        if (userRepository.count() == 0) {
+            bootstrap1();
+            createUser();
+
+            log.debug("Bootstrapping done!");
+        }
     }
 
 

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package pl.ecommerce.web.service;
 
 import lombok.AllArgsConstructor;
@@ -14,6 +13,8 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -23,6 +24,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CartService cartService;
     private final SoldProductRepository soldProductRepository;
+    private final SoldProductsGroupRepository soldProductsGroupRepository;
     private final AddressRepository addressRepository;
     private final ProductInCartRepository productInCartRepository;
     private final CartRepository cartRepository;
@@ -49,12 +51,18 @@ public class OrderService {
         order.setDateTime(LocalDateTime.now());
         order.setAddress( addressRepository.save(order.getAddress()) );
 
-        List<SoldProduct> products = cart.getProductList().stream()
+        List<SoldProductsGroup> soldProductsGroupList = cart.getProductList().stream()
                 .map( productInCart -> soldProductRepository.save(
-                        new SoldProduct(productInCart.getProductWithQuantity(), order)))
+                        new SoldProduct(productInCart.getProductWithQuantity().getProduct(),
+                                productInCart.getProductWithQuantity().getQuantity())))
+                .collect(Collectors.groupingBy( soldProduct -> soldProduct.getProduct().getSeller() ))
+                .values().stream()
+                .map( soldProducts -> new SoldProductsGroup(order, soldProducts.get(0).getProduct().getSeller(), soldProducts) )
+
                 .toList();
 
-        order.setProductList( products );
+        soldProductsGroupRepository.saveAll(soldProductsGroupList);
+        order.setProductsGroupList( soldProductsGroupList );
         orderRepository.save(order);
 
         productInCartRepository.deleteAll(cart.getProductList());
@@ -64,7 +72,4 @@ public class OrderService {
 
         return order.getId();
     }
-=======
-package pl.ecommerce.web.service;public class OrderService {
->>>>>>> d78251f8f37aee427c19d07ddd89cfeb0e56cd04
 }

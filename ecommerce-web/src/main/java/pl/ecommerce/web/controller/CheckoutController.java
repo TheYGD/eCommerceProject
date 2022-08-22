@@ -28,6 +28,10 @@ public class CheckoutController {
 
         Cart cart = cartService.getCartLogged(userCredentials);
 
+        if (cartService.isCartEmpty(cart)) {
+            return "redirect:/";
+        }
+
         model.addAttribute("cart", cart);
         model.addAttribute("orderDto", new OrderDto());
 

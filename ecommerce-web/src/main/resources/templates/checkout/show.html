@@ -2,15 +2,15 @@
 <html lang="en" th:replace="~{ fragments/layout :: layout (body=~{::body}, script=~{::script}, title='Checkout') }">
 
 <body>
-  <div class="container-md d-flex flex-row">
+  <div class="container-lg d-flex flex-row">
 
 <!--  <h1>Checkout</h1>-->
 
-    <form class="container-md row m-0 p-0" method="post" th:action="@{/checkout}" th:object="${orderDto}">
+    <form class="container-lg row m-0 p-0" method="post" th:action="@{/checkout}" th:object="${orderDto}">
 
-      <div class="container-md col-9">
+      <div class="container-lg col-9">
         <ul class="list-group shadow-sm m-0">
-          <li class="list-group-item d-flex flex-row product-in-cart" th:each="productInCart : ${cart.productList}">
+          <li class="list-group-item d-flex flex-row product-in-cart hover-dark" th:each="productInCart : ${cart.productList}">
             <a class="stretched-link product-link" th:href="@{__(${'/products/' + productInCart.getProduct().id})__}"></a>
             <div class="d-flex align-items-center justify-content-center" style="height: 12rem; width: 12rem;">
               <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
@@ -97,7 +97,6 @@
   $(document).ready(function() {
     calculateTotalSum();
   })
-
 </script>
 
 </html>

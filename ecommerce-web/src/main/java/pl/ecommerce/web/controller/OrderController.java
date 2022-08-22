@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package pl.ecommerce.web.controller;
 
 import lombok.AllArgsConstructor;
@@ -26,7 +25,4 @@ public class OrderController {
 
         return "orders/show";
     }
-=======
-package pl.ecommerce.web.controller;public class OrderController {
->>>>>>> d78251f8f37aee427c19d07ddd89cfeb0e56cd04
 }

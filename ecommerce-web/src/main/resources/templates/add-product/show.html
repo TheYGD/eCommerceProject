@@ -2,7 +2,7 @@
 <html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title=${'Add product'})}" >
 
 <body>
-    <div class="container-md">
+    <div class="container-lg">
         <h1 class="mb-5">Add product</h1>
 
         <form class="border shadow p-4 rounded-2 my-4 row" method="post" th:action="@{/add-product/}"
@@ -25,7 +25,7 @@
                 <div class="form-group my-3">
                     <label for="add-product-form-description">Description</label>
                     <textarea class="form-control mt-1" id="add-product-form-description" required
-                              th:field="*{description}" minlength="20" maxlength="1000">
+                              th:field="*{description}" minlength="20" maxlength="20000">
 
                     </textarea>
                 </div>

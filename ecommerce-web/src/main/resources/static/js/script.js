@@ -59,10 +59,11 @@ const calculateTotalSum = function() {
             break;
         }
 
-        sum += productPrice * productQuantity;
+        sum += (productPrice * productQuantity);
     }
 
-    let sumString = sum + "";
+    let sumString = String(sum.toFixed(2)) + "";
+
     if (sumString.lastIndexOf('.') == -1) {
         sum += ".00";
     }
@@ -70,5 +71,5 @@ const calculateTotalSum = function() {
         sum += "0";
     }
 
-    $('#total-sum').text(sum + ' $');
+    $('#total-sum').text(sumString + ' $');
 }

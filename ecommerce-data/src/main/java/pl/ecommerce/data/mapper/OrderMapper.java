@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package pl.ecommerce.data.mapper;
 
 import org.mapstruct.Mapper;
@@ -20,7 +19,4 @@ public interface OrderMapper {
     @Mapping(source = "postalCode", target="address.postalCode")
     @Mapping(source = "country", target="address.country")
     Order DtoToEntity(OrderDto orderDto);
-=======
-package pl.ecommerce.data.mapper;public class OrderMapper {
->>>>>>> d78251f8f37aee427c19d07ddd89cfeb0e56cd04
 }
