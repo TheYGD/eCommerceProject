@@ -15,7 +15,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Product save(Product product);
 
-    boolean existsByImageId(String id);
+    boolean existsByImage(String image);
 
 
     List<Product> findAll();

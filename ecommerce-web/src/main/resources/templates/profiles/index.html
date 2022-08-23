@@ -5,9 +5,13 @@
     <div class="container-lg">
         <h1>Profile page</h1>
 
-        <a class="btn btn-primary m-4" th:href="@{/add-product}">Add Product</a>
+        <a class="btn btn-primary m-4" th:href="@{/products/add}">Add Product</a>
 
-        <a class="btn btn-primary m-4" th:href="@{/profile/sold}">See sold products</a>
+        <a class="btn btn-primary m-4" th:href="@{/profile/your-products}">Your product</a>
+
+        <a class="btn btn-primary m-4" th:href="@{/profile/sold}">Sold products</a>
+
+        <a class="btn btn-primary m-4" th:href="@{/profile/ordered}">Your orders</a>
     </div>
 </body>
 

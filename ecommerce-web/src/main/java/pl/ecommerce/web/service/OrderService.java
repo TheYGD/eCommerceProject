@@ -53,7 +53,7 @@ public class OrderService {
 
         List<SoldProductsGroup> soldProductsGroupList = cart.getProductList().stream()
                 .map( productInCart -> soldProductRepository.save(
-                        new SoldProduct(productInCart.getProductWithQuantity().getProduct(),
+                        new SoldProduct( new EternalProduct(productInCart.getProductWithQuantity().getProduct()),
                                 productInCart.getProductWithQuantity().getQuantity())))
                 .collect(Collectors.groupingBy( soldProduct -> soldProduct.getProduct().getSeller() ))
                 .values().stream()

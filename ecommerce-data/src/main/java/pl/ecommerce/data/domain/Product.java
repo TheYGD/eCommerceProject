@@ -1,19 +1,18 @@
 package pl.ecommerce.data.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity(name = "products")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Product extends BaseEntity {
 
     private String name;
@@ -29,10 +28,25 @@ public class Product extends BaseEntity {
 
     private int quantity;
     private BigDecimal price;
-    private String imageId;
+
+    @Column(name = "image_id")
+    private String image;
 
 
-    public String getDescription() {
-        return "<p>" + description.replaceAll("\n", "</p> <br> <p>");
+    public String getStructuredDescription() {
+        return "<p>" + description.replaceAll("\n", "</p> <br> <p>") + "</p>";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return getId() == product.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

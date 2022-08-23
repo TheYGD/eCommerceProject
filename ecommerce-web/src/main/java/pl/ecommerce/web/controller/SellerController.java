@@ -10,7 +10,6 @@ import pl.ecommerce.data.domain.Product;
 import pl.ecommerce.data.domain.User;
 import pl.ecommerce.web.service.SellerService;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Controller

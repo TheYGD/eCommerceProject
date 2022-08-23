@@ -7,16 +7,16 @@
         <div class="d-flex p-5">
             <div class=" col-3 d-flex align-items-center justify-content-center shadow-sm border rounded-2 me-5" style="height: 30rem; width: 30rem;">
                 <img src="/images/test-img2.png" alt="image.png" style="max-height: 29rem; max-width: 29rem;"
-                     th:src="${ product.imageId != null ? ('/images/products/' + product.imageId) : '/images/test-img.png' }" >
+                     th:src="${ product.image != null ? ('/images/products/' + product.image) : '/images/no-img.png' }" >
             </div>
 
 
-            <div class="col d-flex align-items-center justify-content-center ms-5">
+            <div class="col d-flex align-items-center ms-5 w-100">
                 <div class="d-flex flex-column">
                     <h1 class="display-1" th:text="${product.name}">Product name</h1>
                     <h4 class="lead fs-3" th:text="${product.category.name}">Category name</h4>
 
-                    <div class="float-end d-flex align-items-center mt-5">
+                    <div class="d-flex align-items-center mt-5">
                         <input class="col-3 z-top me-3" type="number" min="1" value="1">
 
                         <button type="button" class="btn btn-primary py-2 z-top add-to-cart-btn">Add to cart</button>
@@ -27,14 +27,9 @@
         </div>
 
         <div class="container-md px-5 pb-5 ">
-
-            <p>
-                adasohiusafjsadfuigasfyiilsagfuslahfosuahfosphfsaf<br>safhusalfh;asofhasjf;ioasifjsadfhosad
-            </p>
-
             <a class="text-decoration-none" th:text="${'Seller: ' + product.seller.credentials.username}"
                th:href="@{__(${'/sellers/' + product.seller.id})__}">Product description</a>
-            <p class="fs-5 mt-4" th:utext="${product.description}">Product description</p>
+            <p class="fs-5 mt-4" th:utext="${product.getStructuredDescription()}">Product description</p>
         </div>
 
     </div>

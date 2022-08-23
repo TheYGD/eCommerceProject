@@ -2,9 +2,9 @@ package pl.ecommerce.web.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.ecommerce.data.domain.SoldProductsGroup;
-import pl.ecommerce.data.domain.User;
-import pl.ecommerce.data.domain.UserCredentials;
+import pl.ecommerce.data.domain.*;
+import pl.ecommerce.repository.OrderRepository;
+import pl.ecommerce.repository.ProductRepository;
 import pl.ecommerce.repository.SoldProductsGroupRepository;
 
 import java.util.List;
@@ -14,9 +14,19 @@ import java.util.List;
 public class ProfileService {
 
     private final SoldProductsGroupRepository soldProductsGroupRepository;
+    private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
 
 
     public List<SoldProductsGroup> getSoldProductsGroupList(UserCredentials userCredentials) {
         return soldProductsGroupRepository.findAllBySeller(userCredentials.getUserAccount());
+    }
+
+    public List<Order> getOrderedProducts(UserCredentials userCredentials) {
+        return orderRepository.findAllByBuyer(userCredentials.getUserAccount());
+    }
+
+    public List<Product> getOwnProducts(UserCredentials userCredentials) {
+        return productRepository.findAllBySeller(userCredentials.getUserAccount());
     }
 }

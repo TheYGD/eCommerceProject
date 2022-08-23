@@ -51,11 +51,13 @@
         </li>
 
         <li class="list-group-item d-flex flex-row product-in-cart hover-dark" th:each="soldProduct : ${soldProductsGroup.soldProductList}">
-          <a class="stretched-link product-link" th:href="@{__(${'/products/' + soldProduct.product.id})__}"></a>
+          <a class="stretched-link product-link" th:href="@{__(${'/products/' + (
+                    soldProduct.getProduct()?.product != null ? soldProduct.getProduct().product.id : ('archive/' +
+                    soldProduct.getProduct()?.id)) })__}"></a>
           <div class="col d-flex align-items-center justify-content-center" style="min-height: 12rem; min-width: 12rem; max-height: 12rem; max-width: 12rem;">
             <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
-                 th:src="${ soldProduct.product.imageId != null ? ('/images/products/' +
-                     soldProduct.product.imageId) : '/images/test-img.png' }" >
+                 th:src="${ soldProduct.product.image != null ? ('/images/products/' +
+                     soldProduct.product.image) : '/images/no-img.png' }" >
           </div>
 
           <div class="col card-body">

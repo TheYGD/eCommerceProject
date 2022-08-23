@@ -15,6 +15,8 @@ import java.io.File;
 @AllArgsConstructor
 public class ProductDto {
 
+
+
     @NotBlank
     @Size(min=5, max=50)
     private String name;

@@ -45,4 +45,13 @@ public class ProductService {
         return cartService.addProductToCart(userCredentials, productId, quantity, request, response);
     }
 
+
+    public Product getProduct(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow( () -> {
+                    String message = "Could not find product with id: %d!".formatted(id);
+                    log.error(message);
+                    return new ItemNotFoundException(message);
+                });
+    }
 }

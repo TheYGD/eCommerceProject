@@ -28,11 +28,11 @@ public class UserRegisterDto {
 
 
     @NotNull
-    @Pattern(regexp = "\\w{2,30}")
+    @Pattern(regexp = ".{2,30}")
     private String firstName;
 
     @NotNull
-    @Pattern(regexp = "\\w{2,30}")
+    @Pattern(regexp = ".{2,30}")
     private String lastName;
 
     @NotNull

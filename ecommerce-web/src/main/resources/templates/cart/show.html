@@ -14,8 +14,8 @@
                     <a class="stretched-link product-link" th:href="@{__(${'/products/' + productInCart.getProduct().id})__}"></a>
                     <div class="d-flex align-items-center justify-content-center" style="height: 12rem; width: 12rem;">
                         <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
-                             th:src="${ productInCart.getProduct().imageId != null ? ('/images/products/' +
-                             productInCart.getProduct().imageId) : '/images/test-img.png' }" >
+                             th:src="${ productInCart.getProduct().image != null ? ('/images/products/' +
+                             productInCart.getProduct().image) : '/images/no-img.png' }" >
                     </div>
 
                     <div class="card-body">
