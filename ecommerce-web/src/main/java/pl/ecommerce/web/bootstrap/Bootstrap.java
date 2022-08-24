@@ -7,6 +7,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import pl.ecommerce.admin.domain.Account;
+import pl.ecommerce.admin.domain.Role;
+import pl.ecommerce.admin.repository.AccountRepository;
 import pl.ecommerce.data.domain.*;
 import pl.ecommerce.repository.*;
 
@@ -26,6 +29,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private final UserRepository userRepository;
     private final UserCredentialsRepository userCredentialsRepository;
     private final CartRepository cartRepository;
+    private final AccountRepository accountRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -36,10 +40,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         if (userRepository.count() == 0) {
             bootstrap1();
             createUser();
+            createAdmin();
 
             log.debug("Bootstrapping done!");
         }
     }
+
 
 
     @Transactional
@@ -75,22 +81,33 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
         Category category1 = new Category("Samochody", "Znajdują się tutaj samochody");
         Product product1 = new Product("Audi1", "szybkie 2 audi", category1, seller1, 1,
-                BigDecimal.valueOf(100000), null);
-        category1.getProducts().add(product1);
+                BigDecimal.valueOf(100000), null, false);
 
         Product product2 = new Product("BMW1", "szybkie 2 bmw", category1, seller1, 1,
-                BigDecimal.valueOf(120000), null);
-        category1.getProducts().add(product2);
+                BigDecimal.valueOf(120000), null, false);
 
 
         Product product3 = new Product("Mercedes1", "szybki 2 mercedes", category1, seller1, 1,
-                BigDecimal.valueOf(150000), null);
-        category1.getProducts().add(product3);
+                BigDecimal.valueOf(150000), null, false);
 
-//        userRepository.save(seller1);
+
         categoryRepository.save(category1);
         productRepository.save(product1);
         productRepository.save(product2);
         productRepository.save(product3);
+    }
+
+
+    private void createAdmin() {
+        Account account = new Account();
+
+        account.setUsername("admin");
+        account.setPassword( passwordEncoder.encode("admin") );
+        account.setRole(Role.ADMIN);
+        account.setFirstName("Artur");
+        account.setFirstName("Arturowicz");
+        account.setLocked(false);
+
+        accountRepository.save(account);
     }
 }

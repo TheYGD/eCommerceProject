@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.ecommerce.admin.service.CategoryService;
+import pl.ecommerce.admin.service.AdminCategoryService;
 import pl.ecommerce.data.dto.CategoryDto;
 import pl.ecommerce.data.domain.Category;
 
@@ -16,9 +16,9 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin/categories")
 @AllArgsConstructor
-public class CategoryController {
+public class AdminCategoryController {
 
-    private CategoryService categoryService;
+    private AdminCategoryService categoryService;
 
 
     @GetMapping("")
@@ -26,12 +26,12 @@ public class CategoryController {
         List<Category> categoryList = categoryService.findAll();
         model.addAttribute("categoryList", categoryList);
 
-        return "category/list";
+        return "categories/list";
     }
 
     @GetMapping("/new")
     public String addCategory(@ModelAttribute("category") CategoryDto categoryDTO) {
-        return "category/add";
+        return "categories/add";
     }
 
     @PostMapping("/new")

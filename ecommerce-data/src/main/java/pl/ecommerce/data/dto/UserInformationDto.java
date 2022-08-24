@@ -1,6 +1,7 @@
 package pl.ecommerce.data.dto;
 
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,7 +12,8 @@ import javax.validation.constraints.Pattern;
 
 @Getter
 @Setter
-public class UserRegisterDto {
+@Builder
+public class UserInformationDto {
 
     @NotNull
     @Email

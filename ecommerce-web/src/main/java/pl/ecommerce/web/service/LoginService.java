@@ -5,7 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import pl.ecommerce.data.dto.UserRegisterDto;
+import pl.ecommerce.data.dto.UserInformationDto;
 import pl.ecommerce.data.domain.Cart;
 import pl.ecommerce.data.domain.User;
 import pl.ecommerce.data.domain.UserCredentials;
@@ -26,20 +26,20 @@ public class LoginService {
     private final PasswordEncoder passwordEncoder;
 
 
-    public void register(UserRegisterDto userRegisterDto, BindingResult bindingResult) {
+    public void register(UserInformationDto userInformationDto, BindingResult bindingResult) {
 
-        if (isUsernameTaken(userRegisterDto.getUsername())) {
+        if (isUsernameTaken(userInformationDto.getUsername())) {
             bindingResult.addError(
                     new ObjectError("username", "This username already exists."));
         }
 
-        if (isEmailTaken(userRegisterDto.getEmail())) {
+        if (isEmailTaken(userInformationDto.getEmail())) {
             bindingResult.addError(
                     new ObjectError("email", "This email is already taken."));
         }
 
         if (!bindingResult.hasErrors()) {
-            saveUser(userRegisterDto);
+            saveUser(userInformationDto);
         }
     }
 
@@ -52,9 +52,9 @@ public class LoginService {
     }
 
     @Transactional
-    public void saveUser(UserRegisterDto userRegisterDto) {
-        userRegisterDto.setPassword( passwordEncoder.encode(userRegisterDto.getPassword()) );
-        User user = UserMapper.INSTANCE.dtoToEntity( userRegisterDto );
+    public void saveUser(UserInformationDto userInformationDto) {
+        userInformationDto.setPassword( passwordEncoder.encode(userInformationDto.getPassword()) );
+        User user = UserMapper.INSTANCE.dtoToEntity(userInformationDto);
 
         UserCredentials userCredentials = user.getCredentials();
         userCredentials.setUserAccount(user);

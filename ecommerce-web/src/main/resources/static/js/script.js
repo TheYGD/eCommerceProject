@@ -7,6 +7,15 @@ async function postData(url, data = {}) {
     return makeRequest('POST', url, data);
 }
 
+async function putFormData(url, data) {
+    const response = await fetch(url, {
+        method: 'PUT',
+        body: data
+    });
+
+    return response.json();
+}
+
 async function getData(url) {
     const response = await fetch(url);
 
@@ -18,8 +27,6 @@ async function makeRequest(method, url, data) {
         method: method,
         body: JSON.stringify(data)
     });
-
-    console.log(document.cookie);
 
     return response.json();
 }
@@ -72,4 +79,41 @@ const calculateTotalSum = function() {
     }
 
     $('#total-sum').text(sumString + ' $');
+}
+
+
+/**
+ * method for enabling button in pagination divs
+ */
+function initPageChangeDiv() {
+    let pageChangeDiv = $('#page-change-div')[0];
+    let pageChangeInput = pageChangeDiv.children[1];
+
+    let url = new URL(location.href);
+    let pageNr = parseInt(url.searchParams.get('pageNr')) || 1;
+    let sortOption = parseInt(url.searchParams.get('sortOption'));
+    let newUrl = url.origin + url.pathname + (!isNaN(sortOption) ? ('?sortOption=' + sortOption + '&') : '?') + 'pageNr=';
+    let lastPage = parseInt(pageChangeDiv.children[2].innerText.substring(2));
+
+    if (pageChangeInput.value != '1') {
+        pageChangeDiv.children[0].onclick = function() {
+            window.location.href = newUrl + (pageNr - 1);
+        }
+
+        pageChangeDiv.children[0].style.cursor = 'pointer';
+    }
+
+    pageChangeDiv.children[1].onchange = function() {
+        let page = parseInt(pageChangeDiv.children[1].value);
+        if (page > 0 && page <= lastPage) {
+            window.location.href = newUrl + page;
+        }
+    }
+
+    if (lastPage != pageNr) {
+        pageChangeDiv.children[3].onclick = function() {
+            window.location.href = newUrl + String(pageNr + 1);
+        }
+        pageChangeDiv.children[3].style.cursor = 'pointer';
+    }
 }

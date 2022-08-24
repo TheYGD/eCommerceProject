@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{ fragments/layout :: layout (body=~{::body}, script=~{::script}, title='Settings')}">
+
+<body>
+    <div class="container-lg">
+        <div>
+            <h1 class="mb-5">Profile</h1>
+
+            <div class="row mb-5">
+
+                <div class="col-3 container-lg ">
+                    <div>
+                        <ul class="list-group shadow-sm rounded-2 mb-3">
+                            <li class="list-group-item hover-dark" id="profile-profile-button">Profile</li>
+                        </ul>
+
+                        <ul class="list-group shadow-sm rounded-2 mb-3">
+                            <a href="/profile/your-products" class="list-group-item hover-dark">Your products</a>
+                            <a href="/products/add" class="list-group-item hover-dark">Add Product</a>
+                            <a href="/profile/sold" class="list-group-item hover-dark">Sold products</a>
+                            <a href="/profile/ordered" class="list-group-item hover-dark">Orders</a>
+                        </ul>
+
+                        <ul class="list-group shadow-sm rounded-2">
+                            <li class="list-group-item hover-dark" id="profile-information-button">Account's information</li>
+                            <li class="list-group-item hover-dark" id="profile-password-button">Change password</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-9 container-lg m-0 border shadow-sm rounded-2 p-5 pb-4 mb-5">
+
+                    <div id="profile-profile-div">
+                        <h2 class="mb-4">Profile</h2>
+
+                        <p>Your profile information</p>
+                    </div>
+
+                    <div id="profile-information-div" style="display: none;">
+                        <form action="/profile/user-information/change" method="put" id="profile-information-form" class="row">
+                            <h2 class="mb-4">Account's information</h2>
+
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input class="form-control mt-1 mb-3" type="text" id="username" th:min="6" th:max="20" name="username">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input class="form-control mt-1 mb-3" type="email" id="email" name="email">
+                                </div>
+                            </div>
+
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="first-name">First name</label>
+                                    <input class="form-control mt-1 mb-3" type="text" id="first-name" th:min="2" th:max="30" name="firstName">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="last-name">Last name</label>
+                                    <input class="form-control mt-1 mb-3" type="text" id="last-name" th:min="2" th:max="30" name="lastName">
+                                </div>
+                            </div>
+
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="date-of-birth">Date of birth</label>
+                                    <input class="form-control mt-1 mb-3" type="date" id="date-of-birth" name="dateOfBirth">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="phone-number">Phone number</label>
+                                    <input class="form-control mt-1 mb-3" type="tel" id="phone-number" name="phoneNumber">
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary col-2 offset-10 mt-3 mb-1" id="form-information-button" type="button" disabled>Change</button>
+                        </form>
+                    </div>
+
+                    <div id="profile-password-div" style="display: none;">
+                        <form action="/profile/password/change" method="put" id="profile-password-form" class="row">
+                            <h2 class="mb-4">Change Password</h2>
+
+                            <div class="col-4 offset-4">
+                                <div class="form-group">
+                                    <label for="oldPassword">Old password</label>
+                                    <input class="form-control mt-1 mb-3" type="password" id="oldPassword" th:min="8" th:max="50" name="oldPassword">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="newPassword">New password</label>
+                                    <input class="form-control mt-1 mb-3" type="password" id="newPassword" th:min="8" th:max="50" name="newPassword">
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary col-2 offset-10 mt-3 mb-1" id="form-password-button" type="button">Change</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    $(document).ready( function() {
+        initSideButtons();
+    });
+
+    function initInformationForm() {
+        let url =  '/profile/user-information';
+
+        getData(url).then(response => {
+                    $('#username')[0].value = response.username;
+                    $('#email')[0].value = response.email;
+                    $('#first-name')[0].value = response.firstName;
+                    $('#last-name')[0].value = response.lastName;
+                    $('#date-of-birth')[0].value = response.dateOfBirth;
+                    $('#phone-number')[0].value = response.phoneNumber;
+                });
+    }
+
+    function initInputsOnChange() {
+        let inputs = $('#profile-information-form input');
+
+        for (let input of inputs) {
+            input.onchange = function () {
+                let submitButton = $('#form-information-button')[0];
+                submitButton.disabled = false;
+            }
+        }
+    }
+
+    function initSideButtons() {
+        let profileButtons = [ $('#profile-profile-button')[0], $('#profile-information-button')[0], $('#profile-password-button')[0] ];
+        let profileDivs = [ $('#profile-profile-div')[0], $('#profile-information-div')[0], $('#profile-password-div')[0] ];
+
+        for (let i = 0 ; i < profileButtons.length; i++) {
+            profileButtons[i].onclick = function() {
+                profileDivs.forEach( div => div.style.display = 'none' )
+
+                let div = profileDivs[i];
+                div.style.display = 'block';
+            }
+        }
+
+        const decoratedFunctionInformation = $('#profile-information-button')[0].onclick;
+        $('#profile-information-button')[0].onclick = function() {
+            if ( $('#username')[0].value == '' ) {
+                initInformationForm();
+            }
+
+            initInputsOnChange();
+            initInformationFormButton();
+            decoratedFunctionInformation();
+        }
+
+        const decoratedFunctionPassword = $('#profile-password-button')[0].onclick;
+        $('#profile-password-button')[0].onclick = function() {
+            initPasswordFormButton();
+            decoratedFunctionPassword();
+        }
+    }
+
+    function initInformationFormButton() {
+        let submitButton = $('#form-information-button')[0];
+
+        submitButton.onclick = function() {
+
+            let form = $('#profile-information-form')[0];
+
+            putFormData( form.action, new FormData(form) )
+                .then( response => {
+                    console.log(response);
+                });
+        }
+    }
+
+    function initPasswordFormButton() {
+        let submitButton = $('#form-password-button')[0];
+
+        submitButton.onclick = function() {
+
+            let form = $('#profile-password-form')[0];
+
+            putFormData( form.action, new FormData(form) )
+                .then( response => {
+                    console.log(response);
+                });
+        }
+    }
+
+
+</script>
+
+</html>

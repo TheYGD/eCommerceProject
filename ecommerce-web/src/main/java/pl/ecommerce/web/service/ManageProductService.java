@@ -45,7 +45,7 @@ public class ManageProductService {
     public Long createProduct(UserCredentials userCredentials, ProductDto productDto) {
 
         User user = userCredentials.getUserAccount();
-        Category category = categoryRepository.findByName(productDto.getCategory())
+        Category category = categoryRepository.findById( Long.valueOf(productDto.getCategory()) )
                 .orElseThrow( () -> new ItemNotFoundException("This category does not exist!"));
 
         String imgName;
@@ -64,7 +64,8 @@ public class ManageProductService {
                 .seller(user)
                 .quantity(productDto.getQuantity())
                 .price( new BigDecimal(productDto.getPrice().replaceAll(",", ".")) )
-                .image(imgName).build();
+                .image(imgName)
+                .promoted(false).build();
 
         product = productRepository.save(product);
 
@@ -111,11 +112,12 @@ public class ManageProductService {
         return product;
     }
 
+    @Transactional
     public void editProduct(UserCredentials userCredentials, ProductDto productDto, Long id) {
 
         Product product = getProduct(userCredentials, id);
 
-        Category category = categoryRepository.findByName(productDto.getCategory())
+        Category category = categoryRepository.findById( Long.valueOf(productDto.getCategory()) )
                 .orElseThrow( () -> new ItemNotFoundException("This category does not exist!"));
 
         product.setName(productDto.getName());
@@ -126,14 +128,16 @@ public class ManageProductService {
 
 
         if (productDto.getImage().getSize() != 0) {
-            deletePreviousImage(product.getImage());
+            deleteImage(product.getImage());
             String imgName = generateImgName();
             saveImage(imgName, productDto.getImage());
             product.setImage(imgName);
         }
+
+        productRepository.save(product);
     }
 
-    private void deletePreviousImage(String image) {
+    private void deleteImage(String image) {
 
         try {
             Path imagePath = Paths.get(IMAGES_FOLDER_PATH + image);
@@ -151,6 +155,7 @@ public class ManageProductService {
         productWithQuantityRepository.deleteAllByProduct(product);
 
         eternalProduct.setProduct(null);
+        deleteImage(product.getImage());
         productRepository.delete(product);
     }
 }

@@ -12,6 +12,7 @@
 
 .hover-dark:hover {
     background: #f6f6f6;
+    cursor: pointer;
 }
 
 .z-top {

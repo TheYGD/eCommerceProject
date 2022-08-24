@@ -22,17 +22,17 @@ public class SecurityConfiguration {
 //                .loginPage("/login.html")
                 .and()
                 .authorizeRequests()
+                .antMatchers("/admin/**").permitAll()                                 // for now
                 .antMatchers("/h2-console/**").permitAll()                              // for now
                 .mvcMatchers("/js/**", "/css/**", "/webjars/**").permitAll()
                 .mvcMatchers("/images/**").permitAll()
                 .mvcMatchers("/").permitAll()
                 .mvcMatchers("/register").permitAll()
                 .mvcMatchers("/cart/**").permitAll()
-                .mvcMatchers("/products/*").permitAll()
+                .mvcMatchers("/products", "/products/*").permitAll()
+                .mvcMatchers("/categories/**").permitAll()
                 .mvcMatchers("/products/archive/*").permitAll()
                 .antMatchers("/sellers/**").permitAll()
-//                .antMatchers("/h2-console/**").permitAll()
-//                .antMatchers("/login*").permitAll()
                 .anyRequest().authenticated();
 
         return http.build();

@@ -1,6 +1,7 @@
 package pl.ecommerce.web.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,18 +33,21 @@ public class ProductController {
 
 
     @GetMapping()
-    public String showAll(Model model) {
-        List<Product> productList = productService.findAll();
-        model.addAttribute("productList", productList);
+    public String showAll(Model model, @RequestParam(defaultValue = "1") int pageNr,
+                          @RequestParam(defaultValue = "0") int sortOption) {
+        Page<Product> productPage = productService.findAll(pageNr, sortOption);
+        model.addAttribute("productPage", productPage);
 
         return "products/list";
     }
 
 
     @PostMapping()
-    public String findByQuery(@RequestParam("search") String query, Model model) {
-        List<Product> productList = productService.findByQuery(query);
-        model.addAttribute("productList", productList);
+    public String findByQuery(@RequestParam("search") String query, Model model,
+                              @RequestParam(defaultValue = "1") int pageNr,
+                              @RequestParam(defaultValue = "0") int sortOption) {
+        Page<Product> productPage = productService.findByQuery(query, pageNr, sortOption);
+        model.addAttribute("productPage", productPage);
         model.addAttribute("searchQuery", query);
 
         return "products/list";

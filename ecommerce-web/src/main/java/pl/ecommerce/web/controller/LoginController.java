@@ -6,9 +6,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import pl.ecommerce.data.dto.UserRegisterDto;
+import pl.ecommerce.data.dto.UserInformationDto;
 import pl.ecommerce.web.service.LoginService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
@@ -18,15 +19,16 @@ public class LoginController {
     private final LoginService loginService;
 
     @GetMapping("/register")
-    public String registerPage(@ModelAttribute("user") UserRegisterDto userRegisterDto) {
+    public String registerPage(@ModelAttribute("user") UserInformationDto user) {
         return "account/register";
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute("user") @Valid UserRegisterDto userRegisterDto,
-                           BindingResult bindingResult) {
+    public String register(@ModelAttribute("user") @Valid UserInformationDto user,
+                           BindingResult bindingResult,
+                           HttpServletRequest request) {
 
-        loginService.register(userRegisterDto, bindingResult);
+        loginService.register(user, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "account/register";

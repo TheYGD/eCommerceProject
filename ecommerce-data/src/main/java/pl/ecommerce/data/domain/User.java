@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,6 +41,8 @@ public class User extends BaseEntity implements Serializable {
     private String imageId;
 
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -51,5 +54,11 @@ public class User extends BaseEntity implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(credentials);
+    }
+
+
+    public String getDateOfBirthString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return dateOfBirth.format(formatter);
     }
 }

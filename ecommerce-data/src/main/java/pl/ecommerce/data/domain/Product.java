@@ -32,6 +32,8 @@ public class Product extends BaseEntity {
     @Column(name = "image_id")
     private String image;
 
+    private boolean promoted;
+
 
     public String getStructuredDescription() {
         return "<p>" + description.replaceAll("\n", "</p> <br> <p>") + "</p>";

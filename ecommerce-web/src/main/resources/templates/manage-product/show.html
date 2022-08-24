@@ -6,7 +6,7 @@
         <h1 class="mb-5" th:text="${(add ? 'Add' : 'Edit') + ' product'}"></h1>
 
         <form class="border shadow p-4 rounded-2 my-4 row" method="post" th:object="${product}" enctype="multipart/form-data"
-              th:action="@{__(${ '/products' + (add ? '/add' : '/update/' + product.id)})__}">
+              th:action="@{__(${ '/products' + (add ? '/add' : '/edit/' + product.id)})__}">
 
             <div class="col">
                 <div class="form-group my-3">
@@ -19,7 +19,7 @@
                 <div class="form-group my-3">
                     <label for="add-product-form-category">Category</label>
                     <select class="form-control mt-1" id="add-product-form-category" required th:field="*{category}">
-                        <option th:selected="${category == product.category}" th:each="category : ${categoryList}" th:value="${category.name}" th:text="${category.name}"></option>
+                        <option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.name}"></option>
                     </select>
                 </div>
 

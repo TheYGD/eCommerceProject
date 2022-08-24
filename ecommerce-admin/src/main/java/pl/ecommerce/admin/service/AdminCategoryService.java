@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class CategoryService {
+public class AdminCategoryService {
 
     private final CategoryRepository categoryRepository;
 

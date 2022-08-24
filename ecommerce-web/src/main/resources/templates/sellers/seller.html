@@ -1,19 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" th:replace="~{ fragments/layout :: layout (body=~{::body}, script=~{::script}, title=${seller.credentials.username})}">
+<html lang="en" th:replace="~{ fragments/layout :: layout (body=~{::body}, script=~{::#script-div-seller}, title=${seller.credentials.username})}">
 
 <body>
   <div class="container-md mb-5">
-    <h2 th:text="${'Products from ' + seller.credentials.username}"></h2>
+    <h1 th:text="${'Products from ' + seller.credentials.username}"></h1>
     <hr/>
   </div>
 
   <th:block th:replace="~{ products/list :: body}"/>
 </body>
 
-<th:block th:replace="~{ products/list :: script}" />
-
-<script>
-
-</script>
+<div id="script-div-seller">
+  <th:block th:replace="~{ products/list :: script}" />
+</div>
 
 </html>
