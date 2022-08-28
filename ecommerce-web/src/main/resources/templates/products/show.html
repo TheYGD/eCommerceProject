@@ -12,17 +12,19 @@
 
 
             <div class="col d-flex align-items-center ms-5 w-100">
-                <div class="d-flex flex-column">
+                <div class="d-flex flex-column mt-5">
                     <h1 class="display-1" th:text="${product.name}">Product name</h1>
                     <h4 class="lead fs-3" th:text="${product.category.name}">Category name</h4>
 
                     <div class="d-flex align-items-center mt-5">
-                        <input class="col-3 z-top me-3" type="number" min="1" value="1">
+                        <input class="col-3 z-top-1 me-3" type="number" min="1" value="1">
 
-                        <button type="button" class="btn btn-primary py-2 z-top add-to-cart-btn">Add to cart</button>
+                        <button type="button" class="btn btn-primary py-2 z-top-1" id="add-to-cart-btn">Add to cart</button>
                     </div>
+                    <p class="mt-5 cursor-pointer text-primary" id="ask-about-product"><i class="fa fa-envelope me-2"></i>Ask about product</p>
                 </div>
             </div>
+
 
         </div>
 
@@ -37,24 +39,37 @@
 
 <script>
     $(document).ready(function () {
-        let addToCartButtons = $(".add-to-cart-btn");
-
-        for ( let button of addToCartButtons ) {
-            button.onclick = function () {
-
-                let url = window.location.href;
-                let lastSlashIndex = url.lastIndexOf('/');
-                let quantity = button.parentElement.children[0].value;
-                let urlAdd = url.substring(0, lastSlashIndex) + '/add' + url.substring(lastSlashIndex) + '?quantity=' + quantity;
-
-                postData(urlAdd).then(data => {
-                    console.log(data);
-                    updateCartQuantity();
-                });
-            }
-        }
-
+        initAddToCart();
+        initAskAboutProduct();
     });
+
+
+    function initAddToCart() {
+        let addToCartButton = $("#add-to-cart-btn")[0];
+
+        console.log(addToCartButton);
+
+        addToCartButton.onclick = function () {
+            let url = window.location.href;
+            let lastSlashIndex = url.lastIndexOf('/');
+            let quantity = addToCartButton.parentElement.children[0].value;
+            let urlAdd = url.substring(0, lastSlashIndex) + '/add' + url.substring(lastSlashIndex) + '?quantity=' + quantity;
+
+            postData(urlAdd).then(data => {
+                console.log(data);
+                updateCartQuantity();
+            });
+        }
+    }
+
+    function initAskAboutProduct() {
+        let addToCart = $('#ask-about-product')[0];
+
+        addToCart.onclick = function() {
+            location.href += '/ask';
+        };
+    }
+
 </script>
 
 </html>

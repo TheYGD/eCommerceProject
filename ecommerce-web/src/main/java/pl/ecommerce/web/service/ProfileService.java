@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class ProfileService {
 
-    @Value("${pl.ecommerce.records_on_page}")
+    @Value("${pl.ecommerce.products-on-page}")
     private int RECORDS_ON_PAGE;
     private final SoldProductsGroupRepository soldProductsGroupRepository;
     private final OrderRepository orderRepository;

@@ -19,7 +19,7 @@
         <h4 class="display-6" th:text="${product.price + ' $'}">Price</h4>
       </div>
 
-      <div class="float-end d-flex align-items-center me-5 z-top">
+      <div class="float-end d-flex align-items-center me-5 z-top-1">
         <a th:href="@{__(${'/products/edit/' + product.id})__}" class="btn btn-primary me-3">Edit</a>
         <button class="btn btn-danger delete-product-btn"> <i class="fa fa-trash"></i> </button>
       </div>

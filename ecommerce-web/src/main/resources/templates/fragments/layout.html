@@ -19,10 +19,11 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <form class="form-check-inline" id="nav-search-form" th:action="@{/products}" method="post">
-        <div class="input-group">
-          <input class="form-control input-small" id="nav-search-input" type="text" placeholder="product..." th:value="${searchQuery ?: ''}">
-          <button class="btn btn-info btn-dark" id="nav-search-btn"><i class="fa fa-search"></i></button>
+      <form class="form-check-inline" id="nav-search-form" action="/products" method="get">
+        <div class="input-group" id="navbar-search-form">
+          <input type="hidden" name="search"/>
+          <input class="form-control input-small" id="nav-search-input" type="text" placeholder="product..." th:value="${param.search ?: ''}">
+          <button class="btn btn-info btn-dark"  id="nav-search-btn"><i class="fa fa-search"></i></button>
         </div>
       </form>
       <ul class="navbar-nav ms-auto">
@@ -66,17 +67,23 @@
   <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
   <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
   <script src="/js/script.js"></script>
+
   <th:block th:if="${script != 'no-script'}" >
     <th:block th:replace="${script}"></th:block>
   </th:block>
+
   <script>
     $(document).ready(function() {
       updateCartQuantity();
-
-      $("#nav-search-btn").click(function() {
-        $("#nav-search-form").attr('action', $("#nav-search-form").attr('action') + '?search=' + $("#nav-search-input").val() );
-      });
+      initNavSearchForm();
     });
+
+    function initNavSearchForm() {
+      $("#nav-search-input")[0].onchange = function() {
+        $("#nav-search-form input[name=search]")[0].value = $("#nav-search-input")[0].value;
+      }
+    }
+
   </script>
 </body>
 </html>

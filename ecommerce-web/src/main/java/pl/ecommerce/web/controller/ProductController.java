@@ -6,14 +6,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import pl.ecommerce.data.domain.Product;
-import pl.ecommerce.data.domain.UserCredentials;
+import pl.ecommerce.data.domain.*;
 import pl.ecommerce.data.other.StringResponse;
 import pl.ecommerce.web.service.ProductService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/products")
@@ -33,22 +33,22 @@ public class ProductController {
 
 
     @GetMapping()
-    public String showAll(Model model, @RequestParam(defaultValue = "1") int pageNr,
-                          @RequestParam(defaultValue = "0") int sortOption) {
-        Page<Product> productPage = productService.findAll(pageNr, sortOption);
+    public String showCategoryProducts(@RequestParam(value = "category", required = false) Long categoryId,
+                                       @RequestParam(value = "search", defaultValue = "") String query,
+                                       Model model, @RequestParam(defaultValue = "1") int pageNr,
+                                       @RequestParam(defaultValue = "0") int sortOption) {
+
+        if (categoryId == null) {
+            Page<Product> productPage = productService.findAll(query, pageNr, sortOption);
+            model.addAttribute("productPage", productPage);
+
+            return "products/list";
+        }
+
+        Category category = productService.getCategory(categoryId);
+        Page<Product> productPage = productService.findAllByCategory(category, query, pageNr, sortOption);
+        model.addAttribute("category", category);
         model.addAttribute("productPage", productPage);
-
-        return "products/list";
-    }
-
-
-    @PostMapping()
-    public String findByQuery(@RequestParam("search") String query, Model model,
-                              @RequestParam(defaultValue = "1") int pageNr,
-                              @RequestParam(defaultValue = "0") int sortOption) {
-        Page<Product> productPage = productService.findByQuery(query, pageNr, sortOption);
-        model.addAttribute("productPage", productPage);
-        model.addAttribute("searchQuery", query);
 
         return "products/list";
     }
@@ -62,5 +62,29 @@ public class ProductController {
 
         String result = productService.addProductToCart(userCredentials, productId, quantity, request, response);
         return new StringResponse(result);
+    }
+
+
+    @GetMapping("/{id}/ask")
+    public String askAboutProductPage(@AuthenticationPrincipal UserCredentials userCredentials,
+                                    @PathVariable("id") Long productId, Model model) {
+
+        List<MessageCause> messageCauseList = productService.getProductMessageTitles();
+        Product product = productService.findById(productId);
+
+        model.addAttribute(messageCauseList);
+        model.addAttribute(product);
+
+        return "messages/create-product";
+    }
+
+    @PostMapping("/{id}/ask")
+    public String askAboutProduct(@AuthenticationPrincipal UserCredentials userCredentials,
+                                  @PathVariable("id") Long productId,
+                                  @RequestParam Map<String, String> formData) {
+
+        Long chatId = productService.askAboutProduct(userCredentials, productId, formData);
+
+        return "redirect:/messages?id=" + chatId;
     }
 }

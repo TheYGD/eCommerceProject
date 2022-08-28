@@ -1,11 +1,9 @@
 package pl.ecommerce.web.service;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.ecommerce.data.domain.Product;
 import pl.ecommerce.data.domain.User;
@@ -19,7 +17,7 @@ import java.util.List;
 @Service
 public class SellerService {
 
-    @Value("${pl.ecommerce.records_on_page}")
+    @Value("${pl.ecommerce.products-on-page}")
     private int RECORDS_ON_PAGE;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;

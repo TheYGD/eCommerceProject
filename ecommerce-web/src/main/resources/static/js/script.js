@@ -90,14 +90,15 @@ function initPageChangeDiv() {
     let pageChangeInput = pageChangeDiv.children[1];
 
     let url = new URL(location.href);
+
     let pageNr = parseInt(url.searchParams.get('pageNr')) || 1;
-    let sortOption = parseInt(url.searchParams.get('sortOption'));
-    let newUrl = url.origin + url.pathname + (!isNaN(sortOption) ? ('?sortOption=' + sortOption + '&') : '?') + 'pageNr=';
+
     let lastPage = parseInt(pageChangeDiv.children[2].innerText.substring(2));
 
     if (pageChangeInput.value != '1') {
         pageChangeDiv.children[0].onclick = function() {
-            window.location.href = newUrl + (pageNr - 1);
+            url.searchParams.set("pageNr", pageNr - 1)
+            window.location.href = url.href;
         }
 
         pageChangeDiv.children[0].style.cursor = 'pointer';
@@ -105,14 +106,16 @@ function initPageChangeDiv() {
 
     pageChangeDiv.children[1].onchange = function() {
         let page = parseInt(pageChangeDiv.children[1].value);
-        if (page > 0 && page <= lastPage) {
-            window.location.href = newUrl + page;
+        if (page >= 1 && page <= lastPage) {
+            url.searchParams.set("pageNr", page)
+            window.location.href = url.href;
         }
     }
 
     if (lastPage != pageNr) {
         pageChangeDiv.children[3].onclick = function() {
-            window.location.href = newUrl + String(pageNr + 1);
+            url.searchParams.set("pageNr", pageNr + 1)
+            window.location.href = url.href;
         }
         pageChangeDiv.children[3].style.cursor = 'pointer';
     }

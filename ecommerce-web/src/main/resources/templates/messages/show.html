@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title='Message box')}">
+
+<body>
+
+  <div class="container-lg">
+    <h1>Message box</h1>
+    <hr>
+
+    <div class="mt-4 row">
+      <div class="col-3">
+        <ul class="list-group mt-3 overflow-auto" id="message-group-list" style="max-height: 70vh;">
+          <li class="list-group-item px-3 pt-3 pb-1 d-flex justify-content-between align-items-center hover-dark"
+              th:each="chat : ${chatList}" th:id="${'message-group-' + chat.id}"
+              th:classappend="${chat.closedBy != null ? 'bg-black bg-opacity-5' : ''}">
+            <div>
+              <p class="mb-2 small" th:text="${{chat.lastActivity}}"></p>
+              <h6 class="mb-2" th:text="${chat.title}"></h6>
+              <p>with
+                <a class="z-top-2 position-relative" th:text="${chat.user1.credentials.username == username ? chat.user2.credentials.username :
+                chat.user1.credentials.username}" th:href="@{/xd}"></a>
+              </p>
+              <p class="chat-link-name" th:text="${chat.linkName}" hidden></p>
+              <p class="chat-link" th:text="${chat.link}" hidden></p>
+            </div>
+
+
+            <i th:if="${chat.closedBy?.credentials?.username == username}" class="fa fa-unlock me-2 mb-2 message-lock-switch z-top-2" ></i>
+            <i th:if="${chat.closedBy == null}" class="fa fa-ban me-2 mb-2 text-danger message-lock-switch z-top-2" ></i>
+
+          </li>
+        </ul>
+      </div>
+
+
+      <ul class="col-8 list-group mx-3 mt-3 pb-4" style="height: 70vh;" hidden>
+        <li class="list-group-item ps-4">
+          <a href="" class="ms-3 text-decoration-none">Link to the topic's object</a>
+          <h6 class="my-1">Chat title</h6>
+        </li>
+
+        <li class="list-group-item overflow-auto d-flex dark flex-column pb-2 h-100" id="chat-view"></li>
+
+        <li class="list-group-item">
+          <form class="px-1 py-3 d-flex align-items-baseline justify-content-around" id="message-send-form"
+                action="/messages/" method="post">
+            <textarea class="col rounded-2 p-1 px-2" style="height: 5rem; resize: none;"></textarea>
+            <button type="button" class="btn btn-primary col-1 ms-4 my-auto">Send</button>
+          </form>
+        </li>
+      </ul>
+
+
+    </div>
+  </div>
+
+</body>
+
+<script>
+  $('document').ready(function() {
+    initGlobalVariables();
+    initChatDivs();
+    openChatView();
+    initChatViewOnScroll();
+  });
+
+  let currentViewMessagePage;
+  let chatView;
+  let ChatIdPrefixLength;
+  let username;
+  let currentChatId;
+  let isLoadingNewMessages;
+
+
+  function initGlobalVariables() {
+    chatView = $('#chat-view')[0];
+    chatIdPrefixLength = 'message-group-'.length;
+    username = $('#nav-profile')[0].innerText;
+  }
+
+  function initChatDivs() {
+    let chatList = $('#message-group-list')[0];
+
+    for (let chat of chatList.children) {
+      let chatId = chat.id.substring(chatIdPrefixLength);
+      let messageSendForm = $('#message-send-form')[0];
+      let url = messageSendForm.action.substring(0, messageSendForm.action.lastIndexOf('/') + 1) + chatId;
+
+      chat.onclick = function(pointerEvent) {
+        chatView.parentElement.hidden = true;
+        currentViewMessagePage = -1; // it means we dont know which page
+        chatView.innerHTML = '';
+
+        currentChatId = chatId;
+
+        initChatHeader(pointerEvent);
+
+        loadNextMessages(chatId)
+          .then(result => {
+            if (currentViewMessagePage >= 0) {
+              loadNextMessages(chatId)
+                      .then( result => scrollViewToBottom() )
+            }
+            else {
+              scrollViewToBottom()
+            }
+          });
+
+        messageSendForm.action = messageSendForm.action.substring(0, messageSendForm.action.lastIndexOf('/') + 1) + chatId;
+
+        let messageSendFormInput = messageSendForm.children[0]
+
+        messageSendForm.children[1].onclick = function() {
+          if (messageSendFormInput.value.trim() == '') {
+            // todo toast - cant write blank message
+            return;
+          }
+
+          postData(url, messageSendFormInput.value)
+                  .then( result => {
+                    // post successfully
+                    if (result.hasOwnProperty('response')) {
+                      let div = document.createElement('div');
+                      div.className ='col-7 rounded-3 mx-3 mt-3 p-3 message-right many-white-chars';
+                      processMessageContent(div, messageSendForm.children[0].value, false);
+
+                      let messageEl = createMessageDate(chatView, Date.now());
+                      chatView.append(div, messageEl);
+
+                      messageSendForm.children[0].value = '';
+                      scrollViewToBottom();
+
+                      chatList.removeChild(chat);
+                      chatList.prepend(chat);
+                    }
+                  })
+        }
+
+        if (chat.children[1] == null || chat.children[1].classList.contains('fa-unlock')) {
+          disableMessageTextArea();
+        }
+        else {
+          enableMessageTextArea()
+        }
+      }
+
+      initCloseReopenChat(chat, url, chatId);
+    }
+  }
+
+
+  function scrollViewToBottom() {
+    chatView.scrollTop = chatView.scrollHeight;
+  }
+
+
+  function initChatHeader(pointerEvent) {
+    let chatLeftDiv = pointerEvent.target.children[0];
+    let title = chatLeftDiv.children[1].innerText;
+    let linkName = chatLeftDiv.children[3].innerText;
+    let link = chatLeftDiv.children[4].innerText;
+
+    let chatHeader = chatView.parentElement.children[0];
+    chatHeader.children[0].innerText = linkName;
+    chatHeader.children[0].href = link;
+    chatHeader.children[1].innerText = title;
+    isLoadingNewMessages = false;
+  }
+
+
+  function processMessageContent(div, content, isFromServer=true) {
+
+    let newLineCharRegex = isFromServer ? '\\n' : '\n';
+    let escapeChar = isFromServer ? '\\' : '\\\\';
+    let paragraphsBody = content.split( newLineCharRegex );
+
+
+    for (let i = 0 ; i < paragraphsBody.length; i++) {
+      if (paragraphsBody[i][paragraphsBody[i].length - 1] == escapeChar) {
+        paragraphsBody[i] += '\\n' + paragraphsBody[i + 1];
+        paragraphsBody.splice(i + 1, 1);
+      }
+
+      for (let j = 0; j < paragraphsBody[i].length; j++) {
+        if (paragraphsBody[i][j] == escapeChar) {
+          paragraphsBody[i] = paragraphsBody[i].slice(0, j) + paragraphsBody[i].slice(j + 1);
+        }
+      }
+    }
+
+    for (let pBody of paragraphsBody) {
+      let p = document.createElement('p');
+      p.className = 'my-0 text-break d-block';
+      p.innerText = pBody;
+      div.append(p);
+    }
+
+  }
+
+  function createMessageDate(chatView, date, align_right=true) {
+    let dateP = document.createElement('p');
+    dateP.innerText = new Date(date).toLocaleDateString() + ' ' + new Date(date).toLocaleTimeString().substring(0, 5);
+    dateP.className = 'px-4';
+    dateP.style = 'align-self: ' + (align_right ? 'end' : 'start') + ';';
+    return dateP;
+  }
+
+
+  function loadNextMessages(chatId) {
+    isLoadingNewMessages = true;
+    return getData(location.origin + location.pathname + '/' + chatId + '?pageNr=' + currentViewMessagePage)
+            .then( response => {
+              for (let message of response.content.reverse()) {
+                let div = document.createElement('div');
+                let align_right = message.author == username;
+                div.className ='col-7 rounded-3 mx-3 mt-3 p-3 many-white-chars';
+                div.classList.add( align_right ? 'message-right' : 'message-left' );
+                processMessageContent(div, message.content);
+
+                let messageEl = createMessageDate(chatView, message.date, align_right);
+                chatView.prepend(div, messageEl);
+              }
+
+
+              currentViewMessagePage = response.pageable.pageNumber - 1;
+              chatView.parentElement.hidden = false;
+              isLoadingNewMessages = false;
+            });
+  }
+
+
+  function openChatView() {
+    let url = new URL(location.href);
+    let desiredChat = url.searchParams.get("id");
+
+    if (desiredChat != null) {
+      document.getElementById('message-group-' + desiredChat).click()
+    }
+  }
+
+
+  function initCloseReopenChat(chat, url, chatId) {
+    let closeSwitch = chat.children[1];
+    if (closeSwitch == null) {
+      return;
+    }
+
+    chat.children[1].onclick = function() {
+      let action = chat.children[1].classList.contains('fa-ban') ? '/close' : '/reopen';
+      let urlClose = url + action;
+      postData(urlClose)
+              .then(result => {
+                let reloadUrl = new URL(location.href);
+                reloadUrl.searchParams.set("id", chatId);
+
+                location.href = reloadUrl;
+              })
+    }
+  }
+
+  function enableMessageTextArea() {
+    let textArea = chatView.parentElement.children[2].children[0].children[0];
+    let sendButton = chatView.parentElement.children[2].children[0].children[1];
+
+    textArea.disabled = false;
+    textArea.value = '';
+    sendButton.disabled = false;
+  }
+
+  function disableMessageTextArea() {
+    let textArea = chatView.parentElement.children[2].children[0].children[0];
+    let sendButton = chatView.parentElement.children[2].children[0].children[1];
+
+    textArea.disabled = true;
+    textArea.value = 'This conversation is closed.';
+    sendButton.disabled = true;
+  }
+
+  function initChatViewOnScroll() {
+    chatView.onscroll = function () {
+      if (chatView.scrollTop == 0 && !isLoadingNewMessages && currentViewMessagePage >= 0) {
+        let heightBefore = chatView.scrollHeight;
+        loadNextMessages(currentChatId).then( result => {
+          chatView.scrollTop = chatView.scrollHeight - heightBefore;
+        })
+      }
+    }
+  }
+
+
+</script>
+
+</html>

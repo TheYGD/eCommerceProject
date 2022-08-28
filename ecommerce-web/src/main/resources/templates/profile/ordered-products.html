@@ -6,48 +6,26 @@
         <h1>Your orders</h1>
         <hr/>
 
-        <div class="mt-5">
+        <div class="mt-5 xd">
 
             <ul class="shadow rounded-2 my-5 p-0" th:each="order : ${orderList}">
 
-                <li class="list-group-item d-flex flex-row product-in-cart bg-primary bg-opacity-10">
-                    <div class="col d-flex flex-column align-items-center justify-content-center">
-                        <h6>Order placed on:</h6>
-                        <p th:text="${{order.dateTime}}"></p>
-                    </div>
+                <li class="list-group-item d-flex flex-row product-in-cart bg-primary bg-opacity-10 hover-dark d-flex
+                        justify-content-center">
+                    <a class="stretched-link" th:href="@{__(${'/orders/' + order.id})__}"></a>
 
-                    <div class="col-6 row pt-3 offset-1">
-                        <h3>Address</h3>
+                    <h4 class="my-auto mx-5" th:text="${'Order #' + order.id}">Order id</h4>
 
-                        <div class="d-flex align-items-end mt-3">
-                            <div class="col">
-                                <h6>Address line 1</h6>
-                                <p th:text="${order.address.addressLine1}"></p>
-
-                                <h6>Address line 2</h6>
-                                <p th:text="${order.address.addressLine2}"></p>
-                            </div>
-
-                            <div class="col">
-                                <h6>City</h6>
-                                <p th:text="${order.address.city}"></p>
-
-                                <h6>State</h6>
-                                <p th:text="${order.address.state}"></p>
-                            </div>
-
-                            <div class="col">
-                                <h6>Postal code</h6>
-                                <p th:text="${order.address.postalCode}"></p>
-
-                                <h6>Country</h6>
-                                <p th:text="${order.address.country}"></p>
-                            </div>
-                        </div>
+                    <div class="col d-flex flex-column align-items-center justify-content-center my-3">
+                        <h6 class="mt-0">Order placed on:</h6>
+                        <p class="mb-0" th:text="${{order.dateTime}}"></p>
                     </div>
                 </li>
 
                 <th:block th:each="productsGroup : ${order.productsGroupList}">
+                    <li class="list-group-item d-flex flex-row product-in-cart bg-primary bg-opacity-10 hover-dark">
+
+                    </li>
                     <li class="list-group-item d-flex flex-row product-in-cart hover-dark" th:each="soldProduct : ${productsGroup.soldProductList}">
                         <a class="stretched-link product-link" th:href="@{__(${'/products/' + (
                     soldProduct.getProduct()?.product != null ? soldProduct.getProduct().product.id : ('archive/' +
@@ -69,7 +47,7 @@
 
                         <div class="col-3 d-flex align-items-center justify-content-center flex-column">
                             <p class="fs-5 bold me-3">Seller</p>
-                            <a class="me-3 z-top text-decoration-none" th:text="${soldProduct.product.seller.credentials.username}"
+                            <a class="me-3 z-top-1 text-decoration-none" th:text="${soldProduct.product.seller.credentials.username}"
                                th:href="@{__${'/sellers/' + soldProduct.product.seller.id}__}"></a>
                         </div>
                     </li>

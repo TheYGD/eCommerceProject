@@ -10,15 +10,72 @@
     border-radius: 50%;
 }
 
-.hover-dark:hover {
-    background: #f6f6f6;
-    cursor: pointer;
+
+.z-top-1 {
+    z-index: 2;
 }
 
-.z-top {
+.z-top-2 {
     z-index: 2;
 }
 
 .sticky-col-under-navbar{
     top: 6.6rem;
 }
+
+
+.message-right {
+    color: white;
+    background: #6dafff;
+    align-self: end;
+}
+
+.message-left {
+    border: 1px #daeaff solid;
+    background: #f8fbff;
+    align-self: start;
+}
+
+.hover-dark:hover:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 3%;
+    cursor: pointer;
+}
+
+
+.message-lock-switch {
+    display: none;
+}
+
+li:hover .message-lock-switch {
+    display: block;
+    cursor: pointer;
+}
+
+.message-lock-switch:hover {
+    scale: 110%;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.bg-opacity-5 {
+    --bs-bg-opacity: 0.05;
+}
+
+.many-white-chars {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
+/*.scroll-y {*/
+/*    overflow-y: auto;*/
+/*    overflow-x: hidden;*/
+/*}*/

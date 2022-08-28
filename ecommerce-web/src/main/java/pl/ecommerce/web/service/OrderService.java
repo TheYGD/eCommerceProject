@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import pl.ecommerce.data.domain.*;
 import pl.ecommerce.data.dto.OrderDto;
 import pl.ecommerce.data.mapper.OrderMapper;
+import pl.ecommerce.exceptions.ForbiddenException;
+import pl.ecommerce.exceptions.InvalidArgumentException;
 import pl.ecommerce.exceptions.ItemNotFoundException;
 import pl.ecommerce.repository.*;
 
@@ -20,9 +22,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Slf4j
 public class OrderService {
-    
-    private final OrderRepository orderRepository;
+
     private final CartService cartService;
+    private final MessageService messageService;
+    private final OrderRepository orderRepository;
     private final SoldProductRepository soldProductRepository;
     private final SoldProductsGroupRepository soldProductsGroupRepository;
     private final AddressRepository addressRepository;
@@ -33,8 +36,9 @@ public class OrderService {
     public Order findOrder(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow( () -> {
-//                    log.error("Order not found!");
-                    return new ItemNotFoundException("Order not found!");
+                    String message = "Order with id=%d not found!".formatted(id);
+//                    log.warn(message);
+                    return new ItemNotFoundException(message);
                 });
     }
 
@@ -71,5 +75,44 @@ public class OrderService {
         cartRepository.save(cart);
 
         return order.getId();
+    }
+
+    public Long askAboutOrder(UserCredentials userCredentials, Long orderId, Map<String, String> formData) {
+
+        if (!formData.containsKey("titleId") || !formData.containsKey("content")) {
+            throw new InvalidArgumentException("Error! Try again later.");
+        }
+
+        int titleId = Integer.parseInt(formData.get("titleId"));
+        String content = formData.get("content");
+
+        MessageCause messageCause = MessageCause.findById(titleId)
+                .orElseThrow( () -> new ItemNotFoundException("Message cause not found!") );
+        if (!messageCause.isOrderCause()) {
+            log.warn("Invalid message cause id=%d chose for message about order.".formatted(titleId));
+            throw new InvalidArgumentException("Error! Try again later");
+        }
+
+        Order order = findOrder(orderId);
+        orderBelongsToUser(order, userCredentials);
+
+        String link = "/orders/" + orderId;
+        String linkName = "Order #" + order.getId();
+
+        return messageService.createChat(userCredentials.getUserAccount(), order.getProductsGroupList().get(0).getSeller(),
+                messageCause, content, link, linkName );                                 //todo change to seller ***********************************************
+    }
+
+
+    public List<MessageCause> getOrderMessageTitles() {
+        return MessageCause.getCausesForOrder();
+    }
+
+    public void orderBelongsToUser(Order order, UserCredentials userCredentials) {
+        if (!order.getBuyer().equals(userCredentials.getUserAccount())) {
+            log.warn("User with id=%d tried to create chat about order with id=%d."
+                    .formatted(userCredentials.getUserAccount().getId()), order.getId());
+            throw new ForbiddenException("Access denied");
+        }
     }
 }
