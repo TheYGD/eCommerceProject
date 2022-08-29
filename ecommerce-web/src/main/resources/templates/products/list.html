@@ -3,7 +3,8 @@
 
 <body>
   <div class="container-lg">
-    <div class="card d-flex flex-row shadow-sm hover-dark m-1" th:each="product : ${productPage.content}">
+    <div class="card d-flex flex-row shadow-sm hover-dark m-1" th:each="availableProduct : ${productPage.content}"
+      th:with="product=${availableProduct.product}">
       <a class="stretched-link" th:href="@{__(${'/products/' + product.id})__}"></a>
       <div class="d-flex align-items-center justify-content-center" style="height: 12rem; width: 12rem;">
         <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
@@ -51,6 +52,8 @@
         let lastSlashIndex = url.lastIndexOf('/');
         let quantity = button.parentElement.children[0].value;
         let urlAdd = url.substring(0, lastSlashIndex) + '/add' + url.substring(lastSlashIndex) + '?quantity=' + quantity;
+
+        console.log(urlAdd);
 
         postData(urlAdd).then(data => {
           console.log(data);

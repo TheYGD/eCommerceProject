@@ -3,7 +3,7 @@ package pl.ecommerce.data.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.ecommerce.data.domain.Product;
+import pl.ecommerce.data.domain.AvailableProduct;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class CategoryDto {
 
     private String name;
     private String description;
-    private List<Product> products;
+    private List<AvailableProduct> availableProducts;
 
 
     public CategoryDto(String name, String description) {

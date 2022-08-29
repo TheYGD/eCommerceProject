@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Entity
+@Table(name = "user_credentials")
+
 @Getter
 @Setter
 public class UserCredentials extends BaseEntity implements UserDetails, Serializable {

@@ -10,10 +10,13 @@ import pl.ecommerce.data.domain.BaseEntity;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Collection;
 
 @Entity
+@Table(name = "accounts")
+
 @Getter
 @Setter
 public class Account extends BaseEntity implements UserDetails, Serializable {

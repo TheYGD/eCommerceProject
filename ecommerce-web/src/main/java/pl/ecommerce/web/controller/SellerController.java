@@ -8,11 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import pl.ecommerce.data.domain.Product;
+import pl.ecommerce.data.domain.AvailableProduct;
 import pl.ecommerce.data.domain.User;
 import pl.ecommerce.web.service.SellerService;
-
-import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -27,7 +25,7 @@ public class SellerController {
                                  @RequestParam(defaultValue = "0") int sortOption) {
 
         User seller = sellerService.getSeller(id);
-        Page<Product> productPage = sellerService.getSellerProducts(seller, pageNr, sortOption);
+        Page<AvailableProduct> productPage = sellerService.getSellerProducts(seller, pageNr, sortOption);
 
         model.addAttribute("seller", seller);
         model.addAttribute("productPage", productPage);

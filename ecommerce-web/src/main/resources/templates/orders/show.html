@@ -14,7 +14,7 @@
           <p th:text="${{order.dateTime}}"></p>
 
           <h6>Payment method:</h6>
-          <p th:text="${{order.paymentOption.name}}"></p>
+          <p th:text="${{order.getPaymentMethod.name}}"></p>
 
           <p class="mt-4 cursor-pointer text-primary" id="ask-about-product"><i class="fa fa-envelope me-2"></i>Ask about product</p>
         </div>
@@ -50,11 +50,10 @@
     </div>
 
     <ul class="list-group shadow-sm my-5">
-      <th:block th:each="productsGroup : ${order.productsGroupList}">
-        <li class="list-group-item d-flex flex-row product-in-cart hover-dark" th:each="soldProduct : ${productsGroup.soldProductList}">
+        <li class="list-group-item d-flex flex-row product-in-cart hover-dark" th:each="soldProduct : ${order.soldProductsList}">
           <a class="stretched-link product-link" th:href="@{__(${'/products/' + (
-                    soldProduct.getProduct()?.product != null ? soldProduct.getProduct().product.id : ('archive/' +
-                    soldProduct.getProduct()?.id)) })__}"></a>
+                    soldProduct.product?.availableProduct != null ? soldProduct.product.availableProduct.id : ('archive/' +
+                    soldProduct.product?.id)) })__}"></a>
           <div class="col d-flex align-items-center justify-content-center" style="min-height: 12rem; min-width: 12rem; max-height: 12rem; max-width: 12rem;">
             <img alt="image.png" style="max-height: 10rem; max-width: 10rem;"
                  th:src="${ soldProduct.product.image != null ? ('/images/products/' +
@@ -63,7 +62,7 @@
 
           <div class="col card-body">
             <h4 class="card-title" th:text="${soldProduct.product.name}">Product name</h4>
-            <h4 class="display-6 product-in-cart-price" th:text="${soldProduct.product.price + ' $'}">Price</h4>
+            <h4 class="display-6 availableProduct-in-cart-price" th:text="${soldProduct.product.price + ' $'}">Price</h4>
           </div>
 
           <div class="col-2 d-flex align-items-center justify-content-center">
@@ -76,7 +75,6 @@
                th:href="@{__${'/sellers/' + soldProduct.product.seller.id}__}"></a>
           </div>
         </li>
-      </th:block>
     </ul>
 
   </div>

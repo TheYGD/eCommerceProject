@@ -104,7 +104,7 @@ public class MessageService {
                            String linkName) {
 
         if (user1.equals(user2)) {
-            throw new InvalidArgumentException("You cannot send messages to yoruself!");
+            throw new InvalidArgumentException("You cannot send messages to yourself!");
         }
 
         Chat chat = Chat.builder()

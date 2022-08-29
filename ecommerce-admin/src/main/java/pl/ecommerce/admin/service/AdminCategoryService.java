@@ -27,7 +27,7 @@ public class AdminCategoryService {
             throw new ItemAlreadyExistsException("Category already exists!");
         }
 
-        categoryDTO.setProducts(new LinkedList<>());
+        categoryDTO.setAvailableProducts(new LinkedList<>());
 
         Category category = CategoryMapper.INSTANCE.DtoToEntity(categoryDTO);
         categoryRepository.save(category);

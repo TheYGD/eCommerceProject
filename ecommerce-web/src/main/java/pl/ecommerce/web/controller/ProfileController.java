@@ -13,7 +13,6 @@ import pl.ecommerce.data.dto.UserInformationDto;
 import pl.ecommerce.data.other.StringResponse;
 import pl.ecommerce.web.service.ProfileService;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -34,9 +33,9 @@ public class ProfileController {
     @GetMapping("/sold")
     public String soldProductsPage(@AuthenticationPrincipal UserCredentials userCredentials, Model model) {
 
-        List<SoldProductsGroup> soldProductsGroupList = profileService.getSoldProductsGroupList(userCredentials);
+        List<Order> orderList = profileService.getSoldProductsList(userCredentials);
 
-        model.addAttribute("soldProductsGroupList", soldProductsGroupList);
+        model.addAttribute("orderList", orderList);
 
         return "profile/sold-products";
     }
@@ -58,7 +57,7 @@ public class ProfileController {
                                   @RequestParam(defaultValue = "1") int pageNr,
                                   @RequestParam(defaultValue = "0") int sortOption) {
 
-        Page<Product> productPage = profileService.getOwnProducts(userCredentials, pageNr, sortOption);
+        Page<AvailableProduct> productPage = profileService.getOwnProducts(userCredentials, pageNr, sortOption);
 
         model.addAttribute("productPage", productPage);
 

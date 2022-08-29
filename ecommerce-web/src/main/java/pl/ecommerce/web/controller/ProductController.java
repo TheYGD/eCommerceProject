@@ -26,8 +26,14 @@ public class ProductController {
     @GetMapping("/{id}")
     public String showById(@PathVariable Long id, Model model) {
         Product product = productService.findById(id);
-        model.addAttribute("product", product);
 
+        // archive
+        if (product.getAvailableProduct() == null) {
+            model.addAttribute("product", product);
+            return "archive/show";
+        }
+
+        model.addAttribute("availableProduct", product.getAvailableProduct());
         return "products/show";
     }
 
@@ -39,14 +45,14 @@ public class ProductController {
                                        @RequestParam(defaultValue = "0") int sortOption) {
 
         if (categoryId == null) {
-            Page<Product> productPage = productService.findAll(query, pageNr, sortOption);
+            Page<AvailableProduct> productPage = productService.findAll(query, pageNr, sortOption);
             model.addAttribute("productPage", productPage);
 
             return "products/list";
         }
 
         Category category = productService.getCategory(categoryId);
-        Page<Product> productPage = productService.findAllByCategory(category, query, pageNr, sortOption);
+        Page<AvailableProduct> productPage = productService.findAllByCategory(category, query, pageNr, sortOption);
         model.addAttribute("category", category);
         model.addAttribute("productPage", productPage);
 
@@ -70,10 +76,10 @@ public class ProductController {
                                     @PathVariable("id") Long productId, Model model) {
 
         List<MessageCause> messageCauseList = productService.getProductMessageTitles();
-        Product product = productService.findById(productId);
+        AvailableProduct availableProduct = productService.findById(productId).getAvailableProduct();
 
-        model.addAttribute(messageCauseList);
-        model.addAttribute(product);
+        model.addAttribute("messageCauseList", messageCauseList);
+        model.addAttribute("availableProduct", availableProduct);
 
         return "messages/create-product";
     }

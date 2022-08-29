@@ -24,30 +24,29 @@ public class CartService {
     private final String CART_COOKIE = "CART_HASH";
 
     private final CartRepository cartRepository;
-    private final ProductRepository productRepository;
+    private final AvailableProductRepository availableProductRepository;
     private final ProductInCartRepository productInCartRepository;
     private final CartToExpireRepository cartToExpireRepository;
-    private final ProductWithQuantityRepository productWithQuantityRepository;
 
 
     public void changeProductsQuantity(UserCredentials userCredentials, Long id, Integer quantity,
                                        HttpServletRequest request, HttpServletResponse response) {
         if (quantity < 1 || quantity > 9999) { // todo max is product in stock
-            throw new InvalidQuantityException("Quantity must be between %d - %d".formatted(1, 999));
+            throw new InvalidQuantityException("Quantity must be between %d - %d".formatted(1, 9999));
         }
 
         Cart cart = getCart(userCredentials, request, response);
         ProductInCart productInCart = getProductInCart(cart, id);
 
-        productInCart.getProductWithQuantity().setQuantity(quantity);
+        productInCart.setQuantity(quantity);
 
         productInCartRepository.save(productInCart);
     }
 
 
     @Transactional
-    public void removeProduct(UserCredentials userCredentials, Long id, HttpServletRequest request
-            , HttpServletResponse response) {
+    public void removeProduct(UserCredentials userCredentials, Long id, HttpServletRequest request,
+                              HttpServletResponse response) {
         Cart cart = getCart(userCredentials, request, response);
         ProductInCart productInCart = getProductInCart(cart, id);
 
@@ -58,11 +57,11 @@ public class CartService {
 
 
     public ProductInCart getProductInCart(Cart cart, Long id) {
-        Product product = productRepository.findById(id)
+        AvailableProduct availableProduct = availableProductRepository.findById(id)
                 .orElseThrow( () -> new ItemNotFoundException("No such product found!") );
 
         ProductInCart productInCart = cart.getProductList().stream()
-                .filter( prod -> prod.getProductWithQuantity().getProduct().equals(product) )
+                .filter( product -> product.getProduct().equals(availableProduct.getProduct()) )
                 .findFirst()
                 .orElseThrow( () -> new ItemNotFoundException("No such product in cart!") );
 
@@ -73,11 +72,10 @@ public class CartService {
     /**
      * @return message if added successfully, product already in cart or error
      */
-    @Transactional
     public String addProductToCart(UserCredentials userCredentials, Long productId, Integer quantity,
                                    HttpServletRequest request, HttpServletResponse response) {
 
-        Optional<Product> productOptional = productRepository.findById(productId);
+        Optional<AvailableProduct> productOptional = availableProductRepository.findById(productId);
         if (productOptional.isEmpty()) {
             return "Error! Try again later.";
         }
@@ -87,27 +85,25 @@ public class CartService {
         return addProduct(cart, productOptional.get(), quantity, userCredentials);
     }
 
-    public String addProduct(Cart cart, Product product, Integer quantity, UserCredentials userCredentials) {
+    @Transactional
+    public String addProduct(Cart cart, AvailableProduct availableProduct, Integer quantity, UserCredentials userCredentials) {
 
-        if (product.getSeller().getCredentials().equals(userCredentials)) {
+        if (availableProduct.getProduct().getSeller().getCredentials().equals(userCredentials)) {
             return "Cannot add your own products to cart!";
         }
 
         Optional<ProductInCart> productInCartOptional = cart.getProductList().stream()
-                .filter(product1 -> product1.getProductWithQuantity().getProduct().equals(product))
+                .filter(product1 -> product1.getProduct().equals(availableProduct.getProduct()))
                 .findFirst();
 
         if (productInCartOptional.isPresent()) {
             ProductInCart productInCart = productInCartOptional.get();
-            productInCart.getProductWithQuantity().setQuantity(productInCart.getProductWithQuantity().getQuantity() + quantity );
+            productInCart.setQuantity(productInCart.getAvailableProduct().getQuantity() + quantity );
             productInCartRepository.save(productInCart);
         }
 
         else {
-            ProductWithQuantity productWithQuantity = new ProductWithQuantity(product, quantity);
-            productWithQuantity = productWithQuantityRepository.save(productWithQuantity);
-            ProductInCart productInCart = new ProductInCart(cart, productWithQuantity);
-            productInCart = productInCartRepository.save(productInCart);
+            ProductInCart productInCart = new ProductInCart(cart, availableProduct, quantity);
             cart.getProductList().add(productInCart);
             cartRepository.save(cart);
         }
@@ -115,7 +111,6 @@ public class CartService {
         return "Product added.";
     }
 
-    @Transactional
     public Cart getCart(UserCredentials userCredentials, HttpServletRequest request, HttpServletResponse response) {
 
         if (userCredentials == null) {
@@ -167,9 +162,9 @@ public class CartService {
         cartRepository.findById(id)
                 .ifPresent( otherCart -> {
                     otherCart.getProductList()
-                            .forEach( productInCart -> addProduct(mainCart,
-                                    productInCart.getProductWithQuantity().getProduct(),
-                                    productInCart.getProductWithQuantity().getQuantity(), userCredentials) );
+                            .forEach( productInCart -> addProduct(mainCart, productInCart.getAvailableProduct(),
+                                    productInCart.getQuantity(), userCredentials)
+                            );
 
                     productInCartRepository.deleteAll(otherCart.getProductList());
 

@@ -41,8 +41,8 @@ public class OrderController {
         Order order = orderService.findOrder(orderId);
         orderService.orderBelongsToUser(order, userCredentials); // validation
 
-        model.addAttribute(messageCauseList);
-        model.addAttribute(order);
+        model.addAttribute("messageCauseList", messageCauseList);
+        model.addAttribute("order", order);
 
         return "messages/create-order";
     }

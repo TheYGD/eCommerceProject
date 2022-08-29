@@ -2,7 +2,7 @@
 <html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title='Write a message')}">
 
 <body>
-    <div class="container-lg">
+    <div class="container-lg" th:with="product = ${availableProduct.product}">
         <ul class="list-group">
             <li class="list-group-item p-4 bg-primary bg-opacity-10">
                 <a th:href="@{__(${'/products/' + product.id})__}" class="text-decoration-none text-black">

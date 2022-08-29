@@ -3,11 +3,12 @@ package pl.ecommerce.data.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-@Entity(name = "products")
+@Entity
+@Table(name = "products")
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,6 +19,10 @@ public class Product extends BaseEntity {
     private String name;
     private String description;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id")
+    private AvailableProduct availableProduct;
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
@@ -25,26 +30,32 @@ public class Product extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "seller_id")
     private User seller;
-
-    private int quantity;
     private BigDecimal price;
 
     @Column(name = "image_id")
     private String image;
 
-    private boolean promoted;
 
+    public Product(String name, String description, Category category, User seller, BigDecimal price, String image) {
+        this.name = name;
+        this.description = description;
+        this.category = category;
+        this.seller = seller;
+        this.price = price;
+        this.image = image;
+    }
 
     public String getStructuredDescription() {
         return "<p>" + description.replaceAll("\n", "</p> <br> <p>") + "</p>";
     }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return getId() == product.getId();
+        return Objects.equals(getId(), product.getId());
     }
 
     @Override

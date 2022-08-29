@@ -1,9 +1,6 @@
 package pl.ecommerce.data.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.*;
@@ -13,6 +10,7 @@ import java.io.File;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ProductDto {
 
 
@@ -25,8 +23,7 @@ public class ProductDto {
     @Size(min=20, max=20000)
     private String description;
 
-    @NotBlank
-    private String category;
+    private long category;
 
     @Min(1) @Max(1000000)
     private int quantity;

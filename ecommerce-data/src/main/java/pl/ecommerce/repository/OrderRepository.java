@@ -12,5 +12,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Order save(Order order);
 
-    List<Order> findAllByBuyer(User userAccount);
+    List<Order> findAllByBuyerOrderByDateTimeDescIdDesc(User userAccount);
+
+    List<Order> findAllBySellerOrderByDateTimeDescIdDesc(User userAccount);
 }

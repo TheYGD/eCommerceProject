@@ -5,11 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "products_in_carts")
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -17,17 +20,22 @@ import javax.persistence.ManyToOne;
 public class ProductInCart extends BaseEntity {
 
     @ManyToOne
+    @JoinColumn(name = "cart_id")
     private Cart cart;
 
     @ManyToOne
-    private ProductWithQuantity productWithQuantity;
+    @JoinColumn(name = "product_id")
+    private AvailableProduct product;
+
+    private Integer quantity;
+
 
 
     public Product getProduct() {
-        return productWithQuantity.getProduct();
+        return product.getProduct();
     }
 
-    public Integer getQuantity() {
-        return productWithQuantity.getQuantity();
+    public AvailableProduct getAvailableProduct() {
+        return product;
     }
 }

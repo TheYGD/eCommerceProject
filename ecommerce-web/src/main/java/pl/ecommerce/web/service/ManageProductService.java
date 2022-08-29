@@ -10,9 +10,9 @@ import pl.ecommerce.data.other.HashGenerator;
 import pl.ecommerce.exceptions.ForbiddenException;
 import pl.ecommerce.exceptions.ItemNotFoundException;
 import pl.ecommerce.repository.CategoryRepository;
-import pl.ecommerce.repository.EternalProductRepository;
+import pl.ecommerce.repository.ProductInCartRepository;
 import pl.ecommerce.repository.ProductRepository;
-import pl.ecommerce.repository.ProductWithQuantityRepository;
+import pl.ecommerce.repository.AvailableProductRepository;
 
 import javax.transaction.Transactional;
 import java.io.*;
@@ -30,11 +30,11 @@ public class ManageProductService {
 
     private final String IMAGES_FOLDER_PATH = "images/products/";
 
-    private final CategoryRepository categoryRepository;
-    private final ProductRepository productRepository;
     private final ProductService productService;
-    private final EternalProductRepository eternalProductRepository;
-    private final ProductWithQuantityRepository productWithQuantityRepository;
+    private final CategoryRepository categoryRepository;
+    private final AvailableProductRepository availableProductRepository;
+    private final ProductRepository productRepository;
+    private final ProductInCartRepository productInCartRepository;
 
 
     public List<Category> getCategoryList() {
@@ -45,7 +45,7 @@ public class ManageProductService {
     public Long createProduct(UserCredentials userCredentials, ProductDto productDto) {
 
         User user = userCredentials.getUserAccount();
-        Category category = categoryRepository.findById( Long.valueOf(productDto.getCategory()) )
+        Category category = categoryRepository.findById( productDto.getCategory() )
                 .orElseThrow( () -> new ItemNotFoundException("This category does not exist!"));
 
         String imgName;
@@ -57,19 +57,23 @@ public class ManageProductService {
             saveImage(imgName, productDto.getImage());
         }
 
-        Product product = Product.builder()
+        Product product = productRepository.save(
+                Product.builder()
                 .name(productDto.getName())
                 .description(productDto.getDescription())
                 .category(category)
                 .seller(user)
-                .quantity(productDto.getQuantity())
                 .price( new BigDecimal(productDto.getPrice().replaceAll(",", ".")) )
-                .image(imgName)
-                .promoted(false).build();
+                .image(imgName).build());
 
-        product = productRepository.save(product);
+        AvailableProduct availableProduct = new AvailableProduct(product, productDto.getQuantity(), 0,
+                false);
+        availableProduct.setId(product.getId());
+        product.setAvailableProduct(availableProduct);
 
-        return product.getId();
+        productRepository.save(product);
+
+        return availableProduct.getId();
     }
 
     private void saveImage(String imgName, MultipartFile image) {
@@ -97,33 +101,36 @@ public class ManageProductService {
         String id;
         do {
             id = HashGenerator.generate(32);
-        } while ( productRepository.existsByImage(id) );
+        } while ( availableProductRepository.findByImage(id).isPresent() );
 
         return id;
     }
 
-    public Product getProduct(UserCredentials userCredentials, Long id) {
-        Product product = productService.getProduct(id);
+    public AvailableProduct getProduct(UserCredentials userCredentials, Long id) {
+        AvailableProduct availableProduct = productService.getProduct(id);
 
-        if (!product.getSeller().equals(userCredentials.getUserAccount())) {
+        if (!availableProduct.getProduct().getSeller().equals(userCredentials.getUserAccount())) {
             throw new ForbiddenException("This product is not yours!");
         }
 
-        return product;
+        return availableProduct;
     }
+
 
     @Transactional
     public void editProduct(UserCredentials userCredentials, ProductDto productDto, Long id) {
 
-        Product product = getProduct(userCredentials, id);
+        AvailableProduct availableProduct = getProduct(userCredentials, id);
+        Product product = availableProduct.getProduct();
 
         Category category = categoryRepository.findById( Long.valueOf(productDto.getCategory()) )
                 .orElseThrow( () -> new ItemNotFoundException("This category does not exist!"));
 
+        availableProduct.setQuantity(productDto.getQuantity());
+
         product.setName(productDto.getName());
         product.setDescription(productDto.getDescription());
         product.setCategory( category );
-        product.setQuantity(productDto.getQuantity());
         product.setPrice( new BigDecimal(productDto.getPrice().replaceAll(",", ".")) );
 
 
@@ -134,6 +141,7 @@ public class ManageProductService {
             product.setImage(imgName);
         }
 
+        availableProductRepository.save(availableProduct);
         productRepository.save(product);
     }
 
@@ -149,13 +157,24 @@ public class ManageProductService {
 
     @Transactional
     public void deleteProduct(UserCredentials userCredentials, Long id) {
-        Product product = getProduct(userCredentials, id);
-        EternalProduct eternalProduct = eternalProductRepository.findByProduct(product)
-                .orElseThrow( () -> new ItemNotFoundException("Eternal product not found!"));
-        productWithQuantityRepository.deleteAllByProduct(product);
+        AvailableProduct availableProduct = getProduct(userCredentials, id);
+        Product product = availableProduct.getProduct();
 
-        eternalProduct.setProduct(null);
-        deleteImage(product.getImage());
-        productRepository.delete(product);
+        product.setAvailableProduct(null);
+        productInCartRepository.deleteAllByProduct(availableProduct);
+        availableProductRepository.delete(availableProduct);
+        productRepository.save(product);
+    }
+
+    public ProductDto getProductDto(UserCredentials userCredentials, AvailableProduct availableProduct) {
+
+        return ProductDto.builder()
+                .name(availableProduct.getProduct().getName())
+                .description(availableProduct.getProduct().getDescription())
+                .category(availableProduct.getProduct().getCategory().getId())
+                .quantity(availableProduct.getQuantity())
+                .price(String.valueOf(availableProduct.getProduct().getPrice()))
+                .build();
+
     }
 }

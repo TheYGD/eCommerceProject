@@ -5,11 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "sold_products")
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,8 +17,17 @@ import javax.persistence.ManyToOne;
 public class SoldProduct extends BaseEntity {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    private EternalProduct product;
+    private Product product;
 
-    private Integer quantity;
+    private int quantity;
 
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+
+    public SoldProduct(Product product, int quantity) {
+        this.product = product;
+        this.quantity = quantity;
+    }
 }

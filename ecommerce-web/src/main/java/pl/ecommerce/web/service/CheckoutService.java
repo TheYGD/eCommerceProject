@@ -18,10 +18,18 @@ import java.util.List;
 public class CheckoutService {
 
     private final OrderService orderService;
+    private final CartService cartService;
 
 
-    public Long postOrder(UserCredentials userCredentials, OrderDto orderDto) {
+    public void postOrder(UserCredentials userCredentials, OrderDto orderDto) {
+        orderService.postOrder(userCredentials, orderDto);
+    }
 
-        return orderService.postOrder(userCredentials, orderDto);
+    public Cart getCartLogged(UserCredentials userCredentials) {
+        return cartService.getCartLogged(userCredentials);
+    }
+
+    public boolean isCartEmpty(Cart cart) {
+        return cartService.isCartEmpty(cart);
     }
 }

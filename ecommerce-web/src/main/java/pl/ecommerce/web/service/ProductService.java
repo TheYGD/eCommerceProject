@@ -12,6 +12,7 @@ import pl.ecommerce.data.other.ProductSort;
 import pl.ecommerce.exceptions.InvalidArgumentException;
 import pl.ecommerce.exceptions.ItemNotFoundException;
 import pl.ecommerce.repository.CategoryRepository;
+import pl.ecommerce.repository.AvailableProductRepository;
 import pl.ecommerce.repository.ProductRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,14 +28,17 @@ public class ProductService {
     private int RECORDS_ON_PAGE;
     private final CartService cartService;
     private final MessageService messageService;
+    private final AvailableProductRepository availableProductRepository;
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductSort productSort;
 
-    public ProductService(CartService cartService, ProductRepository productRepository, MessageService messageService,
+    public ProductService(CartService cartService, MessageService messageService,
+                          AvailableProductRepository availableProductRepository, ProductRepository productRepository,
                           CategoryRepository categoryRepository, ProductSort productSort) {
         this.cartService = cartService;
         this.messageService = messageService;
+        this.availableProductRepository = availableProductRepository;
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.productSort = productSort;
@@ -47,25 +51,25 @@ public class ProductService {
                 .orElseThrow( () -> new ItemNotFoundException("No item found with id=" + id) );
     }
 
-    public Page<Product> findAll(String query, int pageNr, int sortOption) {
+    public Page<AvailableProduct> findAll(String query, int pageNr, int sortOption) {
         if (query.isBlank()) {
             Pageable pageable = PageRequest.of(pageNr - 1, RECORDS_ON_PAGE, productSort.getSort(sortOption));
-            return productRepository.findAll(pageable);
+            return availableProductRepository.findAll(pageable);
         }
 
         Pageable pageable = PageRequest.of(pageNr - 1, RECORDS_ON_PAGE, productSort.getSort(sortOption));
-        return productRepository.findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(query, query,
-                pageable);
+        return availableProductRepository.findAllByQuery(query, pageable);
     }
 
-    public Page<Product> findAllByCategory(Category category, String query, int pageNr, int sortOption) {
+
+    public Page<AvailableProduct> findAllByCategory(Category category, String query, int pageNr, int sortOption) {
         if (query.isBlank()) {
             Pageable pageable = PageRequest.of(pageNr - 1, RECORDS_ON_PAGE, productSort.getSort(sortOption));
-            return productRepository.findAllByCategory(category, pageable);
+            return availableProductRepository.findAllByCategory(category, pageable);
         }
 
         Pageable pageable = PageRequest.of(pageNr - 1, RECORDS_ON_PAGE, productSort.getSort(sortOption));
-        return productRepository.findAllByCategoryAndQuery(category, query, pageable);
+        return availableProductRepository.findAllByCategoryAndQuery(category, query, pageable);
     }
 
 
@@ -79,8 +83,8 @@ public class ProductService {
     }
 
 
-    public Product getProduct(Long id) {
-        return productRepository.findById(id)
+    public AvailableProduct getProduct(Long id) {
+        return availableProductRepository.findById(id)
                 .orElseThrow( () -> {
                     String message = "Could not find product with id: %d!".formatted(id);
                     log.error(message);
@@ -88,10 +92,12 @@ public class ProductService {
                 });
     }
 
+
     public Category getCategory(Long id) {
         return categoryRepository.findById(id)
                 .orElseThrow( () -> new ItemNotFoundException("Category with id=%d doesn't exist!".formatted(id)) );
     }
+
 
     public Long askAboutProduct(UserCredentials userCredentials, Long productId, Map<String, String> formData) {
 
@@ -109,12 +115,12 @@ public class ProductService {
             throw new InvalidArgumentException("Error! Try again later");
         }
 
-        Product product = getProduct(productId);
+        AvailableProduct availableProduct = getProduct(productId);
 
         String link = "/products/" + productId;
-        String linkName = product.getName();
+        String linkName = availableProduct.getProduct().getName();
 
-        return messageService.createChat(userCredentials.getUserAccount(), product.getSeller(), messageCause, content,
+        return messageService.createChat(userCredentials.getUserAccount(), availableProduct.getProduct().getSeller(), messageCause, content,
                 link, linkName );
     }
 

@@ -4,8 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "addresses")
+
 @Getter
 @Setter
 public class Address extends BaseEntity {

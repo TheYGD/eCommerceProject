@@ -28,7 +28,7 @@ public class MessageController {
 
         List<Chat> chatList = messageService.findMessageGroup(userCredentials);
 
-        model.addAttribute(chatList);
+        model.addAttribute("chatList", chatList);
 
         return "messages/show";
     }

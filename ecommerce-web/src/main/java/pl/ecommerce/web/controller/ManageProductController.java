@@ -5,7 +5,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import pl.ecommerce.data.domain.Product;
+import pl.ecommerce.data.domain.AvailableProduct;
 import pl.ecommerce.data.dto.ProductDto;
 import pl.ecommerce.data.domain.Category;
 import pl.ecommerce.data.domain.UserCredentials;
@@ -23,18 +23,18 @@ public class ManageProductController {
     private final ManageProductService manageProductService;
 
 
-    @GetMapping("/add")
+    @GetMapping("/create")
     public String addProductPage(Model model) {
         List<Category> categoryList = manageProductService.getCategoryList();
 
-        model.addAttribute("categoryList", categoryList);
         model.addAttribute("product", new ProductDto());
+        model.addAttribute("categoryList", categoryList);
 
         return "manage-product/show";
     }
 
 
-    @PostMapping("/add")
+    @PostMapping("/create")
     public String postProduct(@AuthenticationPrincipal UserCredentials userCredentials,
                               @ModelAttribute @Valid ProductDto productDto) {
         Long id = manageProductService.createProduct(userCredentials, productDto);
@@ -47,10 +47,13 @@ public class ManageProductController {
     public String editProductPage(@AuthenticationPrincipal UserCredentials userCredentials, Model model,
                                     @PathVariable Long id) {
         List<Category> categoryList = manageProductService.getCategoryList();
-        Product product = manageProductService.getProduct(userCredentials, id);
+        AvailableProduct availableProduct = manageProductService.getProduct(userCredentials, id);
+        ProductDto productDto = manageProductService.getProductDto(userCredentials, availableProduct);
 
         model.addAttribute("categoryList", categoryList);
-        model.addAttribute("product", product);
+        model.addAttribute("product", productDto);
+        model.addAttribute("productId", availableProduct.getId());
+        model.addAttribute("image", availableProduct.getProduct().getImage());
 
         return "manage-product/show";
     }

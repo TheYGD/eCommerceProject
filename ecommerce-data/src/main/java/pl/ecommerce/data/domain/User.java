@@ -11,9 +11,10 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name = "users")
+
 @Getter
 @Setter
-@Table(name="users")
 public class User extends BaseEntity implements Serializable {
 
     private String firstName;

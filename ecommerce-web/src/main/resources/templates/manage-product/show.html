@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title=${'Add product'})}" >
+<html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title=${'Add availableProduct'})}" >
 
 <body>
     <div class="container-lg" th:with="add = ${product.name == null}">
         <h1 class="mb-5" th:text="${(add ? 'Add' : 'Edit') + ' product'}"></h1>
 
         <form class="border shadow p-4 rounded-2 my-4 row" method="post" th:object="${product}" enctype="multipart/form-data"
-              th:action="@{__(${ '/products' + (add ? '/add' : '/edit/' + product.id)})__}">
+              th:action="@{__(${ '/products' + (add ? '/create' : '/edit/' + productId)})__}">
 
             <div class="col">
                 <div class="form-group my-3">
@@ -18,8 +18,11 @@
                 <!--    for now, it will be replaced by a tree    -->
                 <div class="form-group my-3">
                     <label for="add-product-form-category">Category</label>
-                    <select class="form-control mt-1" id="add-product-form-category" required th:field="*{category}">
-                        <option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.name}"></option>
+                    <select class="form-control mt-1" id="add-product-form-category" required name="category"
+                            value="category">
+                        <option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.name}"
+                                th:selected="${category.id == product.category}">
+                        </option>
                     </select>
                 </div>
 
@@ -45,8 +48,8 @@
             <div class="col d-flex flex-column justify-content-around">
                 <div class="align-self-center d-flex align-items-center justify-content-center img-thumbnail"
                      id="add-product-form-image-container" style="width: 20rem; height: 20rem">
-                    <img th:src="@{__(${product.image != null ? ('/images/products/' +
-                             product.image) : '/images/no-img.png' })__}" style="max-width: 19rem; max-height: 19rem" id="add-product-image-preview">
+                    <img th:src="@{__(${add ? '/images/no-img.png' : ('/images/products/' + image)})__}"
+                         style="max-width: 19rem; max-height: 19rem" id="add-product-image-preview">
                 </div>
 
                 <div class="form-group my-3">

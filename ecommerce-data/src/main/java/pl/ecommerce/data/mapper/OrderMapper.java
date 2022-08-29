@@ -3,6 +3,7 @@ package pl.ecommerce.data.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import pl.ecommerce.data.domain.Address;
 import pl.ecommerce.data.domain.Order;
 import pl.ecommerce.data.dto.OrderDto;
 
@@ -19,4 +20,6 @@ public interface OrderMapper {
     @Mapping(source = "postalCode", target="address.postalCode")
     @Mapping(source = "country", target="address.country")
     Order DtoToEntity(OrderDto orderDto);
+
+    Address DtoToEntityAddress(OrderDto orderDto);
 }

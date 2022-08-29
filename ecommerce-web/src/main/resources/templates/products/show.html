@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title=${product.name})}">
+<html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title=${availableProduct.product.name})}">
 
 <body>
-    <div class="container-lg shadow-sm border">
+    <div class="container-lg shadow-sm border" th:with="product=${availableProduct.product}">
 
         <div class="d-flex p-5">
             <div class=" col-3 d-flex align-items-center justify-content-center shadow-sm border rounded-2 me-5" style="height: 30rem; width: 30rem;">

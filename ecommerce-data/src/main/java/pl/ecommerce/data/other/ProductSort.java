@@ -8,9 +8,9 @@ public class ProductSort {
 
     public Sort getSort(int option) {
         Sort sort = switch (option) {
-            case 1 -> Sort.by("price");
+            case 1 -> Sort.by("product.price");
 
-            default -> Sort.by("price");
+            default -> Sort.by("product.price");
         };
 
         return sort;

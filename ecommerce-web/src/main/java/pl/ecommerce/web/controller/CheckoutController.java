@@ -19,16 +19,15 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class CheckoutController {
 
-    private final CartService cartService;
     private final CheckoutService checkoutService;
 
 
     @GetMapping
     public String checkoutPage(@AuthenticationPrincipal UserCredentials userCredentials, Model model) {
 
-        Cart cart = cartService.getCartLogged(userCredentials);
+        Cart cart = checkoutService.getCartLogged(userCredentials);
 
-        if (cartService.isCartEmpty(cart)) {
+        if (checkoutService.isCartEmpty(cart)) {
             return "redirect:/";
         }
 
@@ -47,7 +46,7 @@ public class CheckoutController {
             return "checkout/show";
         }
 
-        Long id = checkoutService.postOrder(userCredentials, orderDto);
-        return "redirect:/orders/" + id;
+        checkoutService.postOrder(userCredentials, orderDto);
+        return "redirect:/profile/ordered";
     }
 }

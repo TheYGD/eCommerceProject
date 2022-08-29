@@ -10,7 +10,7 @@
 
             <ul class="shadow rounded-2 my-5 p-0" th:each="order : ${orderList}">
 
-                <li class="list-group-item d-flex flex-row product-in-cart bg-primary bg-opacity-10 hover-dark d-flex
+                <li class="list-group-item d-flex flex-row availableProduct-in-cart bg-primary bg-opacity-10 hover-dark d-flex
                         justify-content-center">
                     <a class="stretched-link" th:href="@{__(${'/orders/' + order.id})__}"></a>
 
@@ -22,36 +22,31 @@
                     </div>
                 </li>
 
-                <th:block th:each="productsGroup : ${order.productsGroupList}">
-                    <li class="list-group-item d-flex flex-row product-in-cart bg-primary bg-opacity-10 hover-dark">
-
-                    </li>
-                    <li class="list-group-item d-flex flex-row product-in-cart hover-dark" th:each="soldProduct : ${productsGroup.soldProductList}">
-                        <a class="stretched-link product-link" th:href="@{__(${'/products/' + (
-                    soldProduct.getProduct()?.product != null ? soldProduct.getProduct().product.id : ('archive/' +
-                    soldProduct.getProduct()?.id)) })__}"></a>
-                        <div class="col d-flex align-items-center justify-content-center" style="min-height: 12rem; min-width: 12rem; max-height: 12rem; max-width: 12rem;">
-                            <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
-                                 th:src="${ soldProduct.product.image != null ? ('/images/products/' +
+                <li class="list-group-item d-flex flex-row availableProduct-in-cart hover-dark" th:each="soldProduct : ${order.soldProductsList}">
+                    <a class="stretched-link availableProduct-link" th:href="@{__(${'/products/' + (
+                    soldProduct.product?.availableProduct != null ? soldProduct.product.availableProduct.id : ('archive/' +
+                    soldProduct.product.id)) })__}"></a>
+                    <div class="col d-flex align-items-center justify-content-center" style="min-height: 12rem; min-width: 12rem; max-height: 12rem; max-width: 12rem;">
+                        <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
+                             th:src="${ soldProduct.product.image != null ? ('/images/products/' +
                      soldProduct.product.image) : '/images/no-img.png' }" >
-                        </div>
+                    </div>
 
-                        <div class="col card-body">
-                            <h4 class="card-title" th:text="${soldProduct.product.name}">Product name</h4>
-                            <h4 class="display-6 product-in-cart-price" th:text="${soldProduct.product.price + ' $'}">Price</h4>
-                        </div>
+                    <div class="col card-body">
+                        <h4 class="card-title" th:text="${soldProduct.product.name}">Product name</h4>
+                        <h4 class="display-6 availableProduct-in-cart-price" th:text="${soldProduct.product.price + ' $'}">Price</h4>
+                    </div>
 
-                        <div class="col-2 d-flex align-items-center justify-content-center">
-                            <p class="fs-4 bold me-3 product-in-cart-quantity" th:text="${soldProduct.quantity}"></p>
-                        </div>
+                    <div class="col-2 d-flex align-items-center justify-content-center">
+                        <p class="fs-4 bold me-3 availableProduct-in-cart-quantity" th:text="${soldProduct.quantity}"></p>
+                    </div>
 
-                        <div class="col-3 d-flex align-items-center justify-content-center flex-column">
-                            <p class="fs-5 bold me-3">Seller</p>
-                            <a class="me-3 z-top-1 text-decoration-none" th:text="${soldProduct.product.seller.credentials.username}"
-                               th:href="@{__${'/sellers/' + soldProduct.product.seller.id}__}"></a>
-                        </div>
-                    </li>
-                </th:block>
+                    <div class="col-3 d-flex align-items-center justify-content-center flex-column">
+                        <p class="fs-5 bold me-3">Seller</p>
+                        <a class="me-3 z-top-1 text-decoration-none" th:text="${soldProduct.product.seller.credentials.username}"
+                           th:href="@{__${'/sellers/' + soldProduct.product.seller.id}__}"></a>
+                    </div>
+                </li>
 
             </ul>
 

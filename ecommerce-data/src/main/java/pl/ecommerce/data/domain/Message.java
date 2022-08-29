@@ -12,11 +12,12 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "messages")
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "messages")
 public class Message extends BaseEntity {
 
     @ManyToOne

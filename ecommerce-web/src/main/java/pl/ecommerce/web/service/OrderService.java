@@ -13,6 +13,7 @@ import pl.ecommerce.repository.*;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,9 +27,6 @@ public class OrderService {
     private final CartService cartService;
     private final MessageService messageService;
     private final OrderRepository orderRepository;
-    private final SoldProductRepository soldProductRepository;
-    private final SoldProductsGroupRepository soldProductsGroupRepository;
-    private final AddressRepository addressRepository;
     private final ProductInCartRepository productInCartRepository;
     private final CartRepository cartRepository;
 
@@ -44,37 +42,33 @@ public class OrderService {
 
 
     @Transactional
-    public Long postOrder(UserCredentials userCredentials, OrderDto orderDto) {
+    public void postOrder(UserCredentials userCredentials, OrderDto orderDto) {
 
         User user = userCredentials.getUserAccount();
         Cart cart = cartService.getCartLogged(userCredentials);
 
-        Order order = OrderMapper.INSTANCE.DtoToEntity(orderDto);
-        order.setPaymentOption( PaymentOption.valueOf(orderDto.getPaymentOption()) );
-        order.setBuyer(user);
-        order.setDateTime(LocalDateTime.now());
-        order.setAddress( addressRepository.save(order.getAddress()) );
+        Address address = OrderMapper.INSTANCE.DtoToEntityAddress(orderDto);
+        PaymentMethod paymentMethod = PaymentMethod.valueOf( orderDto.getPaymentOption() );
+        LocalDateTime orderDate = LocalDateTime.now();
 
-        List<SoldProductsGroup> soldProductsGroupList = cart.getProductList().stream()
-                .map( productInCart -> soldProductRepository.save(
-                        new SoldProduct( new EternalProduct(productInCart.getProductWithQuantity().getProduct()),
-                                productInCart.getProductWithQuantity().getQuantity())))
+        List<Order> orderList = cart.getProductList().stream()
+                .map( productInCart -> new SoldProduct( productInCart.getProduct(),
+                        productInCart.getQuantity() ))
                 .collect(Collectors.groupingBy( soldProduct -> soldProduct.getProduct().getSeller() ))
                 .values().stream()
-                .map( soldProducts -> new SoldProductsGroup(order, soldProducts.get(0).getProduct().getSeller(), soldProducts) )
-
+                .map( soldProducts -> new Order(soldProducts, address, user,
+                        soldProducts.get(0).getProduct().getSeller(), orderDate, paymentMethod) )
                 .toList();
 
-        soldProductsGroupRepository.saveAll(soldProductsGroupList);
-        order.setProductsGroupList( soldProductsGroupList );
-        orderRepository.save(order);
+        orderList.forEach( order ->
+            order.getSoldProductsList().forEach( product -> product.setOrder(order) ));
+
+        orderRepository.saveAll( orderList );
 
         productInCartRepository.deleteAll(cart.getProductList());
 
         cart.setProductList(new LinkedList<>());
         cartRepository.save(cart);
-
-        return order.getId();
     }
 
     public Long askAboutOrder(UserCredentials userCredentials, Long orderId, Map<String, String> formData) {
@@ -99,7 +93,7 @@ public class OrderService {
         String link = "/orders/" + orderId;
         String linkName = "Order #" + order.getId();
 
-        return messageService.createChat(userCredentials.getUserAccount(), order.getProductsGroupList().get(0).getSeller(),
+        return messageService.createChat(userCredentials.getUserAccount(), order.getSeller(),
                 messageCause, content, link, linkName );                                 //todo change to seller ***********************************************
     }
 

@@ -22,21 +22,19 @@ public class ProfileService {
 
     @Value("${pl.ecommerce.products-on-page}")
     private int RECORDS_ON_PAGE;
-    private final SoldProductsGroupRepository soldProductsGroupRepository;
+
     private final OrderRepository orderRepository;
-    private final ProductRepository productRepository;
+    private final AvailableProductRepository availableProductRepository;
     private final UserRepository userRepository;
     private final UserCredentialsRepository userCredentialsRepository;
     private final PasswordEncoder passwordEncoder;
     private final ProductSort productSort;
 
-    public ProfileService(SoldProductsGroupRepository soldProductsGroupRepository, OrderRepository orderRepository,
-                          ProductRepository productRepository, UserRepository userRepository,
-                          UserCredentialsRepository userCredentialsRepository, PasswordEncoder passwordEncoder,
-                          ProductSort productSort) {
-        this.soldProductsGroupRepository = soldProductsGroupRepository;
+    public ProfileService(OrderRepository orderRepository, AvailableProductRepository availableProductRepository,
+                          UserRepository userRepository, UserCredentialsRepository userCredentialsRepository,
+                          PasswordEncoder passwordEncoder, ProductSort productSort) {
         this.orderRepository = orderRepository;
-        this.productRepository = productRepository;
+        this.availableProductRepository = availableProductRepository;
         this.userRepository = userRepository;
         this.userCredentialsRepository = userCredentialsRepository;
         this.passwordEncoder = passwordEncoder;
@@ -45,17 +43,17 @@ public class ProfileService {
 
 
 
-    public List<SoldProductsGroup> getSoldProductsGroupList(UserCredentials userCredentials) {
-        return soldProductsGroupRepository.findAllBySeller(userCredentials.getUserAccount());
+    public List<Order> getSoldProductsList(UserCredentials userCredentials) {
+        return orderRepository.findAllBySellerOrderByDateTimeDescIdDesc(userCredentials.getUserAccount());
     }
 
     public List<Order> getOrderedProducts(UserCredentials userCredentials) {
-        return orderRepository.findAllByBuyer(userCredentials.getUserAccount());
+        return orderRepository.findAllByBuyerOrderByDateTimeDescIdDesc(userCredentials.getUserAccount());
     }
 
-    public Page<Product> getOwnProducts(UserCredentials userCredentials, int pageNr, int sortOption) {
+    public Page<AvailableProduct> getOwnProducts(UserCredentials userCredentials, int pageNr, int sortOption) {
         Pageable pageable = PageRequest.of(pageNr - 1, RECORDS_ON_PAGE, productSort.getSort(sortOption));
-        return productRepository.findAllBySeller(userCredentials.getUserAccount(), pageable);
+        return availableProductRepository.findAllBySeller(userCredentials.getUserAccount(), pageable);
     }
 
     public UserInformationDto getUserInformation(UserCredentials userCredentials) {
