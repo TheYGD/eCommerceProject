@@ -79,25 +79,27 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         userRepository.save(seller1);
         userCredentialsRepository.save(new UserCredentials());
 
-        Category category1 = new Category("Samochody", "Znajdują się tutaj samochody");
-        Product product1 = new Product("Audi1", "szybkie 2 audi", category1, seller1,
-                BigDecimal.valueOf(100000), null);
+        Category category1 = categoryRepository.save( new Category("Samochody", "Znajdują się tutaj samochody") );
+        Product product1 = productRepository.save( new Product("Audi1", "szybkie 2 audi", category1, seller1,
+                BigDecimal.valueOf(100000), null) );
         AvailableProduct availableProduct1 = new AvailableProduct(product1, 1, 0, false);
+        availableProduct1.setId(product1.getId());
         product1.setAvailableProduct(availableProduct1);
 
-        Product product2 = new Product("BMW1", "szybkie 2 bmw", category1, seller1,
-                BigDecimal.valueOf(120000), null);
+        Product product2 = productRepository.save( new Product("BMW1", "szybkie 2 bmw", category1, seller1,
+                BigDecimal.valueOf(120000), null) );
         AvailableProduct availableProduct2 = new AvailableProduct(product2, 1, 0, false);
+        availableProduct2.setId(product2.getId());
         product2.setAvailableProduct(availableProduct2);
 
 
-        Product product3 = new Product("Mercedes1", "szybki 2 mercedes", category1, seller1,
-                BigDecimal.valueOf(150000), null);
+        Product product3 = productRepository.save( new Product("Mercedes1", "szybki 2 mercedes", category1, seller1,
+                BigDecimal.valueOf(150000), null) );
         AvailableProduct availableProduct3 = new AvailableProduct(product3, 1, 0, false);
+        availableProduct3.setId(product3.getId());
         product3.setAvailableProduct(availableProduct3);
 
 
-        categoryRepository.save(category1);
         productRepository.save(product1);
         productRepository.save(product2);
         productRepository.save(product3);

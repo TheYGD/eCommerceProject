@@ -17,11 +17,15 @@
                     <h4 class="lead fs-3" th:text="${product.category.name}">Category name</h4>
 
                     <div class="d-flex align-items-center mt-5">
-                        <input class="col-3 z-top-1 me-3" type="number" min="1" value="1">
+<!--                        <div class="d-flex flex-column">-->
+                            <input class="col-3 z-top-1 me-2" type="number" min="1" value="1">
+                            <p class="m-0" th:text="${'z ' + availableProduct.quantity}"></p>
+<!--                        </div>-->
 
-                        <button type="button" class="btn btn-primary py-2 z-top-1" id="add-to-cart-btn">Add to cart</button>
+                        <button type="button" class="btn btn-primary py-2 z-top-1 ms-5" id="add-to-cart-btn">Add to cart</button>
                     </div>
-                    <p class="mt-5 cursor-pointer text-primary" id="ask-about-product"><i class="fa fa-envelope me-2"></i>Ask about product</p>
+                    <p  th:if="${availableProduct.soldQuantity != 0}" class="mt-4  fw-lighter" th:text="${'Sold ' + availableProduct.soldQuantity}"></p>
+                    <p class="mt-4 cursor-pointer text-primary" id="ask-about-product"><i class="fa fa-envelope me-2"></i>Ask about product</p>
                 </div>
             </div>
 

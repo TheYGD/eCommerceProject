@@ -14,7 +14,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AvailableProduct extends BaseEntity {
+public class AvailableProduct extends GivenIdEntity {
 
     @OneToOne
     @JoinColumn(name = "product_id")
@@ -22,7 +22,7 @@ public class AvailableProduct extends BaseEntity {
 
     private int quantity;
 
-    private int BoughtQuantity;
+    private int soldQuantity;
 
     private boolean promoted;
 

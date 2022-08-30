@@ -9,6 +9,7 @@ import pl.ecommerce.data.mapper.OrderMapper;
 import pl.ecommerce.exceptions.ForbiddenException;
 import pl.ecommerce.exceptions.InvalidArgumentException;
 import pl.ecommerce.exceptions.ItemNotFoundException;
+import pl.ecommerce.exceptions.NotEnoughProductQuantityException;
 import pl.ecommerce.repository.*;
 
 import javax.transaction.Transactional;
@@ -28,6 +29,8 @@ public class OrderService {
     private final MessageService messageService;
     private final OrderRepository orderRepository;
     private final ProductInCartRepository productInCartRepository;
+    private final AvailableProductRepository availableProductRepository;
+    private final ExpiredProductRepository expiredProductRepository;
     private final CartRepository cartRepository;
 
 
@@ -52,8 +55,11 @@ public class OrderService {
         LocalDateTime orderDate = LocalDateTime.now();
 
         List<Order> orderList = cart.getProductList().stream()
-                .map( productInCart -> new SoldProduct( productInCart.getProduct(),
-                        productInCart.getQuantity() ))
+                .map( productInCart -> {
+                    Product product = changeAvailableQuantity(productInCart);
+                    return new SoldProduct( product,
+                            productInCart.getQuantity() );
+                })
                 .collect(Collectors.groupingBy( soldProduct -> soldProduct.getProduct().getSeller() ))
                 .values().stream()
                 .map( soldProducts -> new Order(soldProducts, address, user,
@@ -69,6 +75,39 @@ public class OrderService {
 
         cart.setProductList(new LinkedList<>());
         cartRepository.save(cart);
+    }
+
+    private Product changeAvailableQuantity(ProductInCart productInCart) {
+        AvailableProduct availableProduct = productInCart.getAvailableProduct();
+
+        if (availableProduct.getQuantity() < productInCart.getQuantity()) {
+            throw new NotEnoughProductQuantityException(
+                    "One or more products in your cart are not available in the desired quantity.");
+        }
+
+        availableProduct.setQuantity( availableProduct.getQuantity() - productInCart.getQuantity() );
+        availableProduct.setSoldQuantity( availableProduct.getSoldQuantity() + productInCart.getQuantity() );
+
+        if (availableProduct.getQuantity() == 0) {
+            ExpiredProduct expiredProduct = ExpiredProduct.builder()
+                    .product(availableProduct.getProduct())
+                    .quantity(availableProduct.getQuantity())
+                    .soldQuantity(availableProduct.getSoldQuantity()).build();
+            expiredProduct.setId( availableProduct.getId() );
+
+            availableProduct.getProduct().setAvailableProduct(null);
+
+            productInCartRepository.deleteAllByProduct(availableProduct);
+
+            expiredProductRepository.save(expiredProduct);
+            availableProductRepository.delete(availableProduct);
+        }
+
+        else {
+            availableProductRepository.save(availableProduct);
+        }
+
+        return availableProduct.getProduct();
     }
 
     public Long askAboutOrder(UserCredentials userCredentials, Long orderId, Map<String, String> formData) {

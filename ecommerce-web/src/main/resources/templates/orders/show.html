@@ -51,9 +51,7 @@
 
     <ul class="list-group shadow-sm my-5">
         <li class="list-group-item d-flex flex-row product-in-cart hover-dark" th:each="soldProduct : ${order.soldProductsList}">
-          <a class="stretched-link product-link" th:href="@{__(${'/products/' + (
-                    soldProduct.product?.availableProduct != null ? soldProduct.product.availableProduct.id : ('archive/' +
-                    soldProduct.product?.id)) })__}"></a>
+          <a class="stretched-link product-link" th:href="@{__(${'/products/' +  soldProduct.product.id})__}"></a>
           <div class="col d-flex align-items-center justify-content-center" style="min-height: 12rem; min-width: 12rem; max-height: 12rem; max-width: 12rem;">
             <img alt="image.png" style="max-height: 10rem; max-width: 10rem;"
                  th:src="${ soldProduct.product.image != null ? ('/images/products/' +
@@ -71,8 +69,8 @@
 
           <div class="col-3 d-flex align-items-center justify-content-center flex-column">
             <p class="fs-5 bold me-3">Seller</p>
-            <a class="me-3 z-top-1 text-decoration-none" th:text="${soldProduct.product.seller.credentials.username}"
-               th:href="@{__${'/sellers/' + soldProduct.product.seller.id}__}"></a>
+            <a class="me-3 z-top-1 text-decoration-none" th:text="${order.seller.credentials.username}"
+               th:href="@{__${'/sellers/' + order.seller.id}__}"></a>
           </div>
         </li>
     </ul>

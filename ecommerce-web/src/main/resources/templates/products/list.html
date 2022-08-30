@@ -16,10 +16,21 @@
         <h4 class="display-6" th:text="${product.price + ' $'}">Price</h4>
       </div>
 
-      <div class="float-end d-flex align-items-center">
-        <input class="col-3 z-top-1 me-3" type="number" min="1" value="1">
 
-        <button type="button" class="btn btn-primary py-2 z-top-1 add-to-cart-btn">Add to cart</button>
+      <div class="col-2 d-flex align-items-center">
+        <p th:if="${availableProduct.soldQuantity != 0}" class="m-0 fw-lighter" th:text="${'Sold ' + availableProduct.soldQuantity}"></p>
+      </div>
+
+
+      <div class="float-end align-items-center col-4 row">
+        <div class="col row align-items-center">
+          <input class="col-4 px-1 z-top-1 position-relative" type="number" min="1" value="1">
+          <p class="col m-0" th:text="${'of ' + availableProduct.quantity}"></p>
+        </div>
+
+        <div class="col">
+          <button type="button" class="btn btn-primary py-2 z-top-1 add-to-cart-btn position-relative">Add to cart</button>
+        </div>
       </div>
 
     </div>
@@ -27,7 +38,7 @@
     <div th:if="${productPage.hasContent()}" class="col-2 d-flex align-items-center mx-auto my-3" id="page-change-div">
       <i class="fa fa-less-than me-3"></i>
       <input class="w-25 me-2" type="text" th:value="${param.pageNr ?: 1}">
-      <p class="my-auto ms-1 me-3" th:text="${'z ' + productPage.totalPages}"></p>
+      <p class="my-auto ms-1 me-3" th:text="${'of ' + productPage.totalPages}"></p>
 
       <i class="fa fa-greater-than"></i>
     </div>
@@ -47,10 +58,10 @@
     for ( let button of addToCartButtons ) {
       button.onclick = function () {
 
-        let stretchedLink = button.parentElement.parentElement.children[0];
+        let stretchedLink = button.parentElement.parentElement.parentElement.children[0];
         let url = stretchedLink.getAttribute("href")
         let lastSlashIndex = url.lastIndexOf('/');
-        let quantity = button.parentElement.children[0].value;
+        let quantity = button.parentElement.parentElement.children[0].children[0].value;
         let urlAdd = url.substring(0, lastSlashIndex) + '/add' + url.substring(lastSlashIndex) + '?quantity=' + quantity;
 
         console.log(urlAdd);
