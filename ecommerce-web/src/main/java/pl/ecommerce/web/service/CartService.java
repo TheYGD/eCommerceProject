@@ -29,18 +29,22 @@ public class CartService {
     private final CartToExpireRepository cartToExpireRepository;
 
 
-    public void changeProductsQuantity(UserCredentials userCredentials, Long id, Integer quantity,
+    public String changeProductsQuantity(UserCredentials userCredentials, Long id, Integer quantity,
                                        HttpServletRequest request, HttpServletResponse response) {
-        if (quantity < 1 || quantity > 9999) { // todo max is product in stock
-            throw new InvalidQuantityException("Quantity must be between %d - %d".formatted(1, 9999));
+        AvailableProduct availableProduct = getProduct(id);
+
+        if (!isQuantityAvailable(availableProduct, quantity)) {
+            return "Quantity must be between %d and %d".formatted(1, availableProduct.getQuantity());
         }
 
         Cart cart = getCart(userCredentials, request, response);
-        ProductInCart productInCart = getProductInCart(cart, id);
+        ProductInCart productInCart = getProductInCart(cart, availableProduct);
 
         productInCart.setQuantity(quantity);
 
         productInCartRepository.save(productInCart);
+
+        return "Quantity changed";
     }
 
 
@@ -48,7 +52,7 @@ public class CartService {
     public void removeProduct(UserCredentials userCredentials, Long id, HttpServletRequest request,
                               HttpServletResponse response) {
         Cart cart = getCart(userCredentials, request, response);
-        ProductInCart productInCart = getProductInCart(cart, id);
+        ProductInCart productInCart = getProductInCart(cart, getProduct(id));
 
         cart.getProductList().remove(productInCart);
         productInCartRepository.delete(productInCart);
@@ -56,10 +60,7 @@ public class CartService {
     }
 
 
-    public ProductInCart getProductInCart(Cart cart, Long id) {
-        AvailableProduct availableProduct = availableProductRepository.findById(id)
-                .orElseThrow( () -> new ItemNotFoundException("No such product found!") );
-
+    public ProductInCart getProductInCart(Cart cart, AvailableProduct availableProduct) {
         ProductInCart productInCart = cart.getProductList().stream()
                 .filter( product -> product.getProduct().equals(availableProduct.getProduct()) )
                 .findFirst()
@@ -88,6 +89,10 @@ public class CartService {
     @Transactional
     public String addProduct(Cart cart, AvailableProduct availableProduct, Integer quantity, UserCredentials userCredentials) {
 
+        if (quantity < 1) {
+            return "Product quantity must be greater than 0!";
+        }
+
         if (availableProduct.getProduct().getSeller().getCredentials().equals(userCredentials)) {
             return "Cannot add your own products to cart!";
         }
@@ -98,18 +103,43 @@ public class CartService {
 
         if (productInCartOptional.isPresent()) {
             ProductInCart productInCart = productInCartOptional.get();
-            productInCart.setQuantity(productInCart.getAvailableProduct().getQuantity() + quantity );
+            int newQuantity = productInCart.getAvailableProduct().getQuantity() + quantity;
+            if (!isQuantityAvailable(availableProduct, newQuantity)) {
+                return "Product's quantity is not enough!";
+            }
+
+            productInCart.setQuantity( newQuantity );
             productInCartRepository.save(productInCart);
         }
 
         else {
             ProductInCart productInCart = new ProductInCart(cart, availableProduct, quantity);
+            if (!isQuantityAvailable(availableProduct, quantity)) {
+                return "Product's quantity is not enough!";
+            }
+
             cart.getProductList().add(productInCart);
             cartRepository.save(cart);
         }
 
         return "Product added.";
     }
+
+
+    private boolean isQuantityAvailable(AvailableProduct availableProduct, int quantity) {
+        return quantity >= 1 && quantity <= availableProduct.getQuantity();
+    }
+
+
+    public AvailableProduct getProduct(Long id) {
+        return availableProductRepository.findById(id)
+                .orElseThrow( () -> {
+                    String message = "Could not find product with id: %d!".formatted(id);
+                    log.error(message);
+                    return new ItemNotFoundException(message);
+                });
+    }
+
 
     public Cart getCart(UserCredentials userCredentials, HttpServletRequest request, HttpServletResponse response) {
 
@@ -188,5 +218,14 @@ public class CartService {
 
     public boolean isCartEmpty(Cart cart) {
         return cart.getProductList().size() == 0;
+    }
+
+    public void markJustDeletedProductsAsFalse(Cart cart) {
+        if (!cart.isJustDeletedProducts()) {
+            return;
+        }
+
+        cart.setJustDeletedProducts(false);
+        cartRepository.save(cart);
     }
 }

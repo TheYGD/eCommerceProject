@@ -27,6 +27,7 @@ public class OrderService {
 
     private final CartService cartService;
     private final MessageService messageService;
+    private final ManageProductService manageProductService;
     private final OrderRepository orderRepository;
     private final ProductInCartRepository productInCartRepository;
     private final AvailableProductRepository availableProductRepository;
@@ -100,6 +101,7 @@ public class OrderService {
             productInCartRepository.deleteAllByProduct(availableProduct);
 
             expiredProductRepository.save(expiredProduct);
+            manageProductService.markAsJustDeletedProducts(availableProduct);
             availableProductRepository.delete(availableProduct);
         }
 

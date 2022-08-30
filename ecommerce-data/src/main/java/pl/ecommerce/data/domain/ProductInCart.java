@@ -27,7 +27,7 @@ public class ProductInCart extends BaseEntity {
     @JoinColumn(name = "product_id")
     private AvailableProduct product;
 
-    private Integer quantity;
+    private int quantity;
 
 
 

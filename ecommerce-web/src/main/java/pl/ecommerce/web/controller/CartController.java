@@ -24,7 +24,10 @@ public class CartController {
     public String showCart(@AuthenticationPrincipal UserCredentials userCredentials, Model model,
                            HttpServletRequest request, HttpServletResponse response) {
         Cart cart = cartService.getCart(userCredentials, request, response);
+
         model.addAttribute("cart", cart);
+        model.addAttribute("justDeletedProducts", cart.isJustDeletedProducts());
+        cartService.markJustDeletedProductsAsFalse(cart);
 
         return "cart/show";
     }
@@ -35,9 +38,9 @@ public class CartController {
     public StringResponse changeProductsQuantity(@AuthenticationPrincipal UserCredentials userCredentials,
                                                  @PathVariable Long id, @RequestParam Integer quantity,
                                                  HttpServletRequest request, HttpServletResponse response) {
-        cartService.changeProductsQuantity(userCredentials, id, quantity, request, response);
+        String stringResponse = cartService.changeProductsQuantity(userCredentials, id, quantity, request, response);
 
-        return new StringResponse("Quantity changed");
+        return new StringResponse( stringResponse );
     }
 
 

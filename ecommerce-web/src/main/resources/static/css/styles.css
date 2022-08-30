@@ -74,3 +74,14 @@ li:hover .message-lock-switch {
     white-space: pre-wrap;
     overflow-wrap: break-word;
 }
+
+
+.selected-chat {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    right: 0;
+    position: absolute;
+    border: 2px solid #418deb;
+    z-index: -1;
+}

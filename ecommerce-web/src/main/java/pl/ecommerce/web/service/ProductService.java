@@ -78,7 +78,6 @@ public class ProductService {
      */
     public String addProductToCart(UserCredentials userCredentials, Long productId, Integer quantity,
                                    HttpServletRequest request, HttpServletResponse response) {
-
         return cartService.addProductToCart(userCredentials, productId, quantity, request, response);
     }
 

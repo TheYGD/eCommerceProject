@@ -9,10 +9,7 @@ import pl.ecommerce.data.dto.ProductDto;
 import pl.ecommerce.data.other.HashGenerator;
 import pl.ecommerce.exceptions.ForbiddenException;
 import pl.ecommerce.exceptions.ItemNotFoundException;
-import pl.ecommerce.repository.CategoryRepository;
-import pl.ecommerce.repository.ProductInCartRepository;
-import pl.ecommerce.repository.ProductRepository;
-import pl.ecommerce.repository.AvailableProductRepository;
+import pl.ecommerce.repository.*;
 
 import javax.transaction.Transactional;
 import java.io.*;
@@ -35,6 +32,7 @@ public class ManageProductService {
     private final AvailableProductRepository availableProductRepository;
     private final ProductRepository productRepository;
     private final ProductInCartRepository productInCartRepository;
+    private final CartRepository cartRepository;
 
 
     public List<Category> getCategoryList() {
@@ -162,8 +160,22 @@ public class ManageProductService {
 
         product.setAvailableProduct(null);
         productInCartRepository.deleteAllByProduct(availableProduct);
+        markAsJustDeletedProducts(availableProduct);
+
         availableProductRepository.delete(availableProduct);
         productRepository.save(product);
+    }
+
+    public void markAsJustDeletedProducts(AvailableProduct availableProduct) {
+        List<Cart> carts = productInCartRepository.findAllByProduct(availableProduct).stream()
+                .map( productInCart -> productInCart.getCart() )
+                .map( cart -> {
+                    cart.setJustDeletedProducts(true);
+                    return cart;
+                } )
+                .toList();
+
+        cartRepository.saveAll(carts);
     }
 
     public ProductDto getProductDto(UserCredentials userCredentials, AvailableProduct availableProduct) {

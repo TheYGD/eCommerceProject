@@ -17,6 +17,8 @@ public interface ExpiredProductRepository extends JpaRepository<ExpiredProduct, 
     ExpiredProduct save(AvailableProduct ExpiredProduct);
 
 
-    @Query("SELECT ep FROM ExpiredProduct ep INNER JOIN ep.product p WHERE p.seller = :seller")
+    @Query( "SELECT ep FROM ExpiredProduct ep " +
+            "INNER JOIN ep.product p " +
+            "WHERE p.seller = :seller")
     Page<ExpiredProduct> findAllBySeller(@Param("seller") User seller, Pageable pageable);
 }

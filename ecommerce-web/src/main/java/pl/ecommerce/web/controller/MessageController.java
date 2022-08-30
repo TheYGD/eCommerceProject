@@ -50,8 +50,8 @@ public class MessageController {
                                       @PathVariable("id") Long chatId, @RequestBody String content,
                                       Map<String, String> formData) {
 
-        messageService.sendMessage(userCredentials, chatId, content);
-        return new StringResponse("Message sent.");
+         String response = messageService.sendMessage(userCredentials, chatId, content);
+        return new StringResponse(response);
     }
 
 

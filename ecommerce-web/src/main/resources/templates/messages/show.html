@@ -10,9 +10,9 @@
     <div class="mt-4 row">
       <div class="col-3">
         <ul class="list-group mt-3 overflow-auto" id="message-group-list" style="max-height: 70vh;">
-          <li class="list-group-item px-3 pt-3 pb-1 d-flex justify-content-between align-items-center hover-dark"
+          <li class="list-group-item px-3 pt-3 pb-1 d-flex justify-content-between align-items-center hover-dark position-relative bg-opacity-5"
               th:each="chat : ${chatList}" th:id="${'message-group-' + chat.id}"
-              th:classappend="${chat.closedBy != null ? 'bg-black bg-opacity-5' : ''}">
+              th:classappend="${chat.closedBy != null ? 'bg-black' : 'bg-white'}">
             <div>
               <p class="mb-2 small" th:text="${{chat.lastActivity}}"></p>
               <h6 class="mb-2" th:text="${chat.title}"></h6>
@@ -70,12 +70,16 @@
   let username;
   let currentChatId;
   let isLoadingNewMessages;
+  let selectedChatDiv;
 
 
   function initGlobalVariables() {
     chatView = $('#chat-view')[0];
     chatIdPrefixLength = 'message-group-'.length;
     username = $('#nav-profile')[0].innerText;
+
+    selectedChatDiv = document.createElement('div');
+    selectedChatDiv.class = 'selected-chat';
   }
 
   function initChatDivs() {
@@ -113,8 +117,18 @@
         messageSendForm.children[1].onclick = function() {
           if (messageSendFormInput.value.trim() == '') {
             // todo toast - cant write blank message
+            console.log("Message can't be blank.");
             return;
           }
+
+          if (messageSendFormInput.value.length > 300) {
+            // todo toast - cant write message longer than 300 chars
+            console.log("Message can't longer than 300 characters.");
+            return;
+          }
+
+          console.log({ 'xd': messageSendFormInput.value});
+          console.log(messageSendFormInput.value.length);
 
           postData(url, messageSendFormInput.value)
                   .then( result => {
@@ -136,6 +150,8 @@
                   })
         }
 
+        setSelectedChatBorder(chat);
+
         if (chat.children[1] == null || chat.children[1].classList.contains('fa-unlock')) {
           disableMessageTextArea();
         }
@@ -148,6 +164,14 @@
     }
   }
 
+  function setSelectedChatBorder(selectedChat) {
+    selectedChatDiv?.remove();
+
+    selectedChatDiv = document.createElement('div');
+    selectedChatDiv.className = 'selected-chat';
+
+    selectedChat.appendChild(selectedChatDiv);
+  }
 
   function scrollViewToBottom() {
     chatView.scrollTop = chatView.scrollHeight;

@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
 
-@Entity
+@Entity(name = "carts")
 @Table(name = "carts")
 
 @Getter
@@ -19,4 +19,6 @@ public class Cart extends BaseEntity {
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<ProductInCart> productList = new LinkedList<>();
+
+    private boolean justDeletedProducts = false;
 }

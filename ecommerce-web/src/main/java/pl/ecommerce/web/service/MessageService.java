@@ -77,9 +77,13 @@ public class MessageService {
 
 
     @Transactional
-    public void sendMessage(UserCredentials userCredentials, Long chatId, String content) {
+    public String sendMessage(UserCredentials userCredentials, Long chatId, String content) {
         if (content.substring(1, content.length() - 1).isBlank()) {
-            throw new InvalidArgumentException("Message cannot be blank!");
+            return "Message cannot be blank!";
+        }
+        // 600 = 300*2, there can be 300 chars which need escape char
+        if (content.substring(1, content.length() - 1).length() > 600) {
+            return "Message is too long!";
         }
 
         User user = userCredentials.getUserAccount();
@@ -88,7 +92,7 @@ public class MessageService {
         isUsersChat(chat, user);
 
         if (chat.getClosedBy() != null) {
-            throw new InvalidArgumentException("Error! Try again later.");
+            return "Error! Try again later.";
         }
 
         Message message = messageRepository.save( new Message(chat, user, LocalDateTime.now(),
@@ -96,6 +100,8 @@ public class MessageService {
         chat.getMessages().add(message);
         chat.setLastActivity(message.getDate());
         chatRepository.save(chat);
+
+        return "Message sent.";
     }
 
 

@@ -6,6 +6,10 @@
         <p class="fs-3">Cart is empty.</p>
     </div>
 
+    <div th:if="${justDeletedProducts}" class="col-8 bg-danger bg-opacity-25 py-4 offset-2 mt-0 mb-5">
+        <h6 class="text-center m-0 px-3">One or more products have been removed from the cart due to their unavailability.</h6>
+    </div>
+
     <div th:if="${cart.productList.size != 0}" class="container-lg d-flex flex-row">
 
         <div class="container-md col-9">
@@ -98,7 +102,8 @@
               let url = defaultUrl + '/cart/change/' + id + '?quantity=' + quantity;
 
               postData(url)
-                  .then( res => {
+                  .then( response => {
+                      console.log(response);
                       calculateTotalSum();
                   })
           }

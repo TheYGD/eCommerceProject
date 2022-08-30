@@ -14,13 +14,13 @@
             <div class="col d-flex align-items-center ms-5 w-100">
                 <div class="d-flex flex-column mt-5">
                     <h1 class="display-1" th:text="${product.name}">Product name</h1>
-                    <h4 class="lead fs-3" th:text="${product.category.name}">Category name</h4>
+                    <h3 class="lead fs-3" th:text="${product.category.name}">Category name</h3>
 
-                    <div class="d-flex align-items-center mt-5">
-<!--                        <div class="d-flex flex-column">-->
+                    <h1 class="mt-5 mb-5" th:text="${product.price + ' $'}">Price</h1>
+
+                    <div class="d-flex align-items-center">
                             <input class="col-3 z-top-1 me-2" type="number" min="1" value="1">
                             <p class="m-0" th:text="${'z ' + availableProduct.quantity}"></p>
-<!--                        </div>-->
 
                         <button type="button" class="btn btn-primary py-2 z-top-1 ms-5" id="add-to-cart-btn">Add to cart</button>
                     </div>
@@ -51,12 +51,16 @@
     function initAddToCart() {
         let addToCartButton = $("#add-to-cart-btn")[0];
 
-        console.log(addToCartButton);
-
         addToCartButton.onclick = function () {
+            let quantity = addToCartButton.parentElement.children[0].value;
+
+            if (quantity < 1) {
+                console.log("Product quantity must be greater than 0!");
+                return;
+            }
+
             let url = window.location.href;
             let lastSlashIndex = url.lastIndexOf('/');
-            let quantity = addToCartButton.parentElement.children[0].value;
             let urlAdd = url.substring(0, lastSlashIndex) + '/add' + url.substring(lastSlashIndex) + '?quantity=' + quantity;
 
             postData(urlAdd).then(data => {

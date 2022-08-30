@@ -57,14 +57,18 @@
 
     for ( let button of addToCartButtons ) {
       button.onclick = function () {
+        let quantity = button.parentElement.parentElement.children[0].children[0].value;
+
+        if (quantity < 1) {
+          console.log("Product quantity must be greater than 0!");
+          return;
+        }
 
         let stretchedLink = button.parentElement.parentElement.parentElement.children[0];
         let url = stretchedLink.getAttribute("href")
         let lastSlashIndex = url.lastIndexOf('/');
-        let quantity = button.parentElement.parentElement.children[0].children[0].value;
         let urlAdd = url.substring(0, lastSlashIndex) + '/add' + url.substring(lastSlashIndex) + '?quantity=' + quantity;
 
-        console.log(urlAdd);
 
         postData(urlAdd).then(data => {
           console.log(data);

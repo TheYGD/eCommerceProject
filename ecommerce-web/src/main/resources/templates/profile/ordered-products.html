@@ -20,6 +20,13 @@
                         <h6 class="mt-0">Order placed on:</h6>
                         <p class="mb-0" th:text="${{order.dateTime}}"></p>
                     </div>
+
+                    <div class="col-3 d-flex align-items-center justify-content-center">
+                        <p class="fs-5 bold m-0 me-3">Seller</p>
+                        <a class="mt-1 me-3 z-top-1 text-decoration-none" th:text="${order.seller.credentials.username}"
+                           th:href="@{__${'/sellers/' + order.seller.id}__}"></a>
+                    </div>
+
                 </li>
 
                 <li class="list-group-item d-flex flex-row availableProduct-in-cart hover-dark" th:each="soldProduct : ${order.soldProductsList}">
@@ -36,14 +43,10 @@
                     </div>
 
                     <div class="col-2 d-flex align-items-center justify-content-center">
-                        <p class="fs-4 bold me-3 availableProduct-in-cart-quantity" th:text="${soldProduct.quantity}"></p>
+                        <p class="fs-4 bold m-0 availableProduct-in-cart-quantity" th:text="${soldProduct.quantity}"></p>
                     </div>
 
-                    <div class="col-3 d-flex align-items-center justify-content-center flex-column">
-                        <p class="fs-5 bold me-3">Seller</p>
-                        <a class="me-3 z-top-1 text-decoration-none" th:text="${soldProduct.product.seller.credentials.username}"
-                           th:href="@{__${'/sellers/' + soldProduct.product.seller.id}__}"></a>
-                    </div>
+
                 </li>
 
             </ul>
