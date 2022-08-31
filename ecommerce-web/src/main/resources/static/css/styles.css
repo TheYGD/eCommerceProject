@@ -85,3 +85,8 @@ li:hover .message-lock-switch {
     border: 2px solid #418deb;
     z-index: -1;
 }
+
+
+#toast {
+    transition: opacity 0.5s;
+}

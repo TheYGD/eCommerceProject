@@ -34,25 +34,7 @@
 </body>
 
 <script>
-  $(document).ready(function () {
-    let addToCartButtons = $(".add-to-cart-btn");
 
-    for ( let button of addToCartButtons ) {
-      button.onclick = function () {
-
-        let url = window.location.href;
-        let lastSlashIndex = url.lastIndexOf('/');
-        let quantity = button.parentElement.children[0].value;
-        let urlAdd = url.substring(0, lastSlashIndex) + '/add' + url.substring(lastSlashIndex) + '?quantity=' + quantity;
-
-        postData(urlAdd).then(data => {
-          console.log(data);
-          updateCartQuantity();
-        });
-      }
-    }
-
-  });
 </script>
 
 </html>

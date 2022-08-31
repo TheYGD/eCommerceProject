@@ -54,7 +54,7 @@
       console.log(urlDelete);
 
       button.onclick = () => {
-        deleteRequest(urlDelete);
+        requestAndToast('DELETE', urlDelete );
         button.parentNode.parentNode.remove();
       }
     }

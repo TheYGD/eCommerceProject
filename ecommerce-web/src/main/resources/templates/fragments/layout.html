@@ -56,6 +56,18 @@
     </div>
   </nav>
 
+    <div class="position-absolute top-0 end-0 my-5 py-4 me-3 col-4 col-lg-3 col-xxl-2 z-top-2" style="z-index: 2000">
+
+      <div id="toast" role="status" aria-live="assertive" aria-atomic="true" style="opacity: 0;">
+<!--        <div class="alert alert-success m-0 p-3 z-top-2">-->
+        <div class="alert alert-success m-0 p-3">
+          Toast body
+        </div>
+      </div>
+
+    </div>
+
+
 
   <th:block th:replace="${body}" />
 
@@ -98,6 +110,7 @@
         }
       }
     }
+
 
   </script>
 </body>

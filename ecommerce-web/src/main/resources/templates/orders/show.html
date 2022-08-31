@@ -16,7 +16,7 @@
           <h6>Payment method:</h6>
           <p th:text="${{order.getPaymentMethod.name}}"></p>
 
-          <p class="mt-4 cursor-pointer text-primary" id="ask-about-product"><i class="fa fa-envelope me-2"></i>Ask about product</p>
+          <p class="mt-4 cursor-pointer text-primary" id="ask-about-order"><i class="fa fa-envelope me-2"></i>Ask about order</p>
         </div>
 
       <div class="col row pt-3 align-self-end">
@@ -80,14 +80,14 @@
 
 <script>
   $('document').ready(function() {
-    initAskAboutProduct();
+    initAskAboutOrder();
   });
 
 
-  function initAskAboutProduct() {
-    let addToCart = $('#ask-about-product')[0];
+  function initAskAboutOrder() {
+    let askAboutOrder = $('#ask-about-order')[0];
 
-    addToCart.onclick = function() {
+    askAboutOrder.onclick = function() {
       location.href += '/ask';
     };
   }

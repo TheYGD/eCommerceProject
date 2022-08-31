@@ -66,7 +66,7 @@
 
   let currentViewMessagePage;
   let chatView;
-  let ChatIdPrefixLength;
+  let chatIdPrefixLength;
   let username;
   let currentChatId;
   let isLoadingNewMessages;
@@ -116,37 +116,35 @@
 
         messageSendForm.children[1].onclick = function() {
           if (messageSendFormInput.value.trim() == '') {
-            // todo toast - cant write blank message
-            console.log("Message can't be blank.");
+            showToast("Message can't be blank.", 'danger');
             return;
           }
 
           if (messageSendFormInput.value.length > 300) {
-            // todo toast - cant write message longer than 300 chars
-            console.log("Message can't longer than 300 characters.");
+            showToast("Message can't longer than 300 characters.", 'danger');
             return;
           }
 
-          console.log({ 'xd': messageSendFormInput.value});
-          console.log(messageSendFormInput.value.length);
 
           postData(url, messageSendFormInput.value)
-                  .then( result => {
-                    // post successfully
-                    if (result.hasOwnProperty('response')) {
-                      let div = document.createElement('div');
-                      div.className ='col-7 rounded-3 mx-3 mt-3 p-3 message-right many-white-chars';
-                      processMessageContent(div, messageSendForm.children[0].value, false);
-
-                      let messageEl = createMessageDate(chatView, Date.now());
-                      chatView.append(div, messageEl);
-
-                      messageSendForm.children[0].value = '';
-                      scrollViewToBottom();
-
-                      chatList.removeChild(chat);
-                      chatList.prepend(chat);
+                  .then( response => {
+                    if (response?.error) {
+                      showToast("Couldn't send message. Try again.", 'danger');
+                      return;
                     }
+
+                    let div = document.createElement('div');
+                    div.className ='col-7 rounded-3 mx-3 mt-3 p-3 message-right many-white-chars';
+                    processMessageContent(div, messageSendForm.children[0].value, false);
+
+                    let messageEl = createMessageDate(chatView, Date.now());
+                    chatView.append(div, messageEl);
+
+                    messageSendForm.children[0].value = '';
+                    scrollViewToBottom();
+
+                    chatList.removeChild(chat);
+                    chatList.prepend(chat);
                   })
         }
 
@@ -234,6 +232,11 @@
     isLoadingNewMessages = true;
     return getData(location.origin + location.pathname + '/' + chatId + '?pageNr=' + currentViewMessagePage)
             .then( response => {
+              if (response?.error) {
+                showToast("Couldn't load messages. Try again later.", 'danger');
+                return;
+              }
+
               for (let message of response.content.reverse()) {
                 let div = document.createElement('div');
                 let align_right = message.author == username;

@@ -16,7 +16,7 @@
                     <h1 class="display-1" th:text="${product.name}">Product name</h1>
                     <h3 class="lead fs-3" th:text="${product.category.name}">Category name</h3>
 
-                    <h1 class="mt-5 mb-5" th:text="${product.price + ' $'}">Price</h1>
+                    <h1 class="mt-5 mb-5 display-5" th:text="${product.price + ' $'}">Price</h1>
 
                     <div class="d-flex align-items-center">
                             <input class="col-3 z-top-1 me-2" type="number" min="1" value="1">
@@ -55,7 +55,7 @@
             let quantity = addToCartButton.parentElement.children[0].value;
 
             if (quantity < 1) {
-                console.log("Product quantity must be greater than 0!");
+                showToast('Product quantity must be greater than 0!', 'danger');
                 return;
             }
 
@@ -63,17 +63,21 @@
             let lastSlashIndex = url.lastIndexOf('/');
             let urlAdd = url.substring(0, lastSlashIndex) + '/add' + url.substring(lastSlashIndex) + '?quantity=' + quantity;
 
-            postData(urlAdd).then(data => {
-                console.log(data);
-                updateCartQuantity();
-            });
+            requestAndToast('POST', urlAdd)
+                .then(data => {
+                    updateCartQuantity();
+                });
+            // postData(urlAdd).then(data => {
+            //     console.log(data);
+            //     updateCartQuantity();
+            // });
         }
     }
 
     function initAskAboutProduct() {
-        let addToCart = $('#ask-about-product')[0];
+        let askAboutProduct = $('#ask-about-product')[0];
 
-        addToCart.onclick = function() {
+        askAboutProduct.onclick = function() {
             location.href += '/ask';
         };
     }

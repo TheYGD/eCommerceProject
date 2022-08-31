@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.ecommerce.data.domain.*;
+import pl.ecommerce.exceptions.InvalidArgumentException;
 import pl.ecommerce.exceptions.InvalidQuantityException;
 import pl.ecommerce.exceptions.ItemNotFoundException;
 import pl.ecommerce.repository.*;
@@ -29,12 +30,13 @@ public class CartService {
     private final CartToExpireRepository cartToExpireRepository;
 
 
-    public String changeProductsQuantity(UserCredentials userCredentials, Long id, Integer quantity,
+    public void changeProductsQuantity(UserCredentials userCredentials, Long id, Integer quantity,
                                        HttpServletRequest request, HttpServletResponse response) {
         AvailableProduct availableProduct = getProduct(id);
 
         if (!isQuantityAvailable(availableProduct, quantity)) {
-            return "Quantity must be between %d and %d".formatted(1, availableProduct.getQuantity());
+            throw new InvalidArgumentException("Quantity must be between %d and %d"
+                    .formatted(1, availableProduct.getQuantity()));
         }
 
         Cart cart = getCart(userCredentials, request, response);
@@ -43,8 +45,6 @@ public class CartService {
         productInCart.setQuantity(quantity);
 
         productInCartRepository.save(productInCart);
-
-        return "Quantity changed";
     }
 
 
@@ -73,28 +73,28 @@ public class CartService {
     /**
      * @return message if added successfully, product already in cart or error
      */
-    public String addProductToCart(UserCredentials userCredentials, Long productId, Integer quantity,
+    public void addProductToCart(UserCredentials userCredentials, Long productId, Integer quantity,
                                    HttpServletRequest request, HttpServletResponse response) {
 
         Optional<AvailableProduct> productOptional = availableProductRepository.findById(productId);
         if (productOptional.isEmpty()) {
-            return "Error! Try again later.";
+            throw new InvalidArgumentException("Error! Try again later.");
         }
 
         Cart cart = getCart(userCredentials, request, response);
 
-        return addProduct(cart, productOptional.get(), quantity, userCredentials);
+        addProduct(cart, productOptional.get(), quantity, userCredentials);
     }
 
     @Transactional
-    public String addProduct(Cart cart, AvailableProduct availableProduct, Integer quantity, UserCredentials userCredentials) {
+    public void addProduct(Cart cart, AvailableProduct availableProduct, Integer quantity, UserCredentials userCredentials) {
 
         if (quantity < 1) {
-            return "Product quantity must be greater than 0!";
+            throw new InvalidArgumentException("Product quantity must be greater than 0!");
         }
 
         if (availableProduct.getProduct().getSeller().getCredentials().equals(userCredentials)) {
-            return "Cannot add your own products to cart!";
+            throw new InvalidArgumentException("Can't add your own products to cart!");
         }
 
         Optional<ProductInCart> productInCartOptional = cart.getProductList().stream()
@@ -103,9 +103,9 @@ public class CartService {
 
         if (productInCartOptional.isPresent()) {
             ProductInCart productInCart = productInCartOptional.get();
-            int newQuantity = productInCart.getAvailableProduct().getQuantity() + quantity;
+            int newQuantity = productInCart.getQuantity() + quantity;
             if (!isQuantityAvailable(availableProduct, newQuantity)) {
-                return "Product's quantity is not enough!";
+                throw new InvalidArgumentException("Product's quantity is not enough!");
             }
 
             productInCart.setQuantity( newQuantity );
@@ -115,14 +115,12 @@ public class CartService {
         else {
             ProductInCart productInCart = new ProductInCart(cart, availableProduct, quantity);
             if (!isQuantityAvailable(availableProduct, quantity)) {
-                return "Product's quantity is not enough!";
+                throw new InvalidArgumentException("Product's quantity is not enough!");
             }
 
             cart.getProductList().add(productInCart);
             cartRepository.save(cart);
         }
-
-        return "Product added.";
     }
 
 
@@ -134,7 +132,7 @@ public class CartService {
     public AvailableProduct getProduct(Long id) {
         return availableProductRepository.findById(id)
                 .orElseThrow( () -> {
-                    String message = "Could not find product with id: %d!".formatted(id);
+                    String message = "Couldn't find product with id: %d!".formatted(id);
                     log.error(message);
                     return new ItemNotFoundException(message);
                 });

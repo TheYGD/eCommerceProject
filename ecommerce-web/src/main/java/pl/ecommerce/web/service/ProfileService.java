@@ -11,6 +11,7 @@ import pl.ecommerce.data.domain.*;
 import pl.ecommerce.data.dto.PasswordChangeDto;
 import pl.ecommerce.data.dto.UserInformationDto;
 import pl.ecommerce.data.other.ProductSort;
+import pl.ecommerce.exceptions.InvalidArgumentException;
 import pl.ecommerce.repository.*;
 
 import javax.transaction.Transactional;
@@ -70,10 +71,10 @@ public class ProfileService {
     }
 
     @Transactional
-    public String updateUserInformation(UserCredentials userCredentials, UserInformationDto userInformationDto,
+    public void updateUserInformation(UserCredentials userCredentials, UserInformationDto userInformationDto,
                                         BindingResult bindingResult) {
         if (bindingResult.getErrorCount() != 1 || !bindingResult.hasFieldErrors("password")) {
-            return "Data not valid";
+            throw new InvalidArgumentException("Data not valid");
         }
 
         User user = userCredentials.getUserAccount();
@@ -87,31 +88,27 @@ public class ProfileService {
 
         userRepository.save(user);
         userCredentialsRepository.save(userCredentials);
-
-        return "Information updated.";
     }
 
-    public String changePassword(UserCredentials userCredentials, PasswordChangeDto passwordChangeDto,
+    public void changePassword(UserCredentials userCredentials, PasswordChangeDto passwordChangeDto,
                                  BindingResult bindingResult) {
         if (passwordChangeDto.getOldPassword() == null) {
-            return "Error!";
+            throw new InvalidArgumentException("Error! Try again later.");
         }
 
         if (!passwordEncoder.matches( passwordChangeDto.getOldPassword(), userCredentials.getPassword() ) ) {
-            return "Incorrect password.";
+            throw new InvalidArgumentException("Incorrect password.");
         }
 
         if (bindingResult.hasErrors()) {
-            return "New password format is incorrect!";
+            throw new InvalidArgumentException("New password format is incorrect!");
         }
 
         if (passwordChangeDto.getNewPassword().equals(passwordChangeDto.getOldPassword())) {
-            return "New password is the same as the old one!";
+            throw new InvalidArgumentException("New password can't be the same as the old one!");
         }
 
         userCredentials.setPassword( passwordEncoder.encode(passwordChangeDto.getNewPassword()) );
         userCredentialsRepository.save(userCredentials);
-
-        return "Password changed successfully.";
     }
 }

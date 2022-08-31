@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.ecommerce.data.domain.*;
 import pl.ecommerce.data.other.ProductSort;
+import pl.ecommerce.data.other.StringResponse;
 import pl.ecommerce.exceptions.InvalidArgumentException;
 import pl.ecommerce.exceptions.ItemNotFoundException;
 import pl.ecommerce.repository.CategoryRepository;
@@ -76,9 +77,9 @@ public class ProductService {
     /**
      * @return message if added successfully, product already in cart or error
      */
-    public String addProductToCart(UserCredentials userCredentials, Long productId, Integer quantity,
-                                   HttpServletRequest request, HttpServletResponse response) {
-        return cartService.addProductToCart(userCredentials, productId, quantity, request, response);
+    public void addProductToCart(UserCredentials userCredentials, Long productId, Integer quantity,
+                                           HttpServletRequest request, HttpServletResponse response) {
+        cartService.addProductToCart(userCredentials, productId, quantity, request, response);
     }
 
 

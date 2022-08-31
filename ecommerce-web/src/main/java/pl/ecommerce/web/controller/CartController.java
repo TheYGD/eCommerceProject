@@ -33,14 +33,14 @@ public class CartController {
     }
 
 
-    @PostMapping("/change/{id}")
+    @PutMapping("/change/{id}")
     @ResponseBody
     public StringResponse changeProductsQuantity(@AuthenticationPrincipal UserCredentials userCredentials,
                                                  @PathVariable Long id, @RequestParam Integer quantity,
                                                  HttpServletRequest request, HttpServletResponse response) {
-        String stringResponse = cartService.changeProductsQuantity(userCredentials, id, quantity, request, response);
+        cartService.changeProductsQuantity(userCredentials, id, quantity, request, response);
 
-        return new StringResponse( stringResponse );
+        return new StringResponse("Quantity changed");
     }
 
 

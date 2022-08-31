@@ -66,8 +66,8 @@ public class ProductController {
                                            @PathVariable("id") Long productId, @RequestParam Integer quantity,
                                            HttpServletRequest request, HttpServletResponse response) {
 
-        String result = productService.addProductToCart(userCredentials, productId, quantity, request, response);
-        return new StringResponse(result);
+        productService.addProductToCart(userCredentials, productId, quantity, request, response);
+        return new StringResponse("Product added to cart.");
     }
 
 

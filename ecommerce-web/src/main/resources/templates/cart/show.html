@@ -2,15 +2,15 @@
 <html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title='Cart')}">
 
 <body>
+    <div th:if="${justDeletedProducts}" class="col-8 offset-2 alert alert-danger mb-5">
+        <h6 class="text-center m-0 px-3">One or more products have been removed from the cart due to their unavailability.</h6>
+    </div>
+
     <div th:if="${cart.productList.size == 0}" class="container-lg">
         <p class="fs-3">Cart is empty.</p>
     </div>
 
-    <div th:if="${justDeletedProducts}" class="col-8 bg-danger bg-opacity-25 py-4 offset-2 mt-0 mb-5">
-        <h6 class="text-center m-0 px-3">One or more products have been removed from the cart due to their unavailability.</h6>
-    </div>
-
-    <div th:if="${cart.productList.size != 0}" class="container-lg d-flex flex-row">
+    <div th:if="${cart.productList.size != 0}" class="container-lg d-flex flex-row" id="cart-content">
 
         <div class="container-md col-9">
             <ul class="list-group shadow-sm">
@@ -85,30 +85,46 @@
           btn.onclick = function() {
               let url = defaultUrl + '/cart/delete/' + id;
 
-              deleteRequest(url)
-                  .then( res => {
-                      this.parentNode.parentNode.remove()
-                      calculateTotalSum();
-                      updateCartQuantity();
+              requestAndToast('DELETE', url)
+                  .then(response => {
+                      if (response.success) {
+                          this.parentNode.parentNode.remove()
+                          calculateTotalSum();
+                          updateCartQuantity();
 
-                      if ($('.remove-btn').length == 0) {
-                          document.children[0].children[1].children[1].innerHTML = '<p class="fs-3">Cart is empty.</p>'
+                          if ($('.remove-btn').length == 0) {
+                              $('#cart-content')[0].innerHTML = '<p class="fs-3">Cart is empty.</p>'
+                          }
                       }
-                  })
+                  });
           }
 
           input.onchange = function() {
               let quantity = input.value;
               let url = defaultUrl + '/cart/change/' + id + '?quantity=' + quantity;
 
-              postData(url)
-                  .then( response => {
-                      console.log(response);
-                      calculateTotalSum();
-                  })
+              requestAndToast('PUT', url)
+                  .then(response => {
+                      console.log(response.success);
+                    if (!response.result) {
+                        correctQuantity(input, response.message);
+                    }
+
+                    calculateTotalSum()
+                });
           }
 
       }
+  }
+
+  function correctQuantity(input, message) {
+    if ( parseInt(input.value) < 1 || input.value == '' ) {
+        input.value = '1';
+        return;
+    }
+
+    let maxValue = parseInt( message.substring(message.lastIndexOf(' ') + 1) );
+    input.value = String(maxValue);
   }
 
 </script>

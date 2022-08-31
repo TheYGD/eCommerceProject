@@ -115,6 +115,11 @@
         let url =  '/profile/user-information';
 
         getData(url).then(response => {
+                    if (response?.error) {
+                        showToast("Couldn't load data. Try again later.", 'danger');
+                        return;
+                    }
+
                     $('#username')[0].value = response.username;
                     $('#email')[0].value = response.email;
                     $('#first-name')[0].value = response.firstName;
@@ -173,10 +178,7 @@
 
             let form = $('#profile-information-form')[0];
 
-            putFormData( form.action, new FormData(form) )
-                .then( response => {
-                    console.log(response);
-                });
+            requestAndToast('PUT', form.action, new FormData(form) );
         }
     }
 
@@ -187,10 +189,7 @@
 
             let form = $('#profile-password-form')[0];
 
-            putFormData( form.action, new FormData(form) )
-                .then( response => {
-                    console.log(response);
-                });
+            requestAndToastForm('PUT', form.action, new FormData(form) );
         }
     }
 

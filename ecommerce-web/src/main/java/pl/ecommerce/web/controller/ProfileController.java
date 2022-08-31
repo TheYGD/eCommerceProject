@@ -24,9 +24,9 @@ public class ProfileController {
     private final ProfileService profileService;
 
 
-    @GetMapping("/page")
+    @GetMapping()
     public String profilePage() {
-        return "profile/index";
+        return "profile/show";
     }
 
 
@@ -65,12 +65,6 @@ public class ProfileController {
     }
 
 
-    @GetMapping
-    public String profilePage(@AuthenticationPrincipal UserCredentials userCredentials) {
-        return "profile/show";
-    }
-
-
     @GetMapping("/user-information")
     @ResponseBody
     public UserInformationDto getUserInformation(@AuthenticationPrincipal UserCredentials userCredentials) {
@@ -84,8 +78,8 @@ public class ProfileController {
                                                 @ModelAttribute @Valid UserInformationDto userInformationDto,
                                                 BindingResult bindingResult) {
 
-        String response = profileService.updateUserInformation(userCredentials, userInformationDto, bindingResult);
-        return new StringResponse(response);
+        profileService.updateUserInformation(userCredentials, userInformationDto, bindingResult);
+        return new StringResponse("Information updated.");
     }
 
 
@@ -95,7 +89,7 @@ public class ProfileController {
                                                 @ModelAttribute @Valid PasswordChangeDto passwordChangeDto,
                                                 BindingResult bindingResult) {
 
-        String response = profileService.changePassword(userCredentials, passwordChangeDto, bindingResult);
-        return new StringResponse(response);
+        profileService.changePassword(userCredentials, passwordChangeDto, bindingResult);
+        return new StringResponse("Password changed successfully.");
     }
 }

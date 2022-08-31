@@ -8,12 +8,41 @@ async function postData(url, data = {}) {
 }
 
 async function putFormData(url, data) {
-    const response = await fetch(url, {
-        method: 'PUT',
-        body: data
-    });
+    return makeRequest('PUT', url, data);
+}
 
-    return response.json();
+async function requestAndToastForm(method, url, date) {
+    return requestAndToast(method, url, date, makeRequestForm);
+}
+
+async function requestAndToast(method, url, data = {}, formRequest) {
+    let status;
+    let result;
+    let message;
+
+    let makeRequestFunction = formRequest || makeRequest;
+
+    await makeRequestFunction(method, url, data)
+        .then( response => {
+            status = response.status;
+            return response.json();
+        })
+        .then( body => {
+            if (status == 200) {
+                showToastFromResponse(status, body.response);
+                result = true;
+            }
+            else {
+                showToastFromResponse(status, body.message);
+                result = false;
+                message = body.message;
+            }
+        });
+
+    return {
+        success: result,
+        message: message
+    };
 }
 
 async function getData(url) {
@@ -22,19 +51,30 @@ async function getData(url) {
     return response.json();
 }
 
+async function makeRequestForm(method, url, data) {
+    const response = await fetch(url, {
+        method: method,
+        body: data
+    });
+
+    return response;
+}
+
 async function makeRequest(method, url, data) {
     const response = await fetch(url, {
         method: method,
         body: JSON.stringify(data)
     });
 
-    return response.json();
+    return response;
 }
+
+
 
 /**
  *  Methods for fragments/layout.html
  */
-const updateCartQuantity = function() {
+function updateCartQuantity() {
     let cartBadge = $('#cart-badge');
     let urlWithAdditionalSlash = $('#nav-search-form').attr('action');
     let url = urlWithAdditionalSlash.substring(0, urlWithAdditionalSlash.lastIndexOf('/')) + '/cart/size';
@@ -50,8 +90,32 @@ const updateCartQuantity = function() {
         } )
 }
 
+let toastTimeout;
+function showToast(text, type) {
+    function close(){
+        content.parentElement.style.opacity = '0';
+    }
 
-const calculateTotalSum = function() {
+    let content = $('#toast div')[0];
+    content.className = `toast-body alert alert-${type} m-0 p-3`;
+    content.innerText = text;
+
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(close, 3500);
+    content.parentElement.style.opacity = '1';
+}
+
+function showToastFromResponse(status, body) {
+    let type = status == 200 ? 'success' : 'danger';
+    showToast(body, type);
+}
+
+
+
+/**
+ *  Method for cart & checkout
+ */
+function calculateTotalSum() {
     let products = $('.product-in-cart');
     let sum = 0;
 
@@ -72,14 +136,15 @@ const calculateTotalSum = function() {
     let sumString = String(sum.toFixed(2)) + "";
 
     if (sumString.lastIndexOf('.') == -1) {
-        sum += ".00";
+        sumString += ".00";
     }
     else if (sumString.lastIndexOf('.') == sumString.length - 2) {
-        sum += "0";
+        sumString += "0";
     }
 
     $('#total-sum').text(sumString + ' $');
 }
+
 
 
 /**

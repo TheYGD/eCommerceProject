@@ -77,13 +77,13 @@ public class MessageService {
 
 
     @Transactional
-    public String sendMessage(UserCredentials userCredentials, Long chatId, String content) {
+    public void sendMessage(UserCredentials userCredentials, Long chatId, String content) {
         if (content.substring(1, content.length() - 1).isBlank()) {
-            return "Message cannot be blank!";
+            throw new InvalidArgumentException("Message cannot be blank!");
         }
         // 600 = 300*2, there can be 300 chars which need escape char
         if (content.substring(1, content.length() - 1).length() > 600) {
-            return "Message is too long!";
+            throw new InvalidArgumentException("Message is too long!");
         }
 
         User user = userCredentials.getUserAccount();
@@ -92,7 +92,7 @@ public class MessageService {
         isUsersChat(chat, user);
 
         if (chat.getClosedBy() != null) {
-            return "Error! Try again later.";
+            throw new InvalidArgumentException("Error! Try again later.");
         }
 
         Message message = messageRepository.save( new Message(chat, user, LocalDateTime.now(),
@@ -100,8 +100,6 @@ public class MessageService {
         chat.getMessages().add(message);
         chat.setLastActivity(message.getDate());
         chatRepository.save(chat);
-
-        return "Message sent.";
     }
 
 
@@ -149,7 +147,7 @@ public class MessageService {
         isUsersChat(chat, userCredentials.getUserAccount());
 
         if (!userCredentials.getUserAccount().equals(chat.getClosedBy())) {
-            throw new ForbiddenException("You are not the one to reopen this conversation!");
+            throw new ForbiddenException("You can't reopen this conversation!");
         }
 
         chat.setClosedBy(null);
