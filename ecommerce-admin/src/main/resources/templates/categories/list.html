@@ -5,10 +5,10 @@
 <div class="container-md">
   <h1 class="my-4">All categories</h1>
   <ul class="list-group">
-    <li class="list-group-item p-4 pb-3" th:each="category : ${categoryList}">
+    <a th:href="@{__(${'/admin/categories/' + category.orderId})__}" class="list-group-item p-4 pb-3" th:each="category : ${categoryList}">
       <h4 th:text="${category.name}">Category name</h4>
       <p th:text="${category.description}">Category description</p>
-    </li>
+    </a>
   </ul>
 </div>
 </body>

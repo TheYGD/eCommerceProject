@@ -39,17 +39,10 @@ public class ProductController {
 
 
     @GetMapping()
-    public String showCategoryProducts(@RequestParam(value = "category", required = false) Long categoryId,
+    public String showProducts(@RequestParam(value = "category", defaultValue = "1") Long categoryId,
                                        @RequestParam(value = "search", defaultValue = "") String query,
                                        Model model, @RequestParam(defaultValue = "1") int pageNr,
                                        @RequestParam(defaultValue = "0") int sortOption) {
-
-        if (categoryId == null) {
-            Page<AvailableProduct> productPage = productService.findAll(query, pageNr, sortOption);
-            model.addAttribute("productPage", productPage);
-
-            return "products/list";
-        }
 
         Category category = productService.getCategory(categoryId);
         Page<AvailableProduct> productPage = productService.findAllByCategory(category, query, pageNr, sortOption);

@@ -43,7 +43,7 @@ public class ManageProductService {
     public Long createProduct(UserCredentials userCredentials, ProductDto productDto) {
 
         User user = userCredentials.getUserAccount();
-        Category category = categoryRepository.findById( productDto.getCategory() )
+        Category category = categoryRepository.findByOrderId( productDto.getCategory() )
                 .orElseThrow( () -> new ItemNotFoundException("This category does not exist!"));
 
         String imgName;
@@ -121,7 +121,7 @@ public class ManageProductService {
         AvailableProduct availableProduct = getProduct(userCredentials, id);
         Product product = availableProduct.getProduct();
 
-        Category category = categoryRepository.findById( Long.valueOf(productDto.getCategory()) )
+        Category category = categoryRepository.findByOrderId( Long.valueOf(productDto.getCategory()) )
                 .orElseThrow( () -> new ItemNotFoundException("This category does not exist!"));
 
         availableProduct.setQuantity(productDto.getQuantity());

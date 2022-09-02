@@ -190,8 +190,10 @@ public class CartService {
         cartRepository.findById(id)
                 .ifPresent( otherCart -> {
                     otherCart.getProductList()
-                            .forEach( productInCart -> addProduct(mainCart, productInCart.getAvailableProduct(),
-                                    productInCart.getQuantity(), userCredentials)
+                            .forEach( productInCart -> {
+                                addProduct(mainCart, productInCart.getAvailableProduct(), productInCart.getQuantity(),
+                                        userCredentials);
+                                }
                             );
 
                     productInCartRepository.deleteAll(otherCart.getProductList());

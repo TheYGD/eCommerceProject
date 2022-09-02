@@ -2,47 +2,70 @@
 <html lang="en" th:replace="~{ fragments/layout :: layout (body=~{::body}, script=~{::script}, title=${title?:'Product'}) }">
 
 <body>
-  <div class="container-lg">
-    <div class="card d-flex flex-row shadow-sm hover-dark m-1" th:each="availableProduct : ${productPage.content}"
-      th:with="product=${availableProduct.product}">
-      <a class="stretched-link" th:href="@{__(${'/products/' + product.id})__}"></a>
-      <div class="d-flex align-items-center justify-content-center" style="height: 12rem; width: 12rem;">
-        <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
-             th:src="${ product.image != null ? ('/images/products/' + product.image) : '/images/no-img.png' }" >
+  <div class="container-fluid row">
+    <div class="container-fluid col-2 me-0">
+      <div class="shadow">
+        <div class="ms-3 pt-2 pb-4">
+          <div th:if="${category?.parent == null}" class="pt-4"></div>
+          <a th:if="${category?.parent}" th:href="@{__(${'/products?category=' + category.parent.id})__}"
+             class="text-decoration-none text-black" id="back-to-parent-category-link">
+            <i class="fa fa-xs fa-less-than"></i> <span class="ms-2" th:text="${category.parent.name}"></span> </a>
+
+            <a th:href="@{__(${'/products?category=' + categorySibling.id})__}" class="text-decoration-none category-child-link ms-2 fs-5 d-block"
+               th:each="categorySibling : ${category?.parent?.children ?: category}" th:classappend="${categorySibling != category ? 'text-black' :  ''}">
+              <span th:text="${categorySibling.name}"></span>
+              <a th:if="${categorySibling == category}" th:href="@{__(${'/products?category=' + categoryChild.id})__}" class="text-decoration-none text-black category-child-link ms-4 fs-5 d-block"
+                 th:each="categoryChild : ${categorySibling.children}"> <span th:text="${categoryChild.name}"></span>
+
+              </a>
+            </a>
+
+        </div>
       </div>
+    </div>
 
-      <div class="card-body">
-        <h4 class="card-title" th:text="${product.name}">Product name</h4>
-        <h4 class="display-6" th:text="${product.price + ' $'}">Price</h4>
-      </div>
-
-
-      <div class="col-2 d-flex align-items-center">
-        <p th:if="${availableProduct.soldQuantity != 0}" class="m-0 fw-lighter" th:text="${'Sold ' + availableProduct.soldQuantity}"></p>
-      </div>
-
-
-      <div class="float-end align-items-center col-4 row">
-        <div class="col row align-items-center">
-          <input class="col-4 px-1 z-top-1 position-relative" type="number" min="1" value="1">
-          <p class="col m-0" th:text="${'of ' + availableProduct.quantity}"></p>
+    <div class="container-fluid col-6 ms-0">
+      <div class="card d-flex flex-row shadow-sm hover-dark m-1" th:each="availableProduct : ${productPage.content}"
+           th:with="product=${availableProduct.product}">
+        <a class="stretched-link" th:href="@{__(${'/products/' + product.id})__}"></a>
+        <div class="d-flex align-items-center justify-content-center" style="height: 12rem; width: 12rem;">
+          <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
+               th:src="${ product.image != null ? ('/images/products/' + product.image) : '/images/no-img.png' }" >
         </div>
 
-        <div class="col">
-          <button type="button" class="btn btn-primary py-2 z-top-1 add-to-cart-btn position-relative">Add to cart</button>
+        <div class="card-body">
+          <h4 class="card-title" th:text="${product.name}">Product name</h4>
+          <h4 class="display-6" th:text="${product.price + ' $'}">Price</h4>
         </div>
+
+
+        <div class="col-2 d-flex align-items-center">
+          <p th:if="${availableProduct.soldQuantity != 0}" class="m-0 fw-lighter" th:text="${'Sold ' + availableProduct.soldQuantity}"></p>
+        </div>
+
+
+        <div class="float-end align-items-center col-4 row">
+          <div class="col row align-items-center">
+            <input class="col-4 px-1 z-top-1 position-relative" type="number" min="1" value="1">
+            <p class="col m-0" th:text="${'of ' + availableProduct.quantity}"></p>
+          </div>
+
+          <div class="col">
+            <button type="button" class="btn btn-primary py-2 z-top-1 add-to-cart-btn position-relative">Add to cart</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div th:if="${productPage.hasContent()}" class="col-2 d-flex align-items-center mx-auto my-3" id="page-change-div">
+        <i class="fa fa-less-than me-3"></i>
+        <input class="w-25 me-2" type="text" th:value="${param.pageNr ?: 1}">
+        <p class="my-auto ms-1 me-3" th:text="${'of ' + productPage.totalPages}"></p>
+
+        <i class="fa fa-greater-than"></i>
       </div>
 
     </div>
-
-    <div th:if="${productPage.hasContent()}" class="col-2 d-flex align-items-center mx-auto my-3" id="page-change-div">
-      <i class="fa fa-less-than me-3"></i>
-      <input class="w-25 me-2" type="text" th:value="${param.pageNr ?: 1}">
-      <p class="my-auto ms-1 me-3" th:text="${'of ' + productPage.totalPages}"></p>
-
-      <i class="fa fa-greater-than"></i>
-    </div>
-
   </div>
 </body>
 
@@ -50,7 +73,17 @@
   $(document).ready(function () {
     initAddToCartButtons();
     initPageChangeDiv();
+    initCategoryLinks();
   });
+
+
+  function initCategoryLinks() {
+    let categoryParentLink = $('#back-to-parent-category-link')[0];
+    if (categoryParentLink != null) {
+      categoryParentLink.onclick = () => addParamsToUrl(categoryParentLink);
+    }
+
+  }
 
 
   function initAddToCartButtons() {
@@ -77,6 +110,13 @@
                 });
       }
     }
+  }
+
+
+  function addParamsToUrl(linkEl) {
+    let url = new URL(location.href);
+    url.searchParams.delete('category');
+    linkEl.href += '&' + url.searchParams.toString();
   }
 
 </script>

@@ -137,7 +137,10 @@
                     div.className ='col-7 rounded-3 mx-3 mt-3 p-3 message-right many-white-chars';
                     processMessageContent(div, messageSendForm.children[0].value, false);
 
-                    let messageEl = createMessageDate(chatView, Date.now());
+                    let dateNumber = Date.now();
+                    let messageDate = new Date(dateNumber).toLocaleDateString() + ' ' +
+                            new Date(dateNumber).toLocaleTimeString().substring(0, 5)
+                    let messageEl = createMessageDate(chatView, messageDate);
                     chatView.append(div, messageEl);
 
                     messageSendForm.children[0].value = '';
@@ -145,12 +148,14 @@
 
                     chatList.removeChild(chat);
                     chatList.prepend(chat);
+                    chat.children[0].children[0].innerText = messageDate;
                   })
         }
 
         setSelectedChatBorder(chat);
 
-        if (chat.children[1] == null || chat.children[1].classList.contains('fa-unlock')) {
+        let chatSwitchIcons = chat.getElementsByTagName('i');
+        if (chatSwitchIcons.length == 0 || chatSwitchIcons[0].classList.contains('fa-unlock')) {
           disableMessageTextArea();
         }
         else {
@@ -221,7 +226,7 @@
 
   function createMessageDate(chatView, date, align_right=true) {
     let dateP = document.createElement('p');
-    dateP.innerText = new Date(date).toLocaleDateString() + ' ' + new Date(date).toLocaleTimeString().substring(0, 5);
+    dateP.innerText = date;
     dateP.className = 'px-4';
     dateP.style = 'align-self: ' + (align_right ? 'end' : 'start') + ';';
     return dateP;
@@ -244,7 +249,9 @@
                 div.classList.add( align_right ? 'message-right' : 'message-left' );
                 processMessageContent(div, message.content);
 
-                let messageEl = createMessageDate(chatView, message.date, align_right);
+                let messageDate = new Date(message.date).toLocaleDateString() + ' ' +
+                        new Date(message.date).toLocaleTimeString().substring(0, 5)
+                let messageEl = createMessageDate(chatView, messageDate, align_right);
                 chatView.prepend(div, messageEl);
               }
 

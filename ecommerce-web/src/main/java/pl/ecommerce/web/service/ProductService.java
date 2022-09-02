@@ -18,6 +18,8 @@ import pl.ecommerce.repository.ProductRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -64,13 +66,28 @@ public class ProductService {
 
 
     public Page<AvailableProduct> findAllByCategory(Category category, String query, int pageNr, int sortOption) {
+        long categoryOrderStart = category.getOrderId();
+        long categoryOrderEnd = setCategoryOrderEnd(category);
+
+        if (category.getId() == 1) {
+            return findAll(query, pageNr, sortOption);
+        }
+
         if (query.isBlank()) {
             Pageable pageable = PageRequest.of(pageNr - 1, RECORDS_ON_PAGE, productSort.getSort(sortOption));
-            return availableProductRepository.findAllByCategory(category, pageable);
+            return availableProductRepository.findAllByCategory(categoryOrderStart, categoryOrderEnd, pageable);
         }
 
         Pageable pageable = PageRequest.of(pageNr - 1, RECORDS_ON_PAGE, productSort.getSort(sortOption));
-        return availableProductRepository.findAllByCategoryAndQuery(category, query, pageable);
+//        return availableProductRepository.findAllByCategoryAndQuery(category, query, pageable);
+        return availableProductRepository.findAllByCategoryAndQuery(categoryOrderStart, categoryOrderEnd, query, pageable);
+    }
+
+    private long setCategoryOrderEnd(Category category) {
+        return category.getChildren().stream()
+                .max( Comparator.comparingLong(Category::getOrderId) )
+                .orElse(category)
+                .getOrderId();
     }
 
 
@@ -94,7 +111,7 @@ public class ProductService {
 
 
     public Category getCategory(Long id) {
-        return categoryRepository.findById(id)
+        return categoryRepository.findByOrderId(id)
                 .orElseThrow( () -> new ItemNotFoundException("Category with id=%d doesn't exist!".formatted(id)) );
     }
 

@@ -55,16 +55,19 @@
 </body>
 
 <script>
-  <!-- todo-->
+
   $(document).ready( function() {
       calculateTotalSum()
       initDeleteButtonsAndChangeInputs();
+      setRememberedProductsQuantityValues();
   })
 
+    function setRememberedProductsQuantityValues() {
+
+    }
 
 
-
-  const initDeleteButtonsAndChangeInputs = function() {
+  function initDeleteButtonsAndChangeInputs() {
       if ($('.product-in-cart').length == 0) {
           return;
       }
@@ -105,8 +108,10 @@
 
               requestAndToast('PUT', url)
                   .then(response => {
-                      console.log(response.success);
-                    if (!response.result) {
+                    if (response.result) {
+                        calculateTotalSum();
+                    }
+                    else {
                         correctQuantity(input, response.message);
                     }
 
@@ -115,16 +120,6 @@
           }
 
       }
-  }
-
-  function correctQuantity(input, message) {
-    if ( parseInt(input.value) < 1 || input.value == '' ) {
-        input.value = '1';
-        return;
-    }
-
-    let maxValue = parseInt( message.substring(message.lastIndexOf(' ') + 1) );
-    input.value = String(maxValue);
   }
 
 </script>

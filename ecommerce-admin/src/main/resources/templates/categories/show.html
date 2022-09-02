@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title=${category.name})}">
+
+<body>
+    <div class="container-lg p-5 shadow-sm border">
+
+        <div class="p">
+            <h4 class="mb-3" th:text="${category.name}">Category name</h4>
+            <p th:text="${category.description}">Category description</p>
+        </div>
+
+        <h4 class="mt-5 mb-3 offset-2">Attributes</h4>
+
+        <ul class="list-group justify-content-center offset-2 col-8">
+            <li class="p-3 list-group-item d-flex" th:each="attribute : ${category.productAttributes}">
+                <p class="mb-0 mt-1 col" th:utext="${'<b>' + attribute.name + '</b>: ' + (attribute.number ? 'number' : 'enum') }">
+                    Name: type</p>
+
+                <p th:if="!attribute.number" th:text="${'enumId: ' + attribute.pseudoEnum.id}">Enum Id</p>
+
+                <button th:id="${'remove-btn-' + attribute.id}" class="offset-2 btn btn-sm btn-danger attribute-remove-btn ms-3">
+                    <i class="fa fa-remove"></i> </button>
+            </li>
+        </ul>
+
+
+        <form class="col-8 offset-2 mt-5 p-5 border" th:action="@{__(${'/admin/categories/attributes/' + category.orderId + '/new'})__}"
+              id="add-attribute-form" method="post" th:object="${attribute}">
+            <h4 class="mb-5">Add new attribute</h4>
+
+            <input type="hidden" id="number" name="number" value="true"/>
+
+            <div class="form-group mb-4">
+                <label for="name">Name</label>
+                <input class="form-control" type="text"id="name" th:field="*{name}"/>
+            </div>
+
+            <div class="form-group mb-4">
+                <input class="form-check-input" checked value="" type="checkbox" id="isNumber" name="isNumber"/>
+                <label class="form-check-label ms-2" for="isNumber">Is Number?</label>
+            </div>
+
+            <ul class="list-group" id="attribute-list" hidden>
+                <li class="list-group-item d-flex justify-content-between">
+                    <p class="col-8 mb-0 ms-4">Value</p>
+                    <button class="btn btn-sm btn-primary d-inline" id="add-enum-value-btn" type="button"> <i class="fa fa-plus"></i> </button>
+                </li>
+                <li class="list-group-item d-flex" >
+                    <input class="form-control my-1" type="text" id="value"/>
+                    <button class="btn btn-sm btn-danger ms-3 my-2" type="button"> <i class="fa fa-remove"></i> </button>
+                </li>
+            </ul>
+
+
+            <button class="btn btn-primary mt-4" type="button">Add</button>
+        </form>
+    </div>
+
+</body>
+
+<script>
+    $('document').ready( function() {
+        initRemoveButtons();
+        initIsNumberChange();
+        initAttributeList();
+        initForm();
+    });
+
+    let attributeList = $('#attribute-list')[0];
+
+
+    function initRemoveButtons() {
+        let removeButtons = $('.attribute-remove-btn');
+
+        let prefixLength = 'remove-btn-'.length;
+        for (let button of removeButtons) {
+            button.onclick = function () {
+                let url = location.origin + '/admin/categories/attributes/' + button.id.substring(prefixLength) + '/delete';
+                requestAndToast('DELETE', url)
+                    .then( response => {
+                        if (response.success) {
+                            button.parentNode.remove();
+                        }
+                    });
+            }
+        }
+    }
+
+    function initIsNumberChange() {
+        let isNumberCheck = $('#isNumber')[0];
+        isNumberCheck.onchange = function() {
+            if (isNumberCheck.checked == false) {
+                attributeList.hidden = false;
+                for (let child of attributeList.children) {
+                    child.children[0].disabled = false;
+                }
+                $('#number')[0].value = false;
+            }
+            else {
+                attributeList.hidden = true;
+                for (let child of attributeList.children) {
+                    child.children[0].disabled = true;
+                }
+                $('#number')[0].value = true;
+            }
+        }
+    }
+
+    function addAttributeInput() {
+        let item = document.createElement('li');
+        item.className = 'list-group-item d-flex';
+        let input = document.createElement('input');
+        input.className = 'form-control my-1';
+        input.type = 'text';
+        let button = document.createElement('button');
+        button.className = 'btn btn-sm btn-danger ms-3 my-2';
+        button.type = 'button';
+        let icon = document.createElement('i');
+        icon.className = 'fa fa-remove';
+
+        item.append(input, button);
+        button.appendChild(icon);
+        attributeList.appendChild(item);
+
+
+        button.onclick = function() {
+            item.remove();
+        }
+    }
+
+    function initAttributeList() {
+        let addBtn = $('#add-enum-value-btn')[0];
+        addBtn.onclick = function() {
+            addAttributeInput();
+        }
+
+        attributeList.children[1].children[1].onclick = function() {
+            console.log()
+            attributeList.children[1].remove();
+        }
+
+    }
+
+
+    function initForm() {
+        let form = $('#add-attribute-form')[0];
+        let button = form.children[ form.children.length - 1 ];
+
+        button.onclick = function() {
+            console.log(new FormData(form));
+            requestAndToastForm('POST', form.action, new FormData(form) );
+        }
+    }
+
+</script>
+
+</html>

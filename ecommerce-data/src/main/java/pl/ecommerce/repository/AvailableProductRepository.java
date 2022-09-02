@@ -35,11 +35,11 @@ public interface AvailableProductRepository extends JpaRepository<AvailableProdu
     Page<AvailableProduct> findAllBySeller(@Param("seller") User seller, Pageable pageable);
 
 
-    @Query("SELECT ap FROM AvailableProduct ap INNER JOIN ap.product p WHERE p.category = :category")
-    Page<AvailableProduct> findAllByCategory(@Param("category") Category category, Pageable pageable);
+    @Query("SELECT ap FROM AvailableProduct ap INNER JOIN ap.product p WHERE p.category.id BETWEEN :categoryOrderStart AND :categoryOrderEnd")
+    Page<AvailableProduct> findAllByCategory(@Param("categoryOrderStart") long orderStart, @Param("categoryOrderEnd") long orderEnd, Pageable pageable);
 
 
-    @Query("SELECT ap FROM AvailableProduct ap INNER JOIN ap.product p WHERE p.category = :category AND ( lower(p.name) LIKE lower(concat('%', :query, '%')) OR p.description LIKE lower(concat('%', :query, '%')) )")
-    Page<AvailableProduct> findAllByCategoryAndQuery(@Param("category") Category category, @Param("query") String query,
+    @Query("SELECT ap FROM AvailableProduct ap INNER JOIN ap.product p WHERE p.category.id BETWEEN :categoryOrderStart AND :categoryOrderEnd AND ( lower(p.name) LIKE lower(concat('%', :query, '%')) OR p.description LIKE lower(concat('%', :query, '%')) )")
+    Page<AvailableProduct> findAllByCategoryAndQuery(@Param("categoryOrderStart") long orderStart, @Param("categoryOrderEnd") long orderEnd, @Param("query") String query,
                                                      Pageable pageable);
 }
