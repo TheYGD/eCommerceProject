@@ -14,7 +14,6 @@ import pl.ecommerce.repository.*;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -55,12 +54,17 @@ public class OrderService {
         PaymentMethod paymentMethod = PaymentMethod.valueOf( orderDto.getPaymentOption() );
         LocalDateTime orderDate = LocalDateTime.now();
 
-        List<Order> orderList = cart.getProductList().stream()
-                .map( productInCart -> {
-                    Product product = changeAvailableQuantity(productInCart);
-                    return new SoldProduct( product,
-                            productInCart.getQuantity() );
-                })
+
+        List<SoldProduct> soldProductList = new LinkedList<>();
+        for (int i = 0; i < cart.getProductList().size(); i++) {
+            ProductInCart productInCart = cart.getProductList().get(i);
+            Product product = changeAvailableQuantity(productInCart);
+            soldProductList.add( new SoldProduct( product,
+                    productInCart.getQuantity() ));
+        }
+
+
+        List<Order> orderList = soldProductList.stream()
                 .collect(Collectors.groupingBy( soldProduct -> soldProduct.getProduct().getSeller() ))
                 .values().stream()
                 .map( soldProducts -> new Order(soldProducts, address, user,

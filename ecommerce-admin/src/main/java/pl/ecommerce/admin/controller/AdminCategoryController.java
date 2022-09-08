@@ -3,9 +3,10 @@ package pl.ecommerce.admin.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import pl.ecommerce.admin.service.AdminCategoryService;
-import pl.ecommerce.data.domain.ProductAttribute;
+import pl.ecommerce.data.domain.CategoryAttribute;
 import pl.ecommerce.data.dto.CategoryDto;
 import pl.ecommerce.data.domain.Category;
 import pl.ecommerce.data.dto.PseudoEnumDto;
@@ -13,6 +14,7 @@ import pl.ecommerce.data.other.StringResponse;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/categories")
@@ -52,27 +54,19 @@ public class AdminCategoryController {
     public String showCategory(@PathVariable Long id, Model model) {
         Category category = categoryService.findById(id);
         model.addAttribute("category", category);
-        model.addAttribute("attribute", new ProductAttribute());
+        model.addAttribute("attribute", new CategoryAttribute());
 
         return "categories/show";
     }
 
     @PostMapping("/attributes/{categoryId}/new")
     @ResponseBody
-    public StringResponse postAttribute(@PathVariable Long categoryId, @ModelAttribute @Valid ProductAttribute attribute) {
+    public StringResponse postAttribute(@PathVariable Long categoryId, @ModelAttribute @Valid CategoryAttribute attribute,
+                                        @RequestParam("enumValue") List<String> enumValues) {
 
-        categoryService.postAttribute(categoryId, attribute);
+        categoryService.postAttribute(categoryId, attribute, enumValues);
 
         return new StringResponse("Attribute created!");
-    }
-
-    @PostMapping("/attributes/new")
-    @ResponseBody
-    public Long createEnumObject(@RequestBody @Valid PseudoEnumDto pseudoEnumDto) {
-
-        Long createdId = categoryService.createEnumObject(pseudoEnumDto);
-
-        return createdId;
     }
 
 

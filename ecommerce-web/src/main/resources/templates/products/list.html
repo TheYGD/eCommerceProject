@@ -3,13 +3,14 @@
 
 <body>
   <div class="container-fluid row">
-    <div class="container-fluid col-2 me-0">
-      <div class="shadow">
-        <div class="ms-3 pt-2 pb-4">
-          <div th:if="${category?.parent == null}" class="pt-4"></div>
-          <a th:if="${category?.parent}" th:href="@{__(${'/products?category=' + category.parent.id})__}"
-             class="text-decoration-none text-black" id="back-to-parent-category-link">
-            <i class="fa fa-xs fa-less-than"></i> <span class="ms-2" th:text="${category.parent.name}"></span> </a>
+    <div class="row col-10 offset-1">
+      <div class="container-fluid col-3 me-0">
+        <div class="shadow-sm border rounded-2">
+          <div class="ms-3 pt-2 pb-4" id="category-links">
+            <div th:if="${category?.parent == null}" class="pt-4"></div>
+            <a th:if="${category?.parent}" th:href="@{__(${'/products?category=' + category.parent.id})__}"
+               class="text-decoration-none text-black" id="back-to-parent-category-link">
+              <i class="fa fa-xs fa-less-than"></i> <span class="ms-2" th:text="${category.parent.name}"></span> </a>
 
             <a th:href="@{__(${'/products?category=' + categorySibling.id})__}" class="text-decoration-none category-child-link ms-2 fs-5 d-block"
                th:each="categorySibling : ${category?.parent?.children ?: category}" th:classappend="${categorySibling != category ? 'text-black' :  ''}">
@@ -20,51 +21,78 @@
               </a>
             </a>
 
-        </div>
-      </div>
-    </div>
-
-    <div class="container-fluid col-6 ms-0">
-      <div class="card d-flex flex-row shadow-sm hover-dark m-1" th:each="availableProduct : ${productPage.content}"
-           th:with="product=${availableProduct.product}">
-        <a class="stretched-link" th:href="@{__(${'/products/' + product.id})__}"></a>
-        <div class="d-flex align-items-center justify-content-center" style="height: 12rem; width: 12rem;">
-          <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
-               th:src="${ product.image != null ? ('/images/products/' + product.image) : '/images/no-img.png' }" >
-        </div>
-
-        <div class="card-body">
-          <h4 class="card-title" th:text="${product.name}">Product name</h4>
-          <h4 class="display-6" th:text="${product.price + ' $'}">Price</h4>
-        </div>
-
-
-        <div class="col-2 d-flex align-items-center">
-          <p th:if="${availableProduct.soldQuantity != 0}" class="m-0 fw-lighter" th:text="${'Sold ' + availableProduct.soldQuantity}"></p>
-        </div>
-
-
-        <div class="float-end align-items-center col-4 row">
-          <div class="col row align-items-center">
-            <input class="col-4 px-1 z-top-1 position-relative" type="number" min="1" value="1">
-            <p class="col m-0" th:text="${'of ' + availableProduct.quantity}"></p>
           </div>
 
-          <div class="col">
-            <button type="button" class="btn btn-primary py-2 z-top-1 add-to-cart-btn position-relative">Add to cart</button>
+          <hr>
+
+          <div class="p-5 pt-3">
+            <h5 class="mb-4">Filters</h5>
+            <div id="product-attributes">
+              <div th:each="attribute : ${category.allCategoryAttributes}" class="mb-3">
+                <label th:for="${'attr-' + attribute.id}" th:text="${attribute.name}"></label>
+                <div th:if="${attribute.isNumber}" class="row justify-content-around" th:id="${'attr-' + attribute.id}">
+                  <input class="form-control" style="width: 40%;" placeholder="min" type="number">
+                  <input class="form-control" style="width: 40%;" placeholder="max" type="number">
+                </div>
+
+                <select th:if="${!attribute.isNumber}" class="form-select mt-1 mb-3"
+                        th:id="${'attr-' + attribute.id}" th:name="${'attr-' + attribute.id}">
+                  <option value=""></option>
+                  <option th:each="enumValue : ${attribute.pseudoEnum.values}"
+                          th:value="${enumValue.number}" th:text="${enumValue.name}">
+                  </option>
+
+                </select>
+              </div>
+            </div>
           </div>
+
+          <button class="btn btn-primary mt-0 ms-5 mb-5" type="button" id="filters-search-button">Search</button>
+        </div>
+      </div>
+
+      <div class="container-fluid col-9 ms-0">
+        <div class="card d-flex flex-row shadow-sm hover-dark m-1" th:each="availableProduct : ${productPage.content}"
+             th:with="product=${availableProduct.product}">
+          <a class="stretched-link" th:href="@{__(${'/products/' + product.id})__}"></a>
+          <div class="d-flex align-items-center justify-content-center" style="height: 12rem; width: 12rem;">
+            <img src="/images/test-img2.png" alt="image.png" style="max-height: 10rem; max-width: 10rem;"
+                 th:src="${ product.image != null ? ('/images/products/' + product.image) : '/images/no-img.png' }" >
+          </div>
+
+          <div class="card-body">
+            <h4 class="card-title" th:text="${product.name}">Product name</h4>
+            <h4 class="display-6" th:text="${product.price + ' $'}">Price</h4>
+          </div>
+
+
+          <div class="col-2 d-flex align-items-center">
+            <p th:if="${availableProduct.soldQuantity != 0}" class="m-0 fw-lighter" th:text="${'Sold ' + availableProduct.soldQuantity}"></p>
+          </div>
+
+
+          <div class="float-end align-items-center col-4 row">
+            <div class="col row align-items-center">
+              <input class="col-4 px-1 z-top-1 position-relative" type="number" min="1" value="1">
+              <p class="col m-0" th:text="${'of ' + availableProduct.quantity}"></p>
+            </div>
+
+            <div class="col">
+              <button type="button" class="btn btn-primary py-2 z-top-1 add-to-cart-btn position-relative">Add to cart</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div th:if="${productPage.hasContent()}" class="col-2 d-flex align-items-center mx-auto my-3" id="page-change-div">
+          <i class="fa fa-less-than me-3"></i>
+          <input class="w-25 me-2" type="text" th:value="${param.pageNr ?: 1}">
+          <p class="my-auto ms-1 me-3" th:text="${'of ' + productPage.totalPages}"></p>
+
+          <i class="fa fa-greater-than"></i>
         </div>
 
       </div>
-
-      <div th:if="${productPage.hasContent()}" class="col-2 d-flex align-items-center mx-auto my-3" id="page-change-div">
-        <i class="fa fa-less-than me-3"></i>
-        <input class="w-25 me-2" type="text" th:value="${param.pageNr ?: 1}">
-        <p class="my-auto ms-1 me-3" th:text="${'of ' + productPage.totalPages}"></p>
-
-        <i class="fa fa-greater-than"></i>
-      </div>
-
     </div>
   </div>
 </body>
@@ -74,15 +102,17 @@
     initAddToCartButtons();
     initPageChangeDiv();
     initCategoryLinks();
+    initFiltersSearchButton();
   });
 
 
   function initCategoryLinks() {
-    let categoryParentLink = $('#back-to-parent-category-link')[0];
-    if (categoryParentLink != null) {
-      categoryParentLink.onclick = () => addParamsToUrl(categoryParentLink);
+    let categoryLinks = $('#category-links a');
+    for (let catLink of categoryLinks) {
+      catLink.onclick = function() {
+        addParamsToUrl(catLink);
+      }
     }
-
   }
 
 
@@ -117,6 +147,54 @@
     let url = new URL(location.href);
     url.searchParams.delete('category');
     linkEl.href += '&' + url.searchParams.toString();
+  }
+
+
+  function initFiltersSearchButton() {
+    let searchButton = $('#filters-search-button')[0];
+
+    searchButton.onclick = function() {
+      let url = new URL(location.href);
+      let prevParams = [];
+      for (let param of url.searchParams.keys()) {
+        if (!isNaN(param)) {
+          prevParams.push(param);
+        }
+      }
+      prevParams.forEach( param => url.searchParams.delete(param) );
+
+
+      let params = $('#product-attributes')[0];
+
+      for (let param of params.children) {
+        let paramId = param.children[1].id.substring('attr-'.length);
+        let paramValue;
+
+        // NUMBER MIN-MAX
+        if (param.children[1].tagName == 'DIV') {
+          let min = param.children[1].children[0].value;
+          let max = param.children[1].children[1].value;
+          paramValue = min.trim() + 'x' + max.trim();
+
+          if (paramValue == 'x') {
+            continue;
+          }
+        }
+
+        // ENUM
+        else {
+          paramValue = param.children[1].value;
+          if (paramValue.trim() == '') {
+            continue;
+          }
+        }
+
+        console.log(paramValue);
+        url.searchParams.append(paramId, paramValue);
+      }
+
+      location.href = url.toString();
+    }
   }
 
 </script>

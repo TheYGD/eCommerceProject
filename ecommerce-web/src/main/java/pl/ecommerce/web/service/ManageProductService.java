@@ -5,7 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.ecommerce.data.domain.*;
+import pl.ecommerce.data.dto.CategoryAttributeDto;
+import pl.ecommerce.data.dto.ProductAttributeDto;
 import pl.ecommerce.data.dto.ProductDto;
+import pl.ecommerce.data.mapper.CategoryAttributeMapper;
 import pl.ecommerce.data.other.HashGenerator;
 import pl.ecommerce.exceptions.ForbiddenException;
 import pl.ecommerce.exceptions.ItemNotFoundException;
@@ -18,7 +21,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -28,19 +33,22 @@ public class ManageProductService {
     private final String IMAGES_FOLDER_PATH = "images/products/";
 
     private final ProductService productService;
+    private final CategoryService categoryService;
+    private final PseudoEnumService pseudoEnumService;
     private final CategoryRepository categoryRepository;
     private final AvailableProductRepository availableProductRepository;
     private final ProductRepository productRepository;
     private final ProductInCartRepository productInCartRepository;
     private final CartRepository cartRepository;
+    private final ProductAttributeRepository productAttributeRepository;
 
 
     public List<Category> getCategoryList() {
-        return categoryRepository.findAll();
+        return categoryService.findAll();
     }
 
     @Transactional
-    public Long createProduct(UserCredentials userCredentials, ProductDto productDto) {
+    public Long createProduct(UserCredentials userCredentials, ProductDto productDto, Map<String, String> otherValues) {
 
         User user = userCredentials.getUserAccount();
         Category category = categoryRepository.findByOrderId( productDto.getCategory() )
@@ -64,6 +72,9 @@ public class ManageProductService {
                 .price( new BigDecimal(productDto.getPrice().replaceAll(",", ".")) )
                 .image(imgName).build());
 
+        List<ProductAttribute> attributes = setProductAttributes(product, otherValues);
+        product.setAttributes(attributes);
+
         AvailableProduct availableProduct = new AvailableProduct(product, productDto.getQuantity(), 0,
                 false);
         availableProduct.setId(product.getId());
@@ -73,6 +84,50 @@ public class ManageProductService {
 
         return availableProduct.getId();
     }
+
+
+    private List<ProductAttribute> setProductAttributes(Product product, Map<String, String> otherValues) {
+
+        List<CategoryAttribute> categoryAttributes = product.getCategory().getAllCategoryAttributes();
+        List<ProductAttribute> productAttributes = new LinkedList<>();
+
+        otherValues.entrySet().stream()
+                .filter( entry -> entry.getKey().startsWith("attr-") )
+                .forEach( attribute -> {
+                    if (attribute.getValue().isBlank()) {
+                        return;
+                    }
+
+                    Long id = Long.valueOf( attribute.getKey().substring(5) );
+
+                    CategoryAttribute categoryAttribute = categoryAttributes.stream()
+                            .filter(attr -> attr.getId().equals(id) )
+                            .findFirst()
+                            .orElse(null);
+
+                    if (categoryAttribute == null) {
+                        return;
+                    }
+
+                    BigDecimal value = new BigDecimal(attribute.getValue());
+
+                    if (!categoryAttribute.isNumber()) {
+                        if (!pseudoEnumService.valueExists(categoryAttribute.getPseudoEnum(), value)) {
+                            return;
+                        }
+                    }
+
+                    ProductAttribute productAttribute = ProductAttribute.builder()
+                            .categoryAttribute(categoryAttribute)
+                            .product(product)
+                            .value(value).build();
+
+                    productAttributes.add(productAttribute);
+                });
+
+        return productAttributes;
+    }
+
 
     private void saveImage(String imgName, MultipartFile image) {
         Path uploadPath = Paths.get(IMAGES_FOLDER_PATH);
@@ -116,7 +171,7 @@ public class ManageProductService {
 
 
     @Transactional
-    public void editProduct(UserCredentials userCredentials, ProductDto productDto, Long id) {
+    public void editProduct(UserCredentials userCredentials, ProductDto productDto, Long id, Map<String, String> otherValues) {
 
         AvailableProduct availableProduct = getProduct(userCredentials, id);
         Product product = availableProduct.getProduct();
@@ -131,9 +186,14 @@ public class ManageProductService {
         product.setCategory( category );
         product.setPrice( new BigDecimal(productDto.getPrice().replaceAll(",", ".")) );
 
+        List<ProductAttribute> attributes = setProductAttributes(product, otherValues);
+        productAttributeRepository.deleteAll(product.getAttributes());
+        product.setAttributes(attributes);
 
         if (productDto.getImage().getSize() != 0) {
-            deleteImage(product.getImage());
+            if (product.getImage() != null) {
+                deleteImage(product.getImage());
+            }
             String imgName = generateImgName();
             saveImage(imgName, productDto.getImage());
             product.setImage(imgName);
@@ -178,15 +238,28 @@ public class ManageProductService {
         cartRepository.saveAll(carts);
     }
 
-    public ProductDto getProductDto(UserCredentials userCredentials, AvailableProduct availableProduct) {
+    public ProductDto getProductDto(AvailableProduct availableProduct) {
+
+        List<ProductAttributeDto> attributes = availableProduct.getProduct().getAttributes().stream()
+                .map( attribute -> {
+                    CategoryAttributeDto categoryAttributeDto =
+                            CategoryAttributeMapper.INSTANCE.toDto(attribute.getCategoryAttribute());
+                    return new ProductAttributeDto( attribute.getValue(), categoryAttributeDto );
+                })
+                .toList();
 
         return ProductDto.builder()
                 .name(availableProduct.getProduct().getName())
                 .description(availableProduct.getProduct().getDescription())
-                .category(availableProduct.getProduct().getCategory().getId())
+                .category(availableProduct.getProduct().getCategory().getOrderId())
                 .quantity(availableProduct.getQuantity())
                 .price(String.valueOf(availableProduct.getProduct().getPrice()))
+                .attributes(attributes)
                 .build();
 
+    }
+
+    public List<CategoryAttributeDto> getCategoryAttributes(AvailableProduct availableProduct) {
+        return categoryService.getCategoryAttributes( availableProduct.getProduct().getCategory().getOrderId() );
     }
 }

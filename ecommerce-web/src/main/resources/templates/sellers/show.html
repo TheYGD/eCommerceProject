@@ -2,9 +2,13 @@
 <html lang="en" th:replace="~{ fragments/layout :: layout (body=~{::body}, script=~{::#script-div-seller}, title=${seller.credentials.username})}">
 
 <body>
-  <div class="container-md mb-5">
-    <h1 th:text="${'Products from ' + seller.credentials.username}"></h1>
-    <hr/>
+  <div class="container-fluid row">
+    <div class="row col-10 offset-1">
+      <div class="col-9 offset-3 px-3">
+        <h3 th:text="${'Products from ' + seller.credentials.username}"></h3>
+        <hr/>
+      </div>
+    </div>
   </div>
 
   <th:block th:replace="~{ products/list :: body}"/>

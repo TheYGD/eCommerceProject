@@ -1,32 +1,23 @@
 package pl.ecommerce.web.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.ecommerce.data.domain.AvailableProduct;
+import pl.ecommerce.data.domain.Category;
 import pl.ecommerce.data.domain.User;
-import pl.ecommerce.data.other.ProductSort;
 import pl.ecommerce.exceptions.ItemNotFoundException;
-import pl.ecommerce.repository.AvailableProductRepository;
 import pl.ecommerce.repository.UserRepository;
 
+import java.util.Map;
+
 @Service
+@AllArgsConstructor
 public class SellerService {
 
-    @Value("${pl.ecommerce.products-on-page}")
-    private int RECORDS_ON_PAGE;
+
+    private final ProductService productService;
     private final UserRepository userRepository;
-    private final AvailableProductRepository availableProductRepository;
-    private final ProductSort productSort;
-
-    public SellerService(UserRepository userRepository, AvailableProductRepository availableProductRepository, ProductSort productSort) {
-        this.userRepository = userRepository;
-        this.availableProductRepository = availableProductRepository;
-        this.productSort = productSort;
-    }
-
 
 
     public User getSeller(Long id) {
@@ -36,8 +27,12 @@ public class SellerService {
                 });
     }
 
-    public Page<AvailableProduct> getSellerProducts(User seller, int pageNr, int sortOption) {
-        Pageable pageable = PageRequest.of(pageNr - 1, RECORDS_ON_PAGE, productSort.getSort(sortOption));
-        return availableProductRepository.findAllBySeller(seller, pageable);
+    public Category getCategory(Long id) {
+        return productService.getCategory(id);
+    }
+
+    public Page<AvailableProduct> findProducts(Category category, String query, int pageNr, int sortOption,
+                                               Map<String, String> otherValues) {
+        return productService.findProducts(category, query, pageNr, sortOption, otherValues);
     }
 }

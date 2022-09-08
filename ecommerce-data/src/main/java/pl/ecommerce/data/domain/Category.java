@@ -3,6 +3,7 @@ package pl.ecommerce.data.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,13 +21,8 @@ public class Category extends BaseEntity {
     private String name;
     private String description;
 
-    @ManyToMany
-    @JoinTable(
-            name = "product_attributes_for_categories",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "attribute_id")
-    )
-    private List<ProductAttribute> productAttributes;
+    @OneToMany(mappedBy = "category")
+    private List<CategoryAttribute> categoryAttributes;
 
     /*************************** Decoration ***************************/
     @ManyToOne
@@ -48,8 +44,20 @@ public class Category extends BaseEntity {
         return name;
     }
 
-    @Override
-    public Long getId() {
-        return orderId;
+
+    public List<CategoryAttribute> getAllCategoryAttributes() {
+        List<CategoryAttribute> attributeList = new LinkedList<>();
+
+        Category category = this;
+        while (category != null) {
+            for (int i = category.categoryAttributes.size() - 1; i >= 0; i--) {
+                attributeList.add( category.categoryAttributes.get(i) );
+            }
+            category = category.getParent();
+        }
+
+        Collections.reverse(attributeList);
+
+        return attributeList;
     }
 }

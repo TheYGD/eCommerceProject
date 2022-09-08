@@ -16,15 +16,25 @@
 
       <div class="col d-flex align-items-center ms-5 w-100">
         <div class="d-flex flex-column">
-          <h1 class="display-1" th:text="${product.name}">Product name</h1>
-          <h4 class="lead fs-3" th:text="${product.category.name}">Category name</h4>
+          <h1 class="display-4" th:text="${product.name}">Product name</h1>
+          <h3 class="lead fs-4" th:text="${product.category.name}">Category name</h3>
+
+          <h1 class="mt-5 mb-5 display-6" th:text="${product.price + ' $'}">Price</h1>
 
         </div>
       </div>
-
     </div>
 
-    <div class="container-md px-5 pb-5 ">
+    <hr>
+    <div class="my-5 row mx-auto text-center">
+      <div class="col-3 mb-2" th:each="attribute : ${product.attributes}">
+        <p class="mb-0 mt-1" th:utext="${'<b>' + attribute.categoryAttribute.name + '</b>: ' +
+                    attribute.stringValue }"> Name: type</p>
+      </div>
+    </div>
+    <hr>
+
+    <div class="container-md mt-5 px-5 pb-5 ">
       <a class="text-decoration-none" th:text="${'Seller: ' + product.seller.credentials.username}"
          th:href="@{__(${'/sellers/' + product.seller.id})__}">Product description</a>
       <p class="fs-5 mt-4" th:utext="${product.getStructuredDescription()}">Product description</p>

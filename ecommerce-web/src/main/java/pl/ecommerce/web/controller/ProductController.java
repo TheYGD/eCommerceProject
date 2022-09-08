@@ -23,6 +23,7 @@ public class ProductController {
     private ProductService productService;
 
 
+
     @GetMapping("/{id}")
     public String showById(@PathVariable Long id, Model model) {
         Product product = productService.findById(id);
@@ -40,12 +41,13 @@ public class ProductController {
 
     @GetMapping()
     public String showProducts(@RequestParam(value = "category", defaultValue = "1") Long categoryId,
-                                       @RequestParam(value = "search", defaultValue = "") String query,
-                                       Model model, @RequestParam(defaultValue = "1") int pageNr,
-                                       @RequestParam(defaultValue = "0") int sortOption) {
+                               @RequestParam(value = "search", defaultValue = "") String query,
+                               Model model, @RequestParam(defaultValue = "1") int pageNr,
+                               @RequestParam(defaultValue = "0") int sortOption,
+                               @RequestParam Map<String, String> otherValues) {
 
         Category category = productService.getCategory(categoryId);
-        Page<AvailableProduct> productPage = productService.findAllByCategory(category, query, pageNr, sortOption);
+        Page<AvailableProduct> productPage = productService.findProducts(category, query, pageNr, sortOption, otherValues);
         model.addAttribute("category", category);
         model.addAttribute("productPage", productPage);
 
@@ -65,8 +67,7 @@ public class ProductController {
 
 
     @GetMapping("/{id}/ask")
-    public String askAboutProductPage(@AuthenticationPrincipal UserCredentials userCredentials,
-                                    @PathVariable("id") Long productId, Model model) {
+    public String askAboutProductPage(@PathVariable("id") Long productId, Model model) {
 
         List<MessageCause> messageCauseList = productService.getProductMessageTitles();
         AvailableProduct availableProduct = productService.findById(productId).getAvailableProduct();

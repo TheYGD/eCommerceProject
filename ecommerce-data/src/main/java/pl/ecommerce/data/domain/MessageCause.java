@@ -1,7 +1,5 @@
 package pl.ecommerce.data.domain;
 
-import lombok.Getter;
-import pl.ecommerce.exceptions.ItemNotFoundException;
 
 import java.util.Arrays;
 import java.util.List;

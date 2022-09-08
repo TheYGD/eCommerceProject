@@ -26,5 +26,5 @@ public class PseudoEnumValue extends BaseEntity {
     @JoinColumn(name = "pseudo_enum_id")
     private PseudoEnum pseudoEnum;
 
-    private String value;
+    private String name;
 }

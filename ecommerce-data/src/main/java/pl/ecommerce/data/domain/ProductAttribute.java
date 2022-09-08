@@ -1,10 +1,9 @@
 package pl.ecommerce.data.domain;
 
 import lombok.*;
+import pl.ecommerce.exceptions.ItemNotFoundException;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
@@ -17,12 +16,26 @@ import java.math.BigDecimal;
 @Builder
 public class ProductAttribute extends BaseEntity {
 
-    private String name;
-    private boolean number;
+    @ManyToOne
+    @JoinColumn(name = "category_attribute_id")
+    private CategoryAttribute categoryAttribute;
 
-    @OneToOne
-    private PseudoEnum pseudoEnum;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
-    private BigDecimal value;
+    private BigDecimal value; // either actual value or the enum_value_id
 
+
+    public String getStringValue() {
+        if (categoryAttribute.isNumber()) {
+            return value.toString();
+        }
+
+        return categoryAttribute.getPseudoEnum().getValues().stream()
+                .filter( enumValue -> enumValue.getNumber() == value.longValue() )
+                .findFirst()
+                .orElseThrow( () -> new ItemNotFoundException("Attribute value not found!") )
+                .getName();
+    }
 }

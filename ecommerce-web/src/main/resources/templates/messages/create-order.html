@@ -15,12 +15,12 @@
                 <form class="list-group-item col-8 d-flex flex-column align-items-center pt-5 pb-4 border-0"
                       th:action="${#httpServletRequest.requestURI}" method="post">
                     <label class="mb-1 align-self-start ms-2" for="message-form-cause">Cause</label>
-                    <select class="form-check col-12 px-2" name="titleId" id="message-form-cause">
+                    <select class="form-select col-12 px-2" name="titleId" id="message-form-cause">
                         <option th:each="cause : ${messageCauseList}" th:value="${cause.id}" th:text="${cause.getCause()}"></option>
                     </select>
 
                     <label class="mb-1 mt-3 align-self-start ms-2" for="message-form-message">Message</label>
-                    <textarea class="form-check col-12 px-2" name="content" id="message-form-message" style="height: 30vh;"></textarea>
+                    <textarea class="form-control col-12 px-2" name="content" id="message-form-message" style="height: 30vh;"></textarea>
 
                     <button class="btn btn-primary mt-4 col-3">Send</button>
                 </form>

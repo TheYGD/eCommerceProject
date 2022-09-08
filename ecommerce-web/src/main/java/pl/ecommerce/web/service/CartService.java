@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.ecommerce.data.domain.*;
 import pl.ecommerce.exceptions.InvalidArgumentException;
-import pl.ecommerce.exceptions.InvalidQuantityException;
 import pl.ecommerce.exceptions.ItemNotFoundException;
 import pl.ecommerce.repository.*;
 

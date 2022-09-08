@@ -108,14 +108,15 @@
 
               requestAndToast('PUT', url)
                   .then(response => {
-                    if (response.result) {
+                    if (response.success) {
                         calculateTotalSum();
                     }
                     else {
-                        correctQuantity(input, response.message);
+                        console.log('TODO correct quantity! remembered values changed on success')
+                        // correctQuantity(input, response.message);
                     }
 
-                    calculateTotalSum()
+                    // calculateTotalSum()
                 });
           }
 

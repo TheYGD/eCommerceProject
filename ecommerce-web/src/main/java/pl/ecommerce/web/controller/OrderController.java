@@ -1,7 +1,6 @@
 package pl.ecommerce.web.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.boot.Banner;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.ecommerce.data.domain.MessageCause;
 import pl.ecommerce.data.domain.Order;
 import pl.ecommerce.data.domain.UserCredentials;
-import pl.ecommerce.data.other.StringResponse;
 import pl.ecommerce.web.service.OrderService;
 
 import java.util.List;

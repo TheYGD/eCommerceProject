@@ -76,8 +76,7 @@ async function makeRequest(method, url, data) {
  */
 function updateCartQuantity() {
     let cartBadge = $('#cart-badge');
-    let urlWithAdditionalSlash = $('#nav-search-form').attr('action');
-    let url = urlWithAdditionalSlash.substring(0, urlWithAdditionalSlash.lastIndexOf('/')) + '/cart/size';
+    let url = location.origin + '/cart/size';
 
     getData(url)
         .then( res => {
@@ -152,6 +151,10 @@ function calculateTotalSum() {
  */
 function initPageChangeDiv() {
     let pageChangeDiv = $('#page-change-div')[0];
+    if (pageChangeDiv == null) {
+        return;
+    }
+
     let pageChangeInput = pageChangeDiv.children[1];
 
     let url = new URL(location.href);

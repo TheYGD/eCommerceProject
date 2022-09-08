@@ -4,7 +4,7 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.*;
-import java.io.File;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,4 +33,6 @@ public class ProductDto {
 
     @NotNull
     private MultipartFile image;
+
+    List<ProductAttributeDto> attributes;
 }

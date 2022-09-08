@@ -12,19 +12,18 @@
 
 <body>
   <nav class="navbar navbar-expand-sm sticky-md-top navbar-dark bg-dark px-3 mb-5">
-    <a class="navbar-brand" href="/">eCommerce</a>
+    <a class="navbar-brand me-4" href="/">eCommerce</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+<!--      <span class="navbar-toggler-icon"></span>-->
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <form class="form-check-inline" id="nav-search-form" action="/products" method="get">
         <div class="input-group" id="navbar-search-form">
-          <input disabled type="hidden" name="category">
-          <input type="hidden" name="search">
-          <input class="form-control input-small" id="nav-search-input" type="text" placeholder="product..." th:value="${param.search ?: ''}">
-          <button class="btn btn-info btn-dark"  id="nav-search-btn"><i class="fa fa-search"></i></button>
+          <input id="nav-search-hidden-input" type="hidden" name="search">
+          <input class="form-control input-small rounded-1" id="nav-search-input" type="text" placeholder="product..." th:value="${param.search ?: ''}">
+          <button class="btn btn-info btn-dark" id="nav-search-btn"><i class="fa fa-search"></i></button>
         </div>
       </form>
       <ul class="navbar-nav ms-auto">
@@ -56,10 +55,9 @@
     </div>
   </nav>
 
-    <div class="position-absolute top-0 end-0 my-5 py-4 me-3 col-4 col-lg-3 col-xxl-2 z-top-2" style="z-index: 2000">
+    <div class="position-fixed top-0 end-0 my-5 py-4 me-3 col-4 col-lg-3 col-xxl-2 z-top-2" style="z-index: 2000">
 
       <div id="toast" role="status" aria-live="assertive" aria-atomic="true" style="opacity: 0;">
-<!--        <div class="alert alert-success m-0 p-3 z-top-2">-->
         <div class="alert alert-success m-0 p-3">
           Toast body
         </div>
@@ -92,22 +90,13 @@
     });
 
     function initNavSearchForm() {
-      let searchForm = $('#nav-search-form')[0];
-
-      let categoryFormParam = searchForm.children[0].children[0];
-      let searchFormParam = searchForm.children[0].children[1];
-      let formInput = searchForm.children[0].children[2];
-      let formButton = searchForm.children[0].children[3];
+      let searchFormParam = $('#nav-search-input')[0];
+      let searchFormButton = $('#nav-search-btn')[0];
+      let searchHiddenInput = $('#nav-search-hidden-input')[0];
 
 
-      formButton.onclick = function() {
-        searchFormParam.value = formInput.value;
-
-        let categoryParam = new URL(location.href).searchParams.get('category');
-        if (categoryParam) {
-          categoryFormParam.value = categoryParam;
-          categoryFormParam.disabled = false;
-        }
+      searchFormButton.onclick = function() {
+        searchHiddenInput.value = searchFormParam.value;
       }
     }
 

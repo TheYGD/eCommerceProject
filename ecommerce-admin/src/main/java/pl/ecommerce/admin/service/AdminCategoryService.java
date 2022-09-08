@@ -4,13 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.ecommerce.data.domain.*;
 import pl.ecommerce.data.dto.CategoryDto;
-import pl.ecommerce.data.dto.PseudoEnumDto;
-import pl.ecommerce.data.mapper.CategoryMapper;
-import pl.ecommerce.exceptions.InvalidArgumentException;
 import pl.ecommerce.exceptions.ItemAlreadyExistsException;
 import pl.ecommerce.exceptions.ItemNotFoundException;
 import pl.ecommerce.repository.CategoryRepository;
-import pl.ecommerce.repository.ProductAttributeRepository;
+import pl.ecommerce.repository.CategoryAttributeRepository;
 import pl.ecommerce.repository.PseudoEnumRepository;
 import pl.ecommerce.repository.PseudoEnumValueRepository;
 
@@ -18,14 +15,13 @@ import javax.transaction.Transactional;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 @Service
 @AllArgsConstructor
 public class AdminCategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final ProductAttributeRepository productAttributeRepository;
+    private final CategoryAttributeRepository categoryAttributeRepository;
     private final PseudoEnumRepository pseudoEnumRepository;
     private final PseudoEnumValueRepository pseudoEnumValueRepository;
 
@@ -79,7 +75,7 @@ public class AdminCategoryService {
             adjustEndId = categoryRepository.count();
             changeValue = 1;
 
-            newElId = adjustStartId != 0 ? adjustStartId : parent.getId() + 1;
+            newElId = adjustStartId;
         }
         else {
             newElId = 10;
@@ -89,10 +85,10 @@ public class AdminCategoryService {
         }
 
         List<Category> categoryList = categoryRepository.findAllByOrderIdBetween(adjustStartId, adjustEndId);
-        categoryList.forEach( cat -> cat.setId( cat.getId() + changeValue ));
+        categoryList.forEach( cat -> cat.setId( cat.getOrderId() + changeValue ));
         categoryRepository.saveAll(categoryList);
 
-        category.setId(newElId);
+        category.setOrderId(newElId);
         category.setParent(parent);
         parent.getChildren().add(category);
         categoryRepository.save(category);
@@ -104,17 +100,14 @@ public class AdminCategoryService {
      * @return next sibling or bigger element's id   / 0 if this is last element
      */
     private long getNextBigInOrderId(Category category) {
-        if (categoryRepository.count() == category.getId()) {
-            return 0;
-        }
 
         if (category.getChildren().size() > 0) {
             return category.getChildren().stream()
-                    .max( Comparator.comparingLong(Category::getId) )
-                    .get().getId();
+                    .max( Comparator.comparingLong(Category::getOrderId) )
+                    .get().getOrderId() + 1;
         }
 
-        return category.getId() + 1;
+        return category.getOrderId() + 1;
     }
 
     public Category findById(Long id) {
@@ -124,43 +117,49 @@ public class AdminCategoryService {
 
 
     @Transactional
-    public void postAttribute(Long id, ProductAttribute attribute) {
+    public void postAttribute(Long id, CategoryAttribute attribute, List<String> enumValues) {
         Category category = findById(id);
-        List<String> names = category.getProductAttributes().stream()
+        List<String> names = category.getCategoryAttributes().stream()
                 .map( attr -> attr.getName() )
                 .toList();
         if (names.contains(attribute.getName())) {
             throw new ItemAlreadyExistsException("There can't be 2 attributes with the same names!");
         }
 
-        attribute = productAttributeRepository.save(attribute);
+        attribute.setCategory(category);
+        attribute = categoryAttributeRepository.save(attribute);
 
-        category.getProductAttributes().add(attribute);
+        if (!attribute.isNumber()) {
+            PseudoEnum pseudoEnum = createEnumObject(enumValues);
+            attribute.setPseudoEnum(pseudoEnum);
+        }
+
+        category.getCategoryAttributes().add(attribute);
         categoryRepository.save(category);
     }
 
-    public Long createEnumObject(PseudoEnumDto pseudoEnumDto) {
+    public PseudoEnum createEnumObject(List<String> enumValues) {
         PseudoEnum pseudoEnum = new PseudoEnum();
 
-        for (int i = 1; i <= pseudoEnumDto.getValues().size(); i++ ) {
-            String value = pseudoEnumDto.getValues().get(i);
+        for (int i = 1; i <= enumValues.size(); i++ ) {
+            String value = enumValues.get(i - 1);
             pseudoEnum.getValues().add( new PseudoEnumValue( i, pseudoEnum ,value ) );
         }
 
         pseudoEnum = pseudoEnumRepository.save(pseudoEnum);
 
-        return pseudoEnum.getId();
+        return pseudoEnum;
     }
 
     @Transactional
     public void deleteAttribute(Long id) {
-        ProductAttribute attribute = productAttributeRepository.findById(id)
+        CategoryAttribute attribute = categoryAttributeRepository.findById(id)
                 .orElseThrow( () -> new ItemNotFoundException("No such attribute!") );
 
-        List<Category> categoryList = categoryRepository.findAllByProductAttributesContaining(attribute);
-        categoryList.forEach( category -> category.getProductAttributes().remove(attribute) );
+        List<Category> categoryList = categoryRepository.findAllByCategoryAttributesContaining(attribute);
+        categoryList.forEach( category -> category.getCategoryAttributes().remove(attribute) );
 
         categoryRepository.saveAll(categoryList);
-        productAttributeRepository.delete(attribute);
+        categoryAttributeRepository.delete(attribute);
     }
 }

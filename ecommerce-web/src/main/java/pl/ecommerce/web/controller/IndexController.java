@@ -20,8 +20,6 @@ public class IndexController {
     public String indexPage(Model model) {
 
         List<Category> categoryList = indexService.getAllCategories();
-        categoryList.addAll(categoryList);
-        categoryList.addAll(categoryList);
 
         model.addAttribute("categoryList", categoryList);
 

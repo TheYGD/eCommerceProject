@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.ecommerce.data.dto.OrderDto;
 import pl.ecommerce.data.domain.Cart;
 import pl.ecommerce.data.domain.UserCredentials;
-import pl.ecommerce.web.service.CartService;
 import pl.ecommerce.web.service.CheckoutService;
 
 import javax.validation.Valid;

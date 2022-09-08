@@ -12,13 +12,15 @@
         <h4 class="mt-5 mb-3 offset-2">Attributes</h4>
 
         <ul class="list-group justify-content-center offset-2 col-8">
-            <li class="p-3 list-group-item d-flex" th:each="attribute : ${category.productAttributes}">
-                <p class="mb-0 mt-1 col" th:utext="${'<b>' + attribute.name + '</b>: ' + (attribute.number ? 'number' : 'enum') }">
-                    Name: type</p>
+            <li class="p-3 list-group-item d-flex" th:each="attribute : ${category.allCategoryAttributes}">
+                <p class="col-3 mb-0 mt-1" th:utext="${'<b>' + attribute.name + '</b>: '
+                + (attribute.number ? 'number' : 'enum') }"> Name: type</p>
 
-                <p th:if="!attribute.number" th:text="${'enumId: ' + attribute.pseudoEnum.id}">Enum Id</p>
+                <p class="col-3" th:text="${ !attribute.number ? ('enumId: ' + attribute.pseudoEnum.id) : ''}">Enum Id</p>
 
-                <button th:id="${'remove-btn-' + attribute.id}" class="offset-2 btn btn-sm btn-danger attribute-remove-btn ms-3">
+                <p class="col-3 mb-0 mt-1" th:text="${attribute.category.name}">Category name</p>
+
+                <button th:if="${category == attribute.category}" th:id="${'remove-btn-' + attribute.id}" class="offset-2 btn btn-sm btn-danger attribute-remove-btn ms-3">
                     <i class="fa fa-remove"></i> </button>
             </li>
         </ul>
@@ -46,7 +48,7 @@
                     <button class="btn btn-sm btn-primary d-inline" id="add-enum-value-btn" type="button"> <i class="fa fa-plus"></i> </button>
                 </li>
                 <li class="list-group-item d-flex" >
-                    <input class="form-control my-1" type="text" id="value"/>
+                    <input class="form-control my-1" type="text" id="value" name="enumValue"/>
                     <button class="btn btn-sm btn-danger ms-3 my-2" type="button"> <i class="fa fa-remove"></i> </button>
                 </li>
             </ul>
@@ -67,6 +69,7 @@
     });
 
     let attributeList = $('#attribute-list')[0];
+    let uniqueId = 1;
 
 
     function initRemoveButtons() {
@@ -112,6 +115,7 @@
         let input = document.createElement('input');
         input.className = 'form-control my-1';
         input.type = 'text';
+        input.name = 'enumValue';// + '-' + uniqueId++;
         let button = document.createElement('button');
         button.className = 'btn btn-sm btn-danger ms-3 my-2';
         button.type = 'button';

@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -34,6 +36,11 @@ public class Product extends BaseEntity {
 
     @Column(name = "image_id")
     private String image;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    List<ProductAttribute> attributes = new LinkedList<>();
+
+
 
 
     public Product(String name, String description, Category category, User seller, BigDecimal price, String image) {
