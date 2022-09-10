@@ -29,11 +29,13 @@ public class SellerController {
                                  @RequestParam(value = "search", defaultValue = "") String query,
                                  Model model, @RequestParam(defaultValue = "1") int pageNr,
                                  @RequestParam(defaultValue = "0") int sortOption,
+                                 @RequestParam(required = false) String price,
                                  @RequestParam Map<String, String> otherValues) {
 
         User seller = sellerService.getSeller(sellerId);
         Category category = sellerService.getCategory(categoryId);
-        Page<AvailableProduct> productPage = sellerService.findProducts(category, query, pageNr, sortOption, otherValues);
+        Page<AvailableProduct> productPage = sellerService.findProducts(category, query, pageNr, sortOption, price,
+                otherValues, sellerId);
 
         model.addAttribute("seller", seller);
         model.addAttribute("category", category);

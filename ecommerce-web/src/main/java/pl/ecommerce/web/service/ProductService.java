@@ -65,17 +65,20 @@ public class ProductService {
 
 
     public Page<AvailableProduct> findProducts(Category category, String query, int pageNr, int sortOption,
-                                               Map<String, String> otherValues) {
+                                               String price, Map<String, String> otherValues, Long sellerId) {
 
         long categoryOrderStart = category.getOrderId();
         long categoryOrderEnd = categoryService.getCategoryOrderEnd(category);
         List<ProductAttributeParam> attributes = parseMapToAttributes(otherValues);
+        ProductAttributeParamNumber priceAttribute = price != null ? (ProductAttributeParamNumber)
+                productAttributeNumberFromIdAndValue(0L, price) : null;
 
         Specification<AvailableProduct> specification = AvailableProductSpecification.builder()
                 .categoryIdBetween( categoryOrderStart, categoryOrderEnd )
                 .query(query)
+                .price(priceAttribute)
                 .attributes(attributes)
-                .sellerId(null)
+                .sellerId(sellerId)
                 .build();
 
         Pageable pageable = PageRequest.of(pageNr - 1, RECORDS_ON_PAGE, productSort.getSort(sortOption));
@@ -100,23 +103,7 @@ public class ProductService {
 
             CategoryAttribute categoryAttribute = attributeService.getCategoryAttribute(attributeId);
             if (categoryAttribute.isNumber()) {
-                String[] values = value.split("x");
-                BigDecimal min;
-                BigDecimal max;
-
-                try {
-                    min = new BigDecimal(values[0]);
-                } catch (Exception e) {
-                    min = null;
-                }
-
-                try {
-                    max = new BigDecimal(values[1]);
-                } catch (Exception e) {
-                    max = null;
-                }
-
-                attribute = new ProductAttributeParamNumber(attributeId, min, max);
+                attribute = productAttributeNumberFromIdAndValue(attributeId, value);
             } else {
                 attribute = new ProductAttributeParamEnum(attributeId, new BigDecimal(value));
             }
@@ -125,6 +112,26 @@ public class ProductService {
         });
 
         return attributes;
+    }
+
+    private ProductAttributeParam productAttributeNumberFromIdAndValue(Long id, String value) {
+        String[] values = value.split("x");
+        BigDecimal min;
+        BigDecimal max;
+
+        try {
+            min = new BigDecimal(values[0]);
+        } catch (Exception e) {
+            min = null;
+        }
+
+        try {
+            max = new BigDecimal(values[1]);
+        } catch (Exception e) {
+            max = null;
+        }
+
+        return new ProductAttributeParamNumber(id, min, max);
     }
 
 

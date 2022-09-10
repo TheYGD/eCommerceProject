@@ -8,6 +8,7 @@ import pl.ecommerce.specification.params.ProductAttributeParamEnum;
 import pl.ecommerce.specification.params.ProductAttributeParamNumber;
 
 import javax.persistence.criteria.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -60,11 +61,31 @@ public class AvailableProductSpecification {
         };
     }
 
+    private static Specification<AvailableProduct> byPrice(ProductAttributeParamNumber price) {
+        return (root, query, builder) -> {
+
+            Join<AvailableProduct, Product> productJoin = root.join("product");
+
+            if (price.getMinValue() == null) {
+                if (price.getMaxValue() == null) {
+                    throw new InvalidArgumentException("Error! Try again later.");
+                }
+
+                return builder.lessThanOrEqualTo( productJoin.get("price"), price.getMaxValue());
+            }
+
+            if (price.getMaxValue() == null) {
+                return builder.greaterThanOrEqualTo( productJoin.get("price"), price.getMinValue());
+            }
+
+            return builder.between( productJoin.get("price"), price.getMinValue(), price.getMaxValue() );
+        };
+    }
+
     private static Specification<AvailableProduct> byCategory(long categoryStartId, long categoryEndId) {
         return (root, query, builder) -> {
 
             Join<AvailableProduct, Category> categoryJoin = root.join("product").join("category");
-
             return builder.between( categoryJoin.get("orderId"), categoryStartId, categoryEndId );
         };
     }
@@ -109,6 +130,14 @@ public class AvailableProductSpecification {
                 else { // enum
                     specification = specification.and( byEnumAttribute( (ProductAttributeParamEnum) attribute) );
                 }
+            }
+
+            return this;
+        }
+
+        public AvailableProductSpecificationBuilder price(ProductAttributeParamNumber price) {
+            if (price != null) {
+                specification = specification.and( byPrice(price) );
             }
 
             return this;

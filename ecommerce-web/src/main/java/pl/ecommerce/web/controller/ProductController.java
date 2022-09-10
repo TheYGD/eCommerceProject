@@ -44,10 +44,12 @@ public class ProductController {
                                @RequestParam(value = "search", defaultValue = "") String query,
                                Model model, @RequestParam(defaultValue = "1") int pageNr,
                                @RequestParam(defaultValue = "0") int sortOption,
+                               @RequestParam( required = false ) String price,
                                @RequestParam Map<String, String> otherValues) {
 
         Category category = productService.getCategory(categoryId);
-        Page<AvailableProduct> productPage = productService.findProducts(category, query, pageNr, sortOption, otherValues);
+        Page<AvailableProduct> productPage = productService.findProducts(category, query, pageNr, sortOption, price,
+                otherValues, null);
         model.addAttribute("category", category);
         model.addAttribute("productPage", productPage);
 

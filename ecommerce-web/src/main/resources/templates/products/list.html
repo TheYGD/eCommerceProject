@@ -8,14 +8,14 @@
         <div class="shadow-sm border rounded-2">
           <div class="ms-3 pt-2 pb-4" id="category-links">
             <div th:if="${category?.parent == null}" class="pt-4"></div>
-            <a th:if="${category?.parent}" th:href="@{__(${'/products?category=' + category.parent.id})__}"
+            <a th:if="${category?.parent}" th:href="@{__(${ #httpServletRequest.requestURI + '?category=' + category.parent.orderId})__}"
                class="text-decoration-none text-black" id="back-to-parent-category-link">
               <i class="fa fa-xs fa-less-than"></i> <span class="ms-2" th:text="${category.parent.name}"></span> </a>
 
-            <a th:href="@{__(${'/products?category=' + categorySibling.id})__}" class="text-decoration-none category-child-link ms-2 fs-5 d-block"
+            <a th:href="@{__(${ #httpServletRequest.requestURI + '?category=' + categorySibling.orderId})__}" class="text-decoration-none category-child-link ms-2 fs-5 d-block"
                th:each="categorySibling : ${category?.parent?.children ?: category}" th:classappend="${categorySibling != category ? 'text-black' :  ''}">
               <span th:text="${categorySibling.name}"></span>
-              <a th:if="${categorySibling == category}" th:href="@{__(${'/products?category=' + categoryChild.id})__}" class="text-decoration-none text-black category-child-link ms-4 fs-5 d-block"
+              <a th:if="${categorySibling == category}" th:href="@{__(${ #httpServletRequest.requestURI + '?category=' + categoryChild.orderId})__}" class="text-decoration-none text-black category-child-link ms-4 fs-5 d-block"
                  th:each="categoryChild : ${categorySibling.children}"> <span th:text="${categoryChild.name}"></span>
 
               </a>
@@ -27,19 +27,27 @@
 
           <div class="p-5 pt-3">
             <h5 class="mb-4">Filters</h5>
+
+            <label for="attr-price">Price</label>
+            <div class="row justify-content-around mb-3" id="attr-price" th:with="priceValue = ${#request.getParameter( 'price' )}">
+              <input class="form-control" style="width: 40%;" placeholder="min" type="number" th:value="${priceValue == null ? '' : priceValue.substring( 0, priceValue.indexOf('x') ) }">
+              <input class="form-control" style="width: 40%;" placeholder="max" type="number" th:value="${priceValue == null ? '' : priceValue.substring( priceValue.indexOf('x') + 1, priceValue.length ) }">
+            </div>
+
             <div id="product-attributes">
-              <div th:each="attribute : ${category.allCategoryAttributes}" class="mb-3">
+              <div th:each="attribute : ${category.allCategoryAttributes}" class="mb-3" th:with="attributeValue = ${#request.getParameter( attribute.id )}">
                 <label th:for="${'attr-' + attribute.id}" th:text="${attribute.name}"></label>
                 <div th:if="${attribute.isNumber}" class="row justify-content-around" th:id="${'attr-' + attribute.id}">
-                  <input class="form-control" style="width: 40%;" placeholder="min" type="number">
-                  <input class="form-control" style="width: 40%;" placeholder="max" type="number">
+                  <input class="form-control" style="width: 40%;" placeholder="min" type="number" th:value="${attributeValue == null ? '' : attributeValue.substring( 0, attributeValue.indexOf('x') ) }">
+                  <input class="form-control" style="width: 40%;" placeholder="max" type="number" th:value="${attributeValue == null ? '' : attributeValue.substring( attributeValue.indexOf('x') + 1, attributeValue.length ) }">
                 </div>
 
                 <select th:if="${!attribute.isNumber}" class="form-select mt-1 mb-3"
                         th:id="${'attr-' + attribute.id}" th:name="${'attr-' + attribute.id}">
                   <option value=""></option>
                   <option th:each="enumValue : ${attribute.pseudoEnum.values}"
-                          th:value="${enumValue.number}" th:text="${enumValue.name}">
+                          th:value="${enumValue.number}"  th:text="${enumValue.name}"
+                          th:selected="${attributeValue != null && attributeValue.equals(enumValue.number.toString)}">
                   </option>
 
                 </select>
@@ -166,6 +174,8 @@
 
       let params = $('#product-attributes')[0];
 
+      setPriceParam(url);
+
       for (let param of params.children) {
         let paramId = param.children[1].id.substring('attr-'.length);
         let paramValue;
@@ -177,6 +187,7 @@
           paramValue = min.trim() + 'x' + max.trim();
 
           if (paramValue == 'x') {
+            url.searchParams.delete(paramId);
             continue;
           }
         }
@@ -185,6 +196,7 @@
         else {
           paramValue = param.children[1].value;
           if (paramValue.trim() == '') {
+            url.searchParams.delete(paramId);
             continue;
           }
         }
@@ -194,6 +206,20 @@
       }
 
       location.href = url.toString();
+    }
+
+    function setPriceParam(url) {
+      let priceParamDiv = $('#attr-price')[0];
+
+      let min = priceParamDiv.children[0].value;
+      let max = priceParamDiv.children[1].value;
+      let priceParamValue = min.trim() + 'x' + max.trim();
+
+      if (priceParamValue.trim() != 'x') {
+        url.searchParams.set('price', priceParamValue);
+      } else {
+        url.searchParams.delete('price');
+      }
     }
   }
 

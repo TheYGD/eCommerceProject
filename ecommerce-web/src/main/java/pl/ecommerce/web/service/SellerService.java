@@ -32,7 +32,7 @@ public class SellerService {
     }
 
     public Page<AvailableProduct> findProducts(Category category, String query, int pageNr, int sortOption,
-                                               Map<String, String> otherValues) {
-        return productService.findProducts(category, query, pageNr, sortOption, otherValues);
+                                               String price, Map<String, String> otherValues, Long sellerId) {
+        return productService.findProducts(category, query, pageNr, sortOption, price, otherValues, sellerId);
     }
 }
