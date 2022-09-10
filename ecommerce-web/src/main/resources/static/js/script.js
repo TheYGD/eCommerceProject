@@ -92,7 +92,7 @@ function updateCartQuantity() {
 let toastTimeout;
 function showToast(text, type) {
     function close(){
-        content.parentElement.style.opacity = '0';
+        content.parentElement.hidden = true;
     }
 
     let content = $('#toast div')[0];
@@ -101,7 +101,7 @@ function showToast(text, type) {
 
     clearTimeout(toastTimeout);
     toastTimeout = setTimeout(close, 3500);
-    content.parentElement.style.opacity = '1';
+    content.parentElement.hidden = false;
 }
 
 function showToastFromResponse(status, body) {

@@ -26,25 +26,36 @@
           <hr>
 
           <div class="p-5 pt-3">
-            <h5 class="mb-4">Filters</h5>
+            <div class="d-flex justify-content-between">
+              <h5 class="mb-4">Filters</h5>
+              <p class="text-decoration-none text-primary cursor-pointer" id="clear-filters-button" href="">Clear all filters</p>
+            </div>
 
             <label for="attr-price">Price</label>
             <div class="row justify-content-around mb-3" id="attr-price" th:with="priceValue = ${#request.getParameter( 'price' )}">
-              <input class="form-control" style="width: 40%;" placeholder="min" type="number" th:value="${priceValue == null ? '' : priceValue.substring( 0, priceValue.indexOf('x') ) }">
-              <input class="form-control" style="width: 40%;" placeholder="max" type="number" th:value="${priceValue == null ? '' : priceValue.substring( priceValue.indexOf('x') + 1, priceValue.length ) }">
+              <div class="col-6">
+                <input class="form-control" placeholder="min" type="number" th:value="${priceValue == null ? '' : priceValue.substring( 0, priceValue.indexOf('x') ) }">
+              </div>
+              <div class="col-6">
+                <input class="form-control" placeholder="max" type="number" th:value="${priceValue == null ? '' : priceValue.substring( priceValue.indexOf('x') + 1, priceValue.length ) }">
+              </div>
             </div>
 
             <div id="product-attributes">
-              <div th:each="attribute : ${category.allCategoryAttributes}" class="mb-3" th:with="attributeValue = ${#request.getParameter( attribute.id )}">
+              <div th:each="attribute : ${category.allCategoryAttributes}" class="mb-3" th:with="attributeValue = ${#request.getParameter( attribute.id )}"
+                   th:id="${'attr-' + attribute.id}">
                 <label th:for="${'attr-' + attribute.id}" th:text="${attribute.name}"></label>
-                <div th:if="${attribute.isNumber}" class="row justify-content-around" th:id="${'attr-' + attribute.id}">
-                  <input class="form-control" style="width: 40%;" placeholder="min" type="number" th:value="${attributeValue == null ? '' : attributeValue.substring( 0, attributeValue.indexOf('x') ) }">
-                  <input class="form-control" style="width: 40%;" placeholder="max" type="number" th:value="${attributeValue == null ? '' : attributeValue.substring( attributeValue.indexOf('x') + 1, attributeValue.length ) }">
+                <div th:if="${attribute.isNumber}" class="row justify-content-between">
+                  <div class="col-6">
+                    <input class="form-control" placeholder="min" type="number" th:value="${attributeValue == null ? '' : attributeValue.substring( 0, attributeValue.indexOf('x') ) }">
+                  </div>
+                  <div class="col-6">
+                    <input class="form-control" placeholder="max" type="number" th:value="${attributeValue == null ? '' : attributeValue.substring( attributeValue.indexOf('x') + 1, attributeValue.length ) }">
+                  </div>
                 </div>
 
-                <select th:if="${!attribute.isNumber}" class="form-select mt-1 mb-3"
-                        th:id="${'attr-' + attribute.id}" th:name="${'attr-' + attribute.id}">
-                  <option value=""></option>
+                <select th:if="${!attribute.isNumber}" class="form-select mt-1 mb-3" th:name="${'attr-' + attribute.id}">
+                  <option value="">Any</option>
                   <option th:each="enumValue : ${attribute.pseudoEnum.values}"
                           th:value="${enumValue.number}"  th:text="${enumValue.name}"
                           th:selected="${attributeValue != null && attributeValue.equals(enumValue.number.toString)}">
@@ -59,7 +70,21 @@
         </div>
       </div>
 
-      <div class="container-fluid col-9 ms-0">
+      <div th:if="${!productPage.hasContent()}" class="col-9">
+        <h3 class="ms-5 mt-4">Couldn't find any products.</h3>
+      </div>
+
+      <div th:if="${productPage.hasContent()}" class="container-fluid col-9 ms-0">
+        <div class="row">
+          <div class="col-3 mb-4">
+            <label for="attr-sort">Sort by</label>
+            <select class="form-select z-top-1" id="attr-sort">
+              <option th:each="option : ${sortOptions}" th:value="${option.id}" th:text="${option.name}"
+                th:selected="${#strings.equals(param.sortOption, option.id)}"></option>
+            </select>
+          </div>
+        </div>
+
         <div class="card d-flex flex-row shadow-sm hover-dark m-1" th:each="availableProduct : ${productPage.content}"
              th:with="product=${availableProduct.product}">
           <a class="stretched-link" th:href="@{__(${'/products/' + product.id})__}"></a>
@@ -92,7 +117,7 @@
 
         </div>
 
-        <div th:if="${productPage.hasContent()}" class="col-2 d-flex align-items-center mx-auto my-3" id="page-change-div">
+        <div class="col-2 d-flex align-items-center mx-auto my-3" id="page-change-div">
           <i class="fa fa-less-than me-3"></i>
           <input class="w-25 me-2" type="text" th:value="${param.pageNr ?: 1}">
           <p class="my-auto ms-1 me-3" th:text="${'of ' + productPage.totalPages}"></p>
@@ -110,7 +135,10 @@
     initAddToCartButtons();
     initPageChangeDiv();
     initCategoryLinks();
+    adjustUrlToCurrentCategory();
     initFiltersSearchButton();
+    initSortSelect();
+    initClearFiltersButton();
   });
 
 
@@ -158,32 +186,48 @@
   }
 
 
+  /**
+   * It's to delete attributes uncommon attributes after changing category
+   */
+  function adjustUrlToCurrentCategory() {
+    let url = new URL(location.href);
+
+    let urlParams = [];
+    let attributes = $('#product-attributes')[0].children;
+    for (let attr of attributes) {
+      urlParams.push( attr.id.substring(5) );
+    }
+
+    url.searchParams.forEach( (value, key) => {
+        if (!isNaN(key)) {
+          if (!urlParams.includes(key)) {
+            url.searchParams.delete(key);
+          }
+        }
+      });
+
+    window.history.replaceState(null, null, url.search);
+  }
+
+
   function initFiltersSearchButton() {
     let searchButton = $('#filters-search-button')[0];
 
     searchButton.onclick = function() {
       let url = new URL(location.href);
-      let prevParams = [];
-      for (let param of url.searchParams.keys()) {
-        if (!isNaN(param)) {
-          prevParams.push(param);
-        }
-      }
-      prevParams.forEach( param => url.searchParams.delete(param) );
 
-
-      let params = $('#product-attributes')[0];
+      let attributes = $('#product-attributes')[0];
 
       setPriceParam(url);
 
-      for (let param of params.children) {
-        let paramId = param.children[1].id.substring('attr-'.length);
+      for (let param of attributes.children) {
+        let paramId = param.id.substring('attr-'.length);
         let paramValue;
 
         // NUMBER MIN-MAX
         if (param.children[1].tagName == 'DIV') {
-          let min = param.children[1].children[0].value;
-          let max = param.children[1].children[1].value;
+          let min = param.children[1].children[0].children[0].value;
+          let max = param.children[1].children[1].children[0].value;
           paramValue = min.trim() + 'x' + max.trim();
 
           if (paramValue == 'x') {
@@ -201,8 +245,7 @@
           }
         }
 
-        console.log(paramValue);
-        url.searchParams.append(paramId, paramValue);
+        url.searchParams.set(paramId, paramValue);
       }
 
       location.href = url.toString();
@@ -211,8 +254,8 @@
     function setPriceParam(url) {
       let priceParamDiv = $('#attr-price')[0];
 
-      let min = priceParamDiv.children[0].value;
-      let max = priceParamDiv.children[1].value;
+      let min = priceParamDiv.children[0].children[0].value;
+      let max = priceParamDiv.children[1].children[0].value;
       let priceParamValue = min.trim() + 'x' + max.trim();
 
       if (priceParamValue.trim() != 'x') {
@@ -220,6 +263,36 @@
       } else {
         url.searchParams.delete('price');
       }
+    }
+  }
+
+  function initSortSelect() {
+    let sortAttributeElement = $('#attr-sort')[0];
+    if (sortAttributeElement == null) {
+      return;
+    }
+
+    sortAttributeElement.onchange = function() {
+      let url = new URL(location.href);
+      url.searchParams.set('sortOption', sortAttributeElement.value);
+      url.searchParams.delete('pageNr');
+
+      location.href = url.toString();
+    }
+  }
+
+  function initClearFiltersButton() {
+    let clearFiltersButton = $('#clear-filters-button')[0];
+    clearFiltersButton.onclick = function() {
+      let url = new URL(location.href);
+
+      let attributes = $('#product-attributes')[0].children;
+      for (let attr of attributes) {
+        url.searchParams.delete( attr.id.substring(5) );
+      }
+      url.searchParams.delete( 'price' );
+
+      location.href = url;
     }
   }
 

@@ -26,6 +26,8 @@ import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -69,7 +71,7 @@ public class ProductService {
 
         long categoryOrderStart = category.getOrderId();
         long categoryOrderEnd = categoryService.getCategoryOrderEnd(category);
-        List<ProductAttributeParam> attributes = parseMapToAttributes(otherValues);
+        List<ProductAttributeParam> attributes = parseMapToAttributes(otherValues, category);
         ProductAttributeParamNumber priceAttribute = price != null ? (ProductAttributeParamNumber)
                 productAttributeNumberFromIdAndValue(0L, price) : null;
 
@@ -85,7 +87,7 @@ public class ProductService {
         return availableProductRepository.findAll(specification, pageable);
     }
 
-    private List<ProductAttributeParam> parseMapToAttributes(Map<String, String> otherValues) {
+    private List<ProductAttributeParam> parseMapToAttributes(Map<String, String> otherValues, Category category) {
         List<ProductAttributeParam> attributes = new LinkedList<>();
 
         otherValues.forEach((key, value) -> {
@@ -96,6 +98,15 @@ public class ProductService {
                 attributeId = Long.parseLong(key);
             }
             catch (Exception e) {
+                return;
+            }
+
+            Set<Long> categoryAttributeIds = category.getAllCategoryAttributes().stream()
+                    .map(BaseEntity::getId)
+                    .collect(Collectors.toSet());
+
+            // if attribute is not in current category, then it shouldn't be used as a filter
+            if (!categoryAttributeIds.contains(attributeId)) {
                 return;
             }
 

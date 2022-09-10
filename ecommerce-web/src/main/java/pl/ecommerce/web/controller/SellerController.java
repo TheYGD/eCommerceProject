@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.ecommerce.data.domain.AvailableProduct;
 import pl.ecommerce.data.domain.Category;
+import pl.ecommerce.data.domain.SortOption;
 import pl.ecommerce.data.domain.User;
 import pl.ecommerce.web.service.SellerService;
 
@@ -36,10 +37,12 @@ public class SellerController {
         Category category = sellerService.getCategory(categoryId);
         Page<AvailableProduct> productPage = sellerService.findProducts(category, query, pageNr, sortOption, price,
                 otherValues, sellerId);
+        SortOption[] sortOptions = SortOption.values();
 
         model.addAttribute("seller", seller);
         model.addAttribute("category", category);
         model.addAttribute("productPage", productPage);
+        model.addAttribute("sortOptions", sortOptions);
 
         return "sellers/show";
     }
