@@ -26,7 +26,7 @@ public class MessageController {
     @GetMapping
     public String messagePage(@AuthenticationPrincipal UserCredentials userCredentials, Model model) {
 
-        List<Chat> chatList = messageService.findMessageGroup(userCredentials);
+        List<Chat> chatList = messageService.findChats(userCredentials);
 
         model.addAttribute("chatList", chatList);
 
@@ -40,7 +40,7 @@ public class MessageController {
                                         @PathVariable("id") Long chatId,
                                         @RequestParam(defaultValue = "-1") int pageNr) {
 
-        return messageService.findMessagesFromGroup(userCredentials, chatId, pageNr);
+        return messageService.findMessagesFromChat(userCredentials, chatId, pageNr);
     }
 
 

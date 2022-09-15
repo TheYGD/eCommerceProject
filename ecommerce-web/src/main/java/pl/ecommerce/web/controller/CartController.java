@@ -26,8 +26,8 @@ public class CartController {
         Cart cart = cartService.getCart(userCredentials, request, response);
 
         model.addAttribute("cart", cart);
-        model.addAttribute("justDeletedProducts", cart.isJustDeletedProducts());
-        cartService.markJustDeletedProductsAsFalse(cart);
+        model.addAttribute("justDeletedProducts", cart.isJustChangedCart());
+        cartService.markJustChangedCartAsFalse(cart);
 
         return "cart/show";
     }

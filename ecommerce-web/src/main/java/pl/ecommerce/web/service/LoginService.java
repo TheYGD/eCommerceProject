@@ -52,7 +52,7 @@ public class LoginService {
     }
 
     @Transactional
-    public void saveUser(UserInformationDto userInformationDto) {
+    public Long saveUser(UserInformationDto userInformationDto) {
         userInformationDto.setPassword( passwordEncoder.encode(userInformationDto.getPassword()) );
         User user = UserMapper.INSTANCE.dtoToEntity(userInformationDto);
 
@@ -64,6 +64,8 @@ public class LoginService {
         user.setCart(cart);
 
         userCredentialsRepository.save(userCredentials);
-        userRepository.save(user);
+        user = userRepository.save(user);
+
+        return user.getId();
     }
 }

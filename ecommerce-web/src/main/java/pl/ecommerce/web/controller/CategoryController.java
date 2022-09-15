@@ -23,6 +23,6 @@ public class CategoryController {
     @ResponseBody
     public List<CategoryAttributeDto> getCategoryAttributes(@PathVariable Long id) {
 
-        return categoryService.getCategoryAttributes(id);
+        return categoryService.getCategoryAttributeDtos(id);
     }
 }

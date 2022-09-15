@@ -129,7 +129,7 @@ public class OrderService {
                 .orElseThrow( () -> new ItemNotFoundException("Message cause not found!") );
         if (!messageCause.isOrderCause()) {
             log.warn("Invalid message cause id=%d chose for message about order.".formatted(titleId));
-            throw new InvalidArgumentException("Error! Try again later");
+            throw new InvalidArgumentException("Error! Try again later.");
         }
 
         Order order = findOrder(orderId);
@@ -150,7 +150,7 @@ public class OrderService {
     public void orderBelongsToUser(Order order, UserCredentials userCredentials) {
         if (!order.getBuyer().equals(userCredentials.getUserAccount())) {
             log.warn("User with id=%d tried to create chat about order with id=%d."
-                    .formatted(userCredentials.getUserAccount().getId()), order.getId());
+                    .formatted(userCredentials.getUserAccount().getId(), order.getId()));
             throw new ForbiddenException("Access denied");
         }
     }

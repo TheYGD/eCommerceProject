@@ -20,5 +20,5 @@ public class Cart extends BaseEntity {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<ProductInCart> productList = new LinkedList<>();
 
-    private boolean justDeletedProducts = false;
+    private boolean justChangedCart = false;
 }

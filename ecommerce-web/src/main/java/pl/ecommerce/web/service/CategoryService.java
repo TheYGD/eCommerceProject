@@ -20,9 +20,6 @@ import java.util.List;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final CategoryAttributeRepository categoryAttributeRepository;
-    private final PseudoEnumRepository pseudoEnumRepository;
-    private final PseudoEnumValueRepository pseudoEnumValueRepository;
 
 
 
@@ -46,7 +43,7 @@ public class CategoryService {
         }
     }
 
-    public List<CategoryAttributeDto> getCategoryAttributes(Long id) {
+    public List<CategoryAttributeDto> getCategoryAttributeDtos(Long id) {
         Category category = categoryRepository.findByOrderId(id)
                 .orElseThrow( () -> new ItemNotFoundException("No such category!") );
 

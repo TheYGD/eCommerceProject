@@ -4,6 +4,7 @@ package pl.ecommerce.web.bootstrap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ import java.math.BigDecimal;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Profile("default")
 public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     private final ProductRepository productRepository;
@@ -36,7 +38,6 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-
         if (userRepository.count() == 0) {
             bootstrap1();
             createUser();

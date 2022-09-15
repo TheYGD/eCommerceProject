@@ -1,5 +1,6 @@
 package pl.ecommerce.web.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,31 +17,18 @@ import pl.ecommerce.repository.*;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ProfileService {
 
-    @Value("${pl.ecommerce.products-on-page}")
-    private int RECORDS_ON_PAGE;
-
+    private final ProductService productService;
     private final OrderRepository orderRepository;
-    private final AvailableProductRepository availableProductRepository;
     private final UserRepository userRepository;
     private final UserCredentialsRepository userCredentialsRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ProductSort productSort;
-
-    public ProfileService(OrderRepository orderRepository, AvailableProductRepository availableProductRepository,
-                          UserRepository userRepository, UserCredentialsRepository userCredentialsRepository,
-                          PasswordEncoder passwordEncoder, ProductSort productSort) {
-        this.orderRepository = orderRepository;
-        this.availableProductRepository = availableProductRepository;
-        this.userRepository = userRepository;
-        this.userCredentialsRepository = userCredentialsRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.productSort = productSort;
-    }
 
 
 
@@ -48,13 +36,14 @@ public class ProfileService {
         return orderRepository.findAllBySellerOrderByDateTimeDescIdDesc(userCredentials.getUserAccount());
     }
 
-    public List<Order> getOrderedProducts(UserCredentials userCredentials) {
+    public List<Order> getOrders(UserCredentials userCredentials) {
         return orderRepository.findAllByBuyerOrderByDateTimeDescIdDesc(userCredentials.getUserAccount());
     }
 
     public Page<AvailableProduct> getOwnProducts(UserCredentials userCredentials, int pageNr, int sortOption) {
-        Pageable pageable = PageRequest.of(pageNr - 1, RECORDS_ON_PAGE, productSort.getSort(sortOption));
-        return availableProductRepository.findAllBySeller(userCredentials.getUserAccount(), pageable);
+        Category all = productService.getCategory(1L);
+        return productService.findProducts( all, "", pageNr, sortOption, null, new HashMap<>(),
+                userCredentials.getUserAccount().getId());
     }
 
     public UserInformationDto getUserInformation(UserCredentials userCredentials) {
@@ -73,7 +62,7 @@ public class ProfileService {
     @Transactional
     public void updateUserInformation(UserCredentials userCredentials, UserInformationDto userInformationDto,
                                         BindingResult bindingResult) {
-        if (bindingResult.getErrorCount() != 1 || !bindingResult.hasFieldErrors("password")) {
+        if (bindingResult.getErrorCount() != 1 || !bindingResult.hasFieldErrors("password")) { // we dont look at the password
             throw new InvalidArgumentException("Data not valid");
         }
 

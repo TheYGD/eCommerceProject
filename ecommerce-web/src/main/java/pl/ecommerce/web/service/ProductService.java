@@ -146,9 +146,6 @@ public class ProductService {
     }
 
 
-    /**
-     * @return message if added successfully, product already in cart or error
-     */
     public void addProductToCart(UserCredentials userCredentials, Long productId, Integer quantity,
                                            HttpServletRequest request, HttpServletResponse response) {
         cartService.addProductToCart(userCredentials, productId, quantity, request, response);
@@ -184,7 +181,7 @@ public class ProductService {
                 .orElseThrow( () -> new ItemNotFoundException("Message cause not found!") );
         if (!messageCause.isProductCause()) {
             log.warn("Invalid message cause id=%d chose for message about order.".formatted(titleId));
-            throw new InvalidArgumentException("Error! Try again later");
+            throw new InvalidArgumentException("Error! Try again later.");
         }
 
         AvailableProduct availableProduct = getProduct(productId);

@@ -52,13 +52,13 @@ public class MessageService {
     }
 
 
-    public List<Chat> findMessageGroup(UserCredentials userCredentials) {
+    public List<Chat> findChats(UserCredentials userCredentials) {
         User user = userCredentials.getUserAccount();
         return chatRepository.findAllByUser1OrUser2OrderByLastActivityDesc(user, user);
     }
 
 
-    public Page<MessageDto> findMessagesFromGroup(UserCredentials userCredentials, Long chatId, int pageNr) {
+    public Page<MessageDto> findMessagesFromChat(UserCredentials userCredentials, Long chatId, int pageNr) {
 
         User user = userCredentials.getUserAccount();
 
@@ -92,7 +92,7 @@ public class MessageService {
         isUsersChat(chat, user);
 
         if (chat.getClosedBy() != null) {
-            throw new InvalidArgumentException("Error! Try again later.");
+            throw new ForbiddenException("This chat is closed!");
         }
 
         Message message = messageRepository.save( new Message(chat, user, LocalDateTime.now(),

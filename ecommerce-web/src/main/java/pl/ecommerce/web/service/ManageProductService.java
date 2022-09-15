@@ -230,7 +230,7 @@ public class ManageProductService {
         List<Cart> carts = productInCartRepository.findAllByProduct(availableProduct).stream()
                 .map( productInCart -> productInCart.getCart() )
                 .map( cart -> {
-                    cart.setJustDeletedProducts(true);
+                    cart.setJustChangedCart(true);
                     return cart;
                 } )
                 .toList();
@@ -260,6 +260,6 @@ public class ManageProductService {
     }
 
     public List<CategoryAttributeDto> getCategoryAttributes(AvailableProduct availableProduct) {
-        return categoryService.getCategoryAttributes( availableProduct.getProduct().getCategory().getOrderId() );
+        return categoryService.getCategoryAttributeDtos( availableProduct.getProduct().getCategory().getOrderId() );
     }
 }

@@ -22,7 +22,7 @@ public class Category extends BaseEntity {
     private String description;
 
     @OneToMany(mappedBy = "category")
-    private List<CategoryAttribute> categoryAttributes;
+    private List<CategoryAttribute> categoryAttributes = new LinkedList<>();
 
     /*************************** Decoration ***************************/
     @ManyToOne

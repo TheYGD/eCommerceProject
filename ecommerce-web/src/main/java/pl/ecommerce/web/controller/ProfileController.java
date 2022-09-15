@@ -44,7 +44,7 @@ public class ProfileController {
     @GetMapping("/ordered")
     public String orderedProductsPage(@AuthenticationPrincipal UserCredentials userCredentials, Model model) {
 
-        List<Order> orderList = profileService.getOrderedProducts(userCredentials);
+        List<Order> orderList = profileService.getOrders(userCredentials);
 
         model.addAttribute("orderList", orderList);
 

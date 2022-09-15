@@ -22,6 +22,6 @@ public class CheckoutService {
     }
 
     public boolean isCartEmpty(Cart cart) {
-        return cartService.isCartEmpty(cart);
+        return cart.getProductList().size() == 0;
     }
 }
