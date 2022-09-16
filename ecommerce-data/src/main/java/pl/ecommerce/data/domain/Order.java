@@ -33,6 +33,7 @@ public class Order extends BaseEntity {
 
     private LocalDateTime dateTime;
 
+    @Enumerated(value = EnumType.STRING)
     private PaymentMethod paymentMethod;
 
 }

@@ -10,7 +10,7 @@
             <h3>Categories</h3>
 
             <div class="row justify-content-center mt-4">
-                <a th:each="category : ${categoryList}" th:href="@{__(${'/products?category=' + category.id})__}"
+                <a th:each="category : ${categoryList}" th:href="@{__(${'/products?category=' + category.orderId})__}"
                    class="p-2 mx-2 col-2  text-black text-decoration-none position-relative">
                     <div class="d-flex hover-dark m-auto justify-content-center align-items-center mb-2" style="width: 7rem; height: 7rem">
                         <img style="max-width:6.8rem; max-height: 6.8rem" src="/images/test-img.png" alt="photo.png">

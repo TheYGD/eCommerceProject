@@ -1,5 +1,6 @@
 package pl.ecommerce.web.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -21,17 +22,13 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class MessageService {
 
     @Value("${pl.ecommerce.messages-on-page}")
     private int MESSAGES_ON_PAGE;
     private final MessageRepository messageRepository;
     private final ChatRepository chatRepository;
-
-    public MessageService(MessageRepository messageRepository, ChatRepository chatRepository) {
-        this.messageRepository = messageRepository;
-        this.chatRepository = chatRepository;
-    }
 
 
 

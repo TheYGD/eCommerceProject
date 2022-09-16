@@ -79,6 +79,7 @@ public class OrderService {
         productInCartRepository.deleteAll(cart.getProductList());
 
         cart.setProductList(new LinkedList<>());
+        cart.setJustChangedCart(false);
         cartRepository.save(cart);
     }
 

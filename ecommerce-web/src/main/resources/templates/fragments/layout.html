@@ -47,7 +47,7 @@
 
         <li class="nav-item">
           <a class="nav-link" id="nav-profile" th:text="${username ?: 'Log In' }"
-             th:href="@{__(${username != null ? '/profile' : '/login' })__}">username</a>
+             th:href="@{__(${username != null ? '/profiles/own' : '/login' })__}">username</a>
         </li>
 
       </ul>

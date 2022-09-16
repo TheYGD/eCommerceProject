@@ -23,7 +23,7 @@ public class CartController {
     @GetMapping
     public String showCart(@AuthenticationPrincipal UserCredentials userCredentials, Model model,
                            HttpServletRequest request, HttpServletResponse response) {
-        Cart cart = cartService.getCart(userCredentials, request, response);
+        Cart cart = cartService.getCartWithReload(userCredentials, request, response);
 
         model.addAttribute("cart", cart);
         model.addAttribute("justDeletedProducts", cart.isJustChangedCart());
@@ -58,7 +58,7 @@ public class CartController {
     @ResponseBody
     public StringResponse getCartSize(@AuthenticationPrincipal UserCredentials userCredentials,
                                       HttpServletRequest request, HttpServletResponse response) {
-        int size = cartService.getCart(userCredentials, request, response).getProductList().size();
+        int size = cartService.getCartWithoutReload(userCredentials, request, response).getProductList().size();
 
         return new StringResponse(String.valueOf(size));
     }

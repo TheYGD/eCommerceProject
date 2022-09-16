@@ -91,16 +91,16 @@ li:hover .message-lock-switch {
     transition: opacity 0.5s;
 }
 
-/*
-    HIDE SPINNER ON NUMBER INPUTS
- */
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-/* Firefox */
-input[type=number] {
-    -moz-appearance: textfield;
-}
+/*!**/
+/*    HIDE SPINNER ON NUMBER INPUTS*/
+/* *!*/
+/*!* Chrome, Safari, Edge, Opera *!*/
+/*input::-webkit-outer-spin-button,*/
+/*input::-webkit-inner-spin-button {*/
+/*    -webkit-appearance: none;*/
+/*    margin: 0;*/
+/*}*/
+/*!* Firefox *!*/
+/*input[type=number] {*/
+/*    -moz-appearance: textfield;*/
+/*}*/

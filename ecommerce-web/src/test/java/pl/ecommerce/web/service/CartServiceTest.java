@@ -56,7 +56,7 @@ class CartServiceTest {
         when( request.getCookies() ).thenReturn( null );
         when( cartRepository.save( any() ) ).thenAnswer( method -> method.getArgument(0) );
 
-        Cart cartUnlogged = cartService.getCart( null, request, response );
+        Cart cartUnlogged = cartService.getCartWithoutReload( null, request, response );
 
         assertNotNull(cartUnlogged);
     }

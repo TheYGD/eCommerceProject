@@ -60,7 +60,7 @@ class ProfileServiceIntegrationTest {
         Category category = createCategory("my-cat", null);
         AvailableProduct product = createProduct("namee", "122.25", category.getOrderId(), seller);
 
-        cartService.addProduct(buyer.getCart(), product,2, buyer.getCredentials());
+        cartService.addProduct(buyer.getCart(), product,2);
         postOrder(buyer);
 
         // when
@@ -81,7 +81,7 @@ class ProfileServiceIntegrationTest {
         Category category = createCategory("my-cat", null);
         AvailableProduct product = createProduct("namee", "122.25", category.getOrderId(), seller);
 
-        cartService.addProduct(buyer.getCart(), product,2, buyer.getCredentials());
+        cartService.addProduct(buyer.getCart(), product,2);
         postOrder(buyer);
 
         // when

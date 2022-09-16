@@ -70,8 +70,9 @@
           <div>
             <p class="mt-3 mb-1">Payment method</p>
             <select class="form-select" id="payment_option" th:field="*{paymentOption}">
-              <option value="BANK_TRANSFER">Bank transfer</option>
-              <option value="CREDIT_CARD">Credit cart</option>
+              <option th:each="method : ${paymentMethods}" th:value="${method.name}" th:text="${method.formattedName}"></option>
+<!--              <option value="BANK_TRANSFER">Bank transfer</option>-->
+<!--              <option value="CREDIT_CARD">Credit cart</option>-->
             </select>
           </div>
 

@@ -1,5 +1,6 @@
 package pl.ecommerce.web.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ProductService {
 
     @Value("${pl.ecommerce.products-on-page}")
@@ -43,20 +45,6 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductSort productSort;
-
-    public ProductService(CartService cartService, CategoryService categoryService, MessageService messageService,
-                          AttributeService attributeService, AvailableProductRepository availableProductRepository,
-                          ProductRepository productRepository, CategoryRepository categoryRepository,
-                          ProductSort productSort) {
-        this.cartService = cartService;
-        this.categoryService = categoryService;
-        this.messageService = messageService;
-        this.attributeService = attributeService;
-        this.availableProductRepository = availableProductRepository;
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-        this.productSort = productSort;
-    }
 
 
 

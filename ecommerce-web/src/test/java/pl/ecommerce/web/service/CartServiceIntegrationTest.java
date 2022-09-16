@@ -121,7 +121,7 @@ class CartServiceIntegrationTest {
 
         // when + then
         Throwable exception = assertThrows( InvalidArgumentException.class, () ->
-                cartService.addProduct(cart, availableProduct, 0, buyer.getCredentials()) );
+                cartService.addProduct(cart, availableProduct, 0) );
         assertEquals( "Product quantity must be greater than 0!", exception.getMessage() );
     }
 
@@ -136,7 +136,7 @@ class CartServiceIntegrationTest {
 
         // when + then
         Throwable exception = assertThrows( InvalidArgumentException.class, () ->
-                cartService.addProduct(cart, availableProduct, 2, seller.getCredentials()) );
+                cartService.addProduct(cart, availableProduct, 2) );
         assertEquals( "Can't add your own products to cart!", exception.getMessage() );
     }
 
@@ -159,7 +159,7 @@ class CartServiceIntegrationTest {
         User seller = createUser("seller", "sellersemail");
         AvailableProduct availableProduct = createProduct( "product1", "with desc", "12.00",
                 10, seller.getCredentials() );
-        cartService.addProduct( cart, availableProduct, 2, null );
+        cartService.addProduct( cart, availableProduct, 2);
 
         // when
         cartService.mergeCartsAfterLogin( loggedInUser.getCredentials(), cart.getId() );
@@ -177,7 +177,7 @@ class CartServiceIntegrationTest {
         HttpServletResponse response = Mockito.spy(HttpServletResponse.class);
         when( request.getCookies() ).thenReturn(null);
 
-        Cart cart = cartService.getCart(null, request, response);
+        Cart cart = cartService.getCartWithoutReload(null, request, response);
 
         return cart;
     }

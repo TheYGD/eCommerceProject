@@ -14,7 +14,7 @@
           <p th:text="${{order.dateTime}}"></p>
 
           <h6>Payment method:</h6>
-          <p th:text="${{order.getPaymentMethod.name}}"></p>
+          <p th:text="${{order.getPaymentMethod.formattedName}}"></p>
 
           <p class="mt-4 cursor-pointer text-primary" id="ask-about-order"><i class="fa fa-envelope me-2"></i>Ask about order</p>
         </div>
@@ -70,7 +70,7 @@
           <div class="col-3 d-flex align-items-center justify-content-center flex-column">
             <p class="fs-5 bold me-3">Seller</p>
             <a class="me-3 z-top-1 text-decoration-none" th:text="${order.seller.credentials.username}"
-               th:href="@{__${'/sellers/' + order.seller.id}__}"></a>
+               th:href="@{__${'/profiles/' + order.seller.id}__}"></a>
           </div>
         </li>
     </ul>

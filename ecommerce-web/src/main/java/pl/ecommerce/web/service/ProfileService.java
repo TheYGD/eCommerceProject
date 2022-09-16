@@ -13,6 +13,7 @@ import pl.ecommerce.data.dto.PasswordChangeDto;
 import pl.ecommerce.data.dto.UserInformationDto;
 import pl.ecommerce.data.other.ProductSort;
 import pl.ecommerce.exceptions.InvalidArgumentException;
+import pl.ecommerce.exceptions.ItemNotFoundException;
 import pl.ecommerce.repository.*;
 
 import javax.transaction.Transactional;

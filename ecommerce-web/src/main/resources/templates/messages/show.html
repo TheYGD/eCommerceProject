@@ -12,13 +12,14 @@
         <ul class="list-group mt-3 overflow-auto" id="message-group-list" style="max-height: 70vh;">
           <li class="list-group-item px-3 pt-3 pb-1 d-flex justify-content-between align-items-center hover-dark position-relative bg-opacity-5"
               th:each="chat : ${chatList}" th:id="${'message-group-' + chat.id}"
-              th:classappend="${chat.closedBy != null ? 'bg-black' : 'bg-white'}">
+              th:classappend="${chat.closedBy != null ? 'bg-black' : 'bg-white'}"
+              th:with="otherUser = ${chat.user1.credentials.username == username ? chat.user2 : chat.user1}">
             <div>
               <p class="mb-2 small" th:text="${{chat.lastActivity}}"></p>
               <h6 class="mb-2" th:text="${chat.title}"></h6>
               <p>with
-                <a class="z-top-2 position-relative" th:text="${chat.user1.credentials.username == username ? chat.user2.credentials.username :
-                chat.user1.credentials.username}" th:href="@{/xd}"></a>
+                <a class="z-top-2 position-relative" th:text="${otherUser.credentials.username}"
+                   th:href="@{__(${'/profiles/' + otherUser.id})__}"></a>
               </p>
               <p class="chat-link-name" th:text="${chat.linkName}" hidden></p>
               <p class="chat-link" th:text="${chat.link}" hidden></p>

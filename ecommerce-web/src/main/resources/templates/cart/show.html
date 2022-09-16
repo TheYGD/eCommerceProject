@@ -3,7 +3,7 @@
 
 <body>
     <div th:if="${justDeletedProducts}" class="col-8 offset-2 alert alert-danger mb-5">
-        <h6 class="text-center m-0 px-3">One or more products have been removed from the cart due to their unavailability.</h6>
+        <h6 class="text-center m-0 px-3">One or more items have been changed or deleted due to their unavailability.</h6>
     </div>
 
     <div th:if="${cart.productList.size == 0}" class="container-lg">
@@ -108,15 +108,12 @@
 
               requestAndToast('PUT', url)
                   .then(response => {
-                    if (response.success) {
-                        calculateTotalSum();
-                    }
-                    else {
-                        console.log('TODO correct quantity! remembered values changed on success')
-                        // correctQuantity(input, response.message);
+                    if (!response.success) {
+                        let maxQuantity = response.message.substring( response.message.lastIndexOf(' ') + 1 );
+                        input.value = maxQuantity;
                     }
 
-                    // calculateTotalSum()
+                    calculateTotalSum()
                 });
           }
 

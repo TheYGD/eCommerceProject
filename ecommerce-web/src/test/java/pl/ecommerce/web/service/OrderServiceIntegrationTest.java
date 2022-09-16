@@ -56,7 +56,7 @@ class OrderServiceIntegrationTest {
         User seller = createUser("seller", "sellersemail");
         AvailableProduct availableProduct = createProduct("name", "desc", "12.00", 20
                 , seller.getCredentials());
-        cartService.addProduct(user.getCart(), availableProduct, 10, user.getCredentials());
+        cartService.addProduct(user.getCart(), availableProduct, 10);
 
         // when
         orderService.postOrder( user.getCredentials(), orderDto );
@@ -85,7 +85,7 @@ class OrderServiceIntegrationTest {
         User seller = createUser("seller", "sellersemail");
         AvailableProduct availableProduct = createProduct("name", "desc", "12.00", 20
                 , seller.getCredentials());
-        cartService.addProduct(user.getCart(), availableProduct, 10, user.getCredentials());
+        cartService.addProduct(user.getCart(), availableProduct, 10);
 
         // when
         orderService.postOrder( user.getCredentials(), orderDto );

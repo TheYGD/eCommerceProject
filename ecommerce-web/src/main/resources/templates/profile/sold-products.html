@@ -16,7 +16,7 @@
             <p th:text="${{order.dateTime}}"></p>
 
             <h6>Customer:</h6>
-            <a th:text="${order.buyer.credentials.username}" th:href="@{'/sellers/' + ${order.buyer.id}}"></a>
+            <a th:text="${order.buyer.credentials.username}" th:href="@{'/profiles/' + ${order.buyer.id}}"></a>
           </div>
 
           <div class="col-6 row pt-3 offset-1">
