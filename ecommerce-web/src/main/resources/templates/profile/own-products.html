@@ -4,7 +4,7 @@
 <body>
   <div class="container-lg">
 
-    <h1>Your products</h1>
+    <h1 th:text="#{profile.your-products.title}">Your products</h1>
     <hr/>
 
     <div class="card d-flex flex-row shadow-sm hover-dark m-1" th:each="availableProduct : ${productPage.content}"
@@ -21,7 +21,7 @@
       </div>
 
       <div class="float-end d-flex align-items-center me-5 z-top-1">
-        <a th:href="@{__(${'/products/edit/' + product.id})__}" class="btn btn-primary me-3">Edit</a>
+        <a th:href="@{__(${'/products/edit/' + product.id})__}" class="btn btn-primary me-3" th:text="#{manage.product.edit-product}">Edit</a>
         <button class="btn btn-danger delete-product-btn"> <i class="fa fa-trash"></i> </button>
       </div>
 
@@ -30,7 +30,7 @@
     <div th:if="${productPage.hasContent()}" class="col-2 d-flex align-items-center mx-auto my-3" id="page-change-div">
       <i class="fa fa-less-than me-3"></i>
       <input class="w-25 me-2" type="text" th:value="${param.pageNr ?: 1}">
-      <p class="my-auto ms-1 me-3" th:text="${'z ' + productPage.totalPages}"></p>
+      <p class="my-auto ms-1 me-3" th:text="${#messages.msg('products.of') + ' ' + productPage.totalPages}"></p>
 
       <i class="fa fa-greater-than"></i>
     </div>

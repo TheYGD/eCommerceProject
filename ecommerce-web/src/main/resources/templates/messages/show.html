@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title='Message box')}">
+<html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title=#{messages.header})}">
 
 <body>
 
   <div class="container-lg">
-    <h1>Message box</h1>
+    <h1 th:text="#{messages.header}">Message box</h1>
     <hr>
 
     <div class="mt-4 row">
@@ -17,7 +17,7 @@
             <div>
               <p class="mb-2 small" th:text="${{chat.lastActivity}}"></p>
               <h6 class="mb-2" th:text="${chat.title}"></h6>
-              <p>with
+              <p> <span th:text="#{messages.chat.with} + ' '">With</span>
                 <a class="z-top-2 position-relative" th:text="${otherUser.credentials.username}"
                    th:href="@{__(${'/profiles/' + otherUser.id})__}"></a>
               </p>
@@ -37,7 +37,7 @@
       <ul class="col-8 list-group mx-3 mt-3 pb-4" style="height: 70vh;" hidden>
         <li class="list-group-item ps-4">
           <a href="" class="ms-3 text-decoration-none">Link to the topic's object</a>
-          <h6 class="my-1">Chat title</h6>
+          <h6 class="my-1" th:text="#{messages.title}">Title</h6>
         </li>
 
         <li class="list-group-item overflow-auto d-flex dark flex-column pb-2 h-100" id="chat-view"></li>
@@ -46,7 +46,7 @@
           <form class="px-1 py-3 d-flex align-items-baseline justify-content-around" id="message-send-form"
                 action="/messages/" method="post">
             <textarea class="col rounded-2 p-1 px-2" style="height: 5rem; resize: none;"></textarea>
-            <button type="button" class="btn btn-primary col-1 ms-4 my-auto">Send</button>
+            <button type="button" class="btn btn-primary col-1 ms-4 my-auto" th:text="#{messages.chat.send}">Send</button>
           </form>
         </li>
       </ul>

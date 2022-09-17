@@ -5,7 +5,7 @@
   <div class="container-fluid row">
     <div class="row col-10 offset-1">
       <div class="col-9 offset-3 px-3">
-        <h3>Products from
+        <h3> <span th:text="#{sellers.product-from} + ' '">Products from</span>
           <a class="text-decoration-none" th:text="${seller.credentials.username}" th:href="@{__(${'/profiles/' + seller.id})__}"></a>
         </h3>
         <hr/>

@@ -3,11 +3,11 @@
 
 <body>
     <div th:if="${justDeletedProducts}" class="col-8 offset-2 alert alert-danger mb-5">
-        <h6 class="text-center m-0 px-3">One or more items have been changed or deleted due to their unavailability.</h6>
+        <h6 th:text="#{cart.just-changed-cart}" class="text-center m-0 px-3">Just changed cart</h6>
     </div>
 
     <div th:if="${cart.productList.size == 0}" class="container-lg">
-        <p class="fs-3">Cart is empty.</p>
+        <p class="fs-3" th:text="#{cart.is-empty}">Cart is empty.</p>
     </div>
 
     <div th:if="${cart.productList.size != 0}" class="container-lg d-flex flex-row" id="cart-content">
@@ -44,10 +44,10 @@
         <div class="col-3" style=" padding: 0 12px;">
             <div class="sticky-top col-3 shadow-sm border rounded-2 d-flex flex-column align-items-center justify-content-center sticky-col-under-navbar"
                  style="height: 13rem; width:100%;">
-                <h2 class="">Total</h2>
+                <h2 th:text="#{cart.total}">Total</h2>
                 <h2 class="display-6" id="total-sum"></h2>
 
-                <a class="btn btn-primary mt-2 col-6" th:href="@{/checkout}">Checkout</a>
+                <a class="btn btn-primary mt-2 col-6" th:href="@{/checkout}" th:text="#{cart.checkout}">Checkout</a>
             </div>
         </div>
 
@@ -96,7 +96,7 @@
                           updateCartQuantity();
 
                           if ($('.remove-btn').length == 0) {
-                              $('#cart-content')[0].innerHTML = '<p class="fs-3">Cart is empty.</p>'
+                              location.reload();
                           }
                       }
                   });

@@ -6,40 +6,39 @@
     <h1>Register</h1>
 
     <form class="border shadow rounded-2 p-5 my-5" action="/register" method="post" th:object="${user}">
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input class="form-control mt-1 mb-3" type="email" id="email" th:field="*{email}">
-      </div>
-
 
       <div class="form-group">
-        <label for="username">Username</label>
+        <label th:text="#{account.username}" for="username">Username</label>
         <input class="form-control mt-1 mb-3" type="text" id="username" th:min="6" th:max="20" th:field="*{username}">
       </div>
 
+      <div class="form-group">
+        <label th:text="#{account.email}" for="email">Email</label>
+        <input class="form-control mt-1 mb-3" type="email" id="email" th:field="*{email}">
+      </div>
 
       <div class="form-group">
-        <label for="password">Password</label>
+        <label th:text="#{account.password}" for="password">Password</label>
         <input class="form-control mt-1 mb-3" type="password" id="password" th:min="8" th:max="50" th:field="*{password}">
       </div>
 
       <div class="form-group">
-        <label for="first-name">First name</label>
+        <label th:text="#{account.firstname}" for="first-name">First name</label>
         <input class="form-control mt-1 mb-3" type="text" id="first-name" th:min="2" th:max="30" th:field="*{firstName}">
       </div>
 
       <div class="form-group">
-        <label for="last-name">Last name</label>
+        <label th:text="#{account.lastname}" for="last-name">Last name</label>
         <input class="form-control mt-1 mb-3" type="text" id="last-name" th:min="2" th:max="30" th:field="*{lastName}">
       </div>
 
       <div class="form-group">
-        <label for="date-of-birth">Date of birth</label>
+        <label th:text="#{account.date-of-birth}" for="date-of-birth">Date of birth</label>
         <input class="form-control mt-1 mb-3" type="date" id="date-of-birth" th:field="*{dateOfBirth}">
       </div>
 
       <div class="form-group">
-        <label for="phone-number">Phone number</label>
+        <label th:text="#{account.phone-number}" for="phone-number">Phone number</label>
         <input class="form-control mt-1 mb-3" type="tel" id="phone-number" th:field="*{phoneNumber}">
       </div>
 

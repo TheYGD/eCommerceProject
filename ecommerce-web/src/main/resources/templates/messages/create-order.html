@@ -6,7 +6,7 @@
         <ul class="list-group">
             <li class="list-group-item p-4 bg-primary bg-opacity-10">
                 <a th:href="@{__(${'/orders/' + order.id})__}" class="text-decoration-none text-black">
-                    About:
+                    <span th:text="#{messages.about}">About</span>
                     <h6 class="mb-1 d-inline" th:text="${'Order #' + order.id}">Link to the order</h6>
                 </a>
             </li>
@@ -14,15 +14,15 @@
             <li class="list-group-item d-flex justify-content-center">
                 <form class="list-group-item col-8 d-flex flex-column align-items-center pt-5 pb-4 border-0"
                       th:action="${#httpServletRequest.requestURI}" method="post">
-                    <label class="mb-1 align-self-start ms-2" for="message-form-cause">Cause</label>
+                    <label class="mb-1 align-self-start ms-2" for="message-form-cause" th:text="#{messages.title}">Title</label>
                     <select class="form-select col-12 px-2" name="titleId" id="message-form-cause">
                         <option th:each="cause : ${messageCauseList}" th:value="${cause.id}" th:text="${cause.getCause()}"></option>
                     </select>
 
-                    <label class="mb-1 mt-3 align-self-start ms-2" for="message-form-message">Message</label>
+                    <label class="mb-1 mt-3 align-self-start ms-2" for="message-form-message" th:text="#{messages.message}">Message</label>
                     <textarea class="form-control col-12 px-2" name="content" id="message-form-message" style="height: 30vh;"></textarea>
 
-                    <button class="btn btn-primary mt-4 col-3">Send</button>
+                    <button class="btn btn-primary mt-4 col-3" th:text="#{messages.chat.send}">Send</button>
                 </form>
             </li>
         </ul>

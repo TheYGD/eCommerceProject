@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title='Sold products')}">
+<html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title=#{profile.sold-products.title})}">
 
 <body>
   <div class="container-lg">
-    <h1>Sold products</h1>
+    <h1 th:text="#{profile.sold-products.title}">Sold products</h1>
     <hr/>
 
     <div class="mt-5">
@@ -12,38 +12,38 @@
 
         <li class="list-group-item d-flex flex-row product-in-cart bg-primary bg-opacity-10">
           <div class="col d-flex flex-column align-items-center justify-content-center">
-            <h6>Order placed on:</h6>
+            <h6 th:text="#{orders.order-placed-on}">Order placed on:</h6>
             <p th:text="${{order.dateTime}}"></p>
 
-            <h6>Customer:</h6>
+            <h6 th:text="#{orders.customer}">Customer:</h6>
             <a th:text="${order.buyer.credentials.username}" th:href="@{'/profiles/' + ${order.buyer.id}}"></a>
           </div>
 
           <div class="col-6 row pt-3 offset-1">
-            <h3>Address</h3>
+            <h3 th:text="#{address.delivery-address}">Address</h3>
 
             <div class="d-flex align-items-end mt-3">
               <div class="col">
-                <h6>Address line 1</h6>
+                <h6 th:text="#{address.line1}">Address line 1</h6>
                 <p th:text="${order.address.addressLine1}"></p>
 
-                <h6>Address line 2</h6>
+                <h6 th:text="#{address.line2}">Address line 2</h6>
                 <p th:text="${order.address.addressLine2}"></p>
               </div>
 
               <div class="col">
-                <h6>City</h6>
+                <h6 th:text="#{address.city}">City</h6>
                 <p th:text="${order.address.city}"></p>
 
-                <h6>State</h6>
+                <h6 th:text="#{address.state}">State</h6>
                 <p th:text="${order.address.state}"></p>
               </div>
 
               <div class="col">
-                <h6>Postal code</h6>
+                <h6 th:text="#{address.postcode}">Postal code</h6>
                 <p th:text="${order.address.postalCode}"></p>
 
-                <h6>Country</h6>
+                <h6 th:text="#{address.country}">Country</h6>
                 <p th:text="${order.address.country}"></p>
               </div>
             </div>

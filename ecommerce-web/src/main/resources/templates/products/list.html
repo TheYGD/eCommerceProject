@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" th:replace="~{ fragments/layout :: layout (body=~{::body}, script=~{::script}, title=${title?:'Product'}) }">
+<html lang="en" th:replace="~{ fragments/layout :: layout (body=~{::body}, script=~{::script}, title=${title?:'Products'}) }">
 
 <body>
   <div class="container-fluid row">
@@ -27,17 +27,18 @@
 
           <div class="p-5 pt-3">
             <div class="d-flex justify-content-between">
-              <h5 class="mb-4">Filters</h5>
-              <p class="text-decoration-none text-primary cursor-pointer" id="clear-filters-button" href="">Clear all filters</p>
+              <h5 class="mb-4" th:text="#{filters.filters}">Filters</h5>
+              <p class="text-decoration-none text-primary cursor-pointer" id="clear-filters-button"
+                 th:text="#{filters.clear}">Clear all filters</p>
             </div>
 
-            <label for="attr-price">Price</label>
+            <label for="attr-price" th:text="#{products.price}">Price</label>
             <div class="row justify-content-around mb-3" id="attr-price" th:with="priceValue = ${#request.getParameter( 'price' )}">
               <div class="col-6">
-                <input class="form-control" placeholder="min" type="number" th:value="${priceValue == null ? '' : priceValue.substring( 0, priceValue.indexOf('x') ) }">
+                <input class="form-control" th:placeholder="#{filters.min}" type="number" th:value="${priceValue == null ? '' : priceValue.substring( 0, priceValue.indexOf('x') ) }">
               </div>
               <div class="col-6">
-                <input class="form-control" placeholder="max" type="number" th:value="${priceValue == null ? '' : priceValue.substring( priceValue.indexOf('x') + 1, priceValue.length ) }">
+                <input class="form-control" th:placeholder="#{filters.max}" type="number" th:value="${priceValue == null ? '' : priceValue.substring( priceValue.indexOf('x') + 1, priceValue.length ) }">
               </div>
             </div>
 
@@ -47,15 +48,15 @@
                 <label th:for="${'attr-' + attribute.id}" th:text="${attribute.name}"></label>
                 <div th:if="${attribute.isNumber}" class="row justify-content-between">
                   <div class="col-6">
-                    <input class="form-control" placeholder="min" type="number" th:value="${attributeValue == null ? '' : attributeValue.substring( 0, attributeValue.indexOf('x') ) }">
+                    <input class="form-control" th:placeholder="#{filters.min}" type="number" th:value="${attributeValue == null ? '' : attributeValue.substring( 0, attributeValue.indexOf('x') ) }">
                   </div>
                   <div class="col-6">
-                    <input class="form-control" placeholder="max" type="number" th:value="${attributeValue == null ? '' : attributeValue.substring( attributeValue.indexOf('x') + 1, attributeValue.length ) }">
+                    <input class="form-control" th:placeholder="#{filters.max}" type="number" th:value="${attributeValue == null ? '' : attributeValue.substring( attributeValue.indexOf('x') + 1, attributeValue.length ) }">
                   </div>
                 </div>
 
                 <select th:if="${!attribute.isNumber}" class="form-select mt-1 mb-3" th:name="${'attr-' + attribute.id}">
-                  <option value="">Any</option>
+                  <option value=""th:text="#{filters.any}">Any</option>
                   <option th:each="enumValue : ${attribute.pseudoEnum.values}"
                           th:value="${enumValue.number}"  th:text="${enumValue.name}"
                           th:selected="${attributeValue != null && attributeValue.equals(enumValue.number.toString)}">
@@ -66,18 +67,19 @@
             </div>
           </div>
 
-          <button class="btn btn-primary mt-0 ms-5 mb-5" type="button" id="filters-search-button">Search</button>
+          <button class="btn btn-primary mt-0 ms-5 mb-5" type="button" id="filters-search-button"
+            th:text="#{filters.search}">Search</button>
         </div>
       </div>
 
       <div th:if="${!productPage.hasContent()}" class="col-9">
-        <h3 class="ms-5 mt-4">Couldn't find any products.</h3>
+        <h3 class="ms-5 mt-4" th:text="#{products.couldnt-find-any-products}">Couldn't find any products.</h3>
       </div>
 
       <div th:if="${productPage.hasContent()}" class="container-fluid col-9 ms-0">
         <div class="row">
           <div class="col-3 mb-4">
-            <label for="attr-sort">Sort by</label>
+            <label for="attr-sort" th:text="#{filters.sortby}">Sort by</label>
             <select class="form-select z-top-1" id="attr-sort">
               <option th:each="option : ${sortOptions}" th:value="${option.id}" th:text="${option.name}"
                 th:selected="${#strings.equals(param.sortOption, option.id)}"></option>
@@ -100,18 +102,20 @@
 
 
           <div class="col-2 d-flex align-items-center">
-            <p th:if="${availableProduct.soldQuantity != 0}" class="m-0 fw-lighter" th:text="${'Sold ' + availableProduct.soldQuantity}"></p>
+            <p th:if="${availableProduct.soldQuantity != 0}" class="m-0 fw-lighter"
+               th:text="${#messages.msg('products.sold') + ' ' + availableProduct.soldQuantity}"></p>
           </div>
 
 
           <div class="float-end align-items-center col-4 row">
             <div class="col row align-items-center">
               <input class="col-4 px-1 z-top-1 position-relative" type="number" min="1" value="1">
-              <p class="col m-0" th:text="${'of ' + availableProduct.quantity}"></p>
+              <p class="col m-0" th:text="${#messages.msg('products.of') + ' ' + availableProduct.quantity}"></p>
             </div>
 
             <div class="col">
-              <button type="button" class="btn btn-primary py-2 z-top-1 add-to-cart-btn position-relative">Add to cart</button>
+              <button type="button" class="btn btn-primary py-2 z-top-1 add-to-cart-btn position-relative"
+                th:text="#{products.add-to-cart}">Add to cart</button>
             </div>
           </div>
 
@@ -120,7 +124,7 @@
         <div class="col-2 d-flex align-items-center mx-auto my-3" id="page-change-div">
           <i class="fa fa-less-than me-3"></i>
           <input class="w-25 me-2" type="text" th:value="${param.pageNr ?: 1}">
-          <p class="my-auto ms-1 me-3" th:text="${'of ' + productPage.totalPages}"></p>
+          <p class="my-auto ms-1 me-3" th:text="${#messages.msg('products.of') + ' ' + productPage.totalPages}"></p>
 
           <i class="fa fa-greater-than"></i>
         </div>

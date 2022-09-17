@@ -11,19 +11,26 @@
                 <div class="col-3 container-lg ">
                     <div>
                         <ul class="list-group shadow-sm rounded-2 mb-3">
-                            <li class="list-group-item hover-dark" id="profile-profile-button">Profile</li>
+                            <li class="list-group-item hover-dark" id="profile-profile-button"
+                                th:text="#{profile.profile.title}">Profile</li>
                         </ul>
 
                         <ul class="list-group shadow-sm rounded-2 mb-3">
-                            <a href="/profiles/own/your-products" class="list-group-item hover-dark">Your products</a>
-                            <a href="/products/create" class="list-group-item hover-dark">Add Product</a>
-                            <a href="/profiles/own/sold" class="list-group-item hover-dark">Sold products</a>
-                            <a href="/profiles/own/ordered" class="list-group-item hover-dark">Orders</a>
+                            <a href="/profiles/own/your-products" class="list-group-item hover-dark"
+                               th:text="#{profile.your-products.title}">Your products</a>
+                            <a href="/products/create" class="list-group-item hover-dark"
+                               th:text="#{profile.add-product.title}">Add Product</a>
+                            <a href="/profiles/own/sold" class="list-group-item hover-dark"
+                               th:text="#{profile.sold-products.title}">Sold products</a>
+                            <a href="/profiles/own/ordered" class="list-group-item hover-dark"
+                               th:text="#{profile.orders.title}">Orders</a>
                         </ul>
 
                         <ul class="list-group shadow-sm rounded-2">
-                            <li class="list-group-item hover-dark" id="profile-information-button">Account's information</li>
-                            <li class="list-group-item hover-dark" id="profile-password-button">Change password</li>
+                            <li class="list-group-item hover-dark" id="profile-information-button"
+                                th:text="#{profile.account-info.title}">Account's information</li>
+                            <li class="list-group-item hover-dark" id="profile-password-button"
+                                th:text="#{profile.change-password.title}">Change password</li>
                         </ul>
                     </div>
                 </div>
@@ -31,72 +38,74 @@
                 <div class="col-9 container-lg m-0 border shadow-sm rounded-2 p-5 pb-4 mb-5">
 
                     <div id="profile-profile-div">
-                        <h2 class="mb-4">Profile</h2>
+                        <h2 class="mb-4" th:text="#{profile.profile.title}">Profile</h2>
 
-                        <p>Your profile information</p>
+                        <p th:text="#{profile.profile.description}">Your profile information</p>
                     </div>
 
                     <div id="profile-information-div" style="display: none;">
                         <form action="/profiles/own/user-information/change" method="put" id="profile-information-form" class="row">
-                            <h2 class="mb-4">Account's information</h2>
+                            <h2 class="mb-4" th:text="#{profile.account-info.title}">Account's information</h2>
 
                             <div class="col-4">
                                 <div class="form-group">
-                                    <label for="username">Username</label>
+                                    <label th:text="#{account.username}" for="username">Username</label>
                                     <input class="form-control mt-1 mb-3" type="text" id="username" th:min="6" th:max="20" name="username">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="email">Email</label>
+                                    <label th:text="#{account.email}" for="email">Email</label>
                                     <input class="form-control mt-1 mb-3" type="email" id="email" name="email">
                                 </div>
                             </div>
 
                             <div class="col-4">
                                 <div class="form-group">
-                                    <label for="first-name">First name</label>
+                                    <label th:text="#{account.firstname}" for="first-name">First name</label>
                                     <input class="form-control mt-1 mb-3" type="text" id="first-name" th:min="2" th:max="30" name="firstName">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="last-name">Last name</label>
+                                    <label th:text="#{account.lastname}" for="last-name">Last name</label>
                                     <input class="form-control mt-1 mb-3" type="text" id="last-name" th:min="2" th:max="30" name="lastName">
                                 </div>
                             </div>
 
                             <div class="col-4">
                                 <div class="form-group">
-                                    <label for="date-of-birth">Date of birth</label>
+                                    <label th:text="#{account.date-of-birth}" for="date-of-birth">Date of birth</label>
                                     <input class="form-control mt-1 mb-3" type="date" id="date-of-birth" name="dateOfBirth">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="phone-number">Phone number</label>
+                                    <label th:text="#{account.phone-number}" for="phone-number">Phone number</label>
                                     <input class="form-control mt-1 mb-3" type="tel" id="phone-number" name="phoneNumber">
                                 </div>
                             </div>
 
-                            <button class="btn btn-primary col-2 offset-10 mt-3 mb-1" id="form-information-button" type="button" disabled>Change</button>
+                            <button class="btn btn-primary col-2 offset-10 mt-3 mb-1" id="form-information-button"
+                                    type="button" disabled th:text="#{profile.change}">Change</button>
                         </form>
                     </div>
 
                     <div id="profile-password-div" style="display: none;">
                         <form action="/profiles/own/password/change" method="put" id="profile-password-form" class="row">
-                            <h2 class="mb-4">Change Password</h2>
+                            <h2 class="mb-4" th:text="#{profile.change-password.title}">Change Password</h2>
 
                             <div class="col-4 offset-4">
                                 <div class="form-group">
-                                    <label for="oldPassword">Old password</label>
+                                    <label th:text="#{profile.change-password.old}" for="oldPassword">Old password</label>
                                     <input class="form-control mt-1 mb-3" type="password" id="oldPassword" th:min="8" th:max="50" name="oldPassword">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="newPassword">New password</label>
+                                    <label th:text="#{profile.change-password.new}" for="newPassword">New password</label>
                                     <input class="form-control mt-1 mb-3" type="password" id="newPassword" th:min="8" th:max="50" name="newPassword">
                                 </div>
                             </div>
 
-                            <button class="btn btn-primary col-2 offset-10 mt-3 mb-1" id="form-password-button" type="button">Change</button>
+                            <button class="btn btn-primary col-2 offset-10 mt-3 mb-1" id="form-password-button"
+                                    type="button" th:text="#{profile.change}">Change</button>
                         </form>
                     </div>
 

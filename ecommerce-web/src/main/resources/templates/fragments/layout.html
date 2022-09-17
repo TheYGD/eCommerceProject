@@ -21,22 +21,24 @@
       <form class="form-check-inline" id="nav-search-form" action="/products" method="get">
         <div class="input-group" id="navbar-search-form">
           <input id="nav-search-hidden-input" type="hidden" name="search">
-          <input class="form-control input-small rounded-1" id="nav-search-input" type="text" placeholder="product..." th:value="${param.search ?: ''}">
+          <input class="form-control input-small rounded-1" id="nav-search-input" type="text"
+                 th:placeholder="#{fragments.search.placeholder}" th:value="${param.search ?: ''}">
           <button class="btn btn-info btn-dark" id="nav-search-btn"><i class="fa fa-search"></i></button>
         </div>
       </form>
       <ul class="navbar-nav ms-auto">
 
         <li class="nav-item">
-          <a class="nav-link me-3" th:href="@{/products}">Products</a>
+          <a class="nav-link me-3" th:href="@{/products}" th:text="#{fragments.products}">Products</a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link me-3" th:href="@{/products/create}"> <i class="fa fa-plus me-1"></i>Add product</a>
+          <a class="nav-link me-3" th:href="@{/products/create}"> <i class="fa fa-plus me-1"></i>
+            <span th:text="#{fragments.add-product}">Add product</span></a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/messages}"> <i class="fa fa-envelope"></i> </a>
+          <a class="nav-link" th:href="@{/messages}"> <i class="fa fa-envelope"></i></a>
         </li>
 
         <li class="nav-item">
@@ -46,7 +48,7 @@
         <div class="d-flex align-items-center justify-content-center me-2" id="cart-badge"></div>
 
         <li class="nav-item">
-          <a class="nav-link" id="nav-profile" th:text="${username ?: 'Log In' }"
+          <a class="nav-link" id="nav-profile" th:text="${username ?: #messages.msg('fragments.login') }"
              th:href="@{__(${username != null ? '/profiles/own' : '/login' })__}">username</a>
         </li>
 

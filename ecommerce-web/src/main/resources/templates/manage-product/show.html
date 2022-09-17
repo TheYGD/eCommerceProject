@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script}, title=${ ( product.name == null ? 'Add' : 'Edit' ) + ' product'})}" >
+<html lang="en" th:replace="~{fragments/layout :: layout (body=~{::body}, script=~{::script},
+    title=${ ( product.name == null ? #messages.msg('manage.product.add-product') :
+        #messages.msg('manage.product.edit-product') ) + ' ' + #messages.msg('products.product')})}" >
 
 <body>
     <div class="container-lg" th:with="add = ${product.name == null}">
@@ -10,15 +12,14 @@
 
             <div class="col">
                 <div class="form-group my-3">
-                    <label for="add-product-form-name">Name</label>
+                    <label th:text="#{products.name}" for="add-product-form-name">Name</label>
                     <input class="form-control mt-1" id="add-product-form-name" type="text" required th:field="*{name}"
                            minlength="5" maxlength="50">
                 </div>
 
-                <!--    for now, it will be replaced by a tree    -->
                 <div class="form-group my-3">
-                    <label for="add-product-form-category">Category</label>
-                    <select class="form-control mt-1" id="add-product-form-category" required name="category">
+                    <label th:text="#{products.category}" for="add-product-form-category">Category</label>
+                    <select class="form-select mt-1" id="add-product-form-category" required name="category">
                         <option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.name}"
                                 th:selected="${category.id == product.category}">
                         </option>
@@ -26,7 +27,7 @@
                 </div>
 
                 <div class="form-group my-3">
-                    <label for="add-product-form-description">Description</label>
+                    <label th:text="#{products.description}" for="add-product-form-description">Description</label>
                     <textarea class="form-control mt-1" id="add-product-form-description" required
                               th:field="*{description}" minlength="20" maxlength="20000">
 
@@ -34,12 +35,12 @@
                 </div>
 
                 <div class="form-group my-3">
-                    <label for="add-product-form-price">Price</label>
+                    <label th:text="#{products.price}" for="add-product-form-price">Price</label>
                     <input class="form-control mt-1" id="add-product-form-price" type="text" required th:field="*{price}">
                 </div>
 
                 <div class="form-group my-3">
-                    <label for="add-product-form-quantity">Quantity</label>
+                    <label th:text="#{products.quantity}" for="add-product-form-quantity">Quantity</label>
                     <input class="form-control mt-1" id="add-product-form-quantity" type="number" min="1" max="1000000"
                            required th:field="*{quantity}" value="1">
                 </div>
@@ -52,7 +53,7 @@
                 </div>
 
                 <div class="form-group my-3">
-                    <label for="add-product-form-image">Image</label>
+                    <label th:text="#{products.image}" for="add-product-form-image">Image</label>
                     <input class="form-control mt-1" id="add-product-form-image" type="file"
                            accept="image/png, image/jpeg" th:field="*{image}">
                 </div>
@@ -61,7 +62,7 @@
 
             <div class="px-2">
                 <div class="border rounded-2 mb-3 mt-5">
-                    <h4 class="ms-4 mt-4 mb-0">Attributes</h4>
+                    <h4 th:text="#{products.attributes}" class="ms-4 mt-4 mb-0">Attributes</h4>
                     <div class="p-4" id="add-attributes-div">
                         <th:block th:if="${!add}" th:each="attribute : ${categoryAttributeList}">
                             <label th:for="${'attr-' + attribute.id}" th:text="${attribute.name}"></label>
@@ -86,9 +87,11 @@
 
             <div class="d-flex justify-content-center">
                 <button class="btn btn-primary mt-4 mb-3 col-2 me-3"  type="submit" style="height: 3rem;"
-                        th:text="${(add ? 'Add' : 'Edit') + ' product'}"></button>
+                        th:text="${(add ? #messages.msg('manage.product.add-product') :
+                        #messages.msg('manage.product.edit-product'))}"></button>
 
-                <a class="btn btn-danger mt-4 mb-3 col-1 ms-3" th:href="@{__(${add ? '/' : '/profile/your-products'})__}">
+                <a class="btn btn-danger mt-4 mb-3 col-1 ms-3" th:href="@{__(${add ? '/' : '/profile/your-products'})__}"
+                   th:text="#{manage.product.cancel}">
                     Cancel
                 </a>
             </div>

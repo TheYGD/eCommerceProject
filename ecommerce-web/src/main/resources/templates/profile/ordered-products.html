@@ -3,10 +3,10 @@
 
 <body>
     <div class="container-lg">
-        <h1>Your orders</h1>
+        <h1 th:text="#{orders.your-orders}">Your orders</h1>
         <hr/>
 
-        <div class="mt-5 xd">
+        <div class="mt-5">
 
             <ul class="shadow rounded-2 my-5 p-0" th:each="order : ${orderList}">
 
@@ -17,12 +17,12 @@
                     <h4 class="my-auto mx-5" th:text="${'Order #' + order.id}">Order id</h4>
 
                     <div class="col d-flex flex-column align-items-center justify-content-center my-3">
-                        <h6 class="mt-0">Order placed on:</h6>
+                        <h6 class="mt-0" th:text="#{orders.order-placed-on}">Order placed on:</h6>
                         <p class="mb-0" th:text="${{order.dateTime}}"></p>
                     </div>
 
                     <div class="col-3 d-flex align-items-center justify-content-center">
-                        <p class="fs-5 bold m-0 me-3">Seller</p>
+                        <p class="fs-5 bold m-0 me-3" th:text="#{sellers.seller}">Seller</p>
                         <a class="mt-1 me-3 z-top-1 text-decoration-none" th:text="${order.seller.credentials.username}"
                            th:href="@{__${'/profiles/' + order.seller.id}__}"></a>
                     </div>

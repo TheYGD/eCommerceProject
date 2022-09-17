@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" th:replace="~{fragments/layout :: layout (~{::body}, 'Profile')}">
+<html lang="en" th:replace="~{fragments/layout :: layout (~{::body}, #{home.title})}">
 
 <body>
     <div class="container-lg">
-        <h1>Index page!</h1>
-        <p>Here starts everything...</p>
+        <h1 th:text="#{home.title}">Index page!</h1>
+        <p th:text="#{home.description}">Here starts everything...</p>
 
         <div class="container mt-5 shadow-sm border rounded-2 p-4">
-            <h3>Categories</h3>
+            <h3 th:text="#{home.categories}">Categories</h3>
 
             <div class="row justify-content-center mt-4">
                 <a th:each="category : ${categoryList}" th:href="@{__(${'/products?category=' + category.orderId})__}"

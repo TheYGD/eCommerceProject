@@ -20,12 +20,15 @@
 
                     <div class="d-flex align-items-center">
                             <input class="col-3 z-top-1 me-2" type="number" min="1" value="1">
-                            <p class="m-0" th:text="${'z ' + availableProduct.quantity}"></p>
+                            <p class="m-0" th:text="${#messages.msg('products.of') + ' ' + availableProduct.quantity}"></p>
 
-                        <button type="button" class="btn btn-primary py-2 z-top-1 ms-5" id="add-to-cart-btn">Add to cart</button>
+                        <button type="button" class="btn btn-primary py-2 z-top-1 ms-5" id="add-to-cart-btn"
+                                th:text="#{products.add-to-cart}" >Add to cart</button>
                     </div>
-                    <p  th:if="${availableProduct.soldQuantity != 0}" class="mt-4  fw-lighter" th:text="${'Sold ' + availableProduct.soldQuantity}"></p>
-                    <p class="mt-4 cursor-pointer text-primary" id="ask-about-product"><i class="fa fa-envelope me-2"></i>Ask about product</p>
+                    <p  th:if="${availableProduct.soldQuantity != 0}" class="mt-4  fw-lighter"
+                        th:text="${#messages.msg('products.sold') + ' ' + availableProduct.soldQuantity}"></p>
+                    <p class="mt-4 cursor-pointer text-primary" id="ask-about-product"><i class="fa fa-envelope me-2"></i>
+                        <span th:text="#{messages.ask-about-product}">Ask about product</span></p>
                 </div>
             </div>
         </div>
@@ -40,8 +43,8 @@
         <hr>
 
         <div class="container-md mt-5 px-5 pb-5 ">
-            <a class="text-decoration-none" th:text="${'Seller: ' + product.seller.credentials.username}"
-               th:href="@{__(${'/profiles/' + product.seller.id})__}">Product description</a>
+            <a class="text-decoration-none" th:text="${#messages.msg('sellers.seller') + ': ' + product.seller.credentials.username}"
+               th:href="@{__(${'/profiles/' + product.seller.id})__}">Sellers profile</a>
             <p class="fs-5 mt-4" th:utext="${product.getStructuredDescription()}">Product description</p>
         </div>
 
@@ -74,10 +77,6 @@
                 .then(data => {
                     updateCartQuantity();
                 });
-            // postData(urlAdd).then(data => {
-            //     console.log(data);
-            //     updateCartQuantity();
-            // });
         }
     }
 
