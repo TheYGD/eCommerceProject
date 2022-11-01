@@ -9,7 +9,6 @@ import pl.ecommerce.exceptions.ItemNotFoundException;
 import pl.ecommerce.repository.CategoryRepository;
 import pl.ecommerce.repository.CategoryAttributeRepository;
 import pl.ecommerce.repository.PseudoEnumRepository;
-import pl.ecommerce.repository.PseudoEnumValueRepository;
 
 import javax.transaction.Transactional;
 import java.util.Comparator;
@@ -23,7 +22,6 @@ public class AdminCategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryAttributeRepository categoryAttributeRepository;
     private final PseudoEnumRepository pseudoEnumRepository;
-    private final PseudoEnumValueRepository pseudoEnumValueRepository;
 
     @Transactional
     public void addCategory(CategoryDto categoryDTO) {
@@ -78,10 +76,7 @@ public class AdminCategoryService {
             newElId = adjustStartId;
         }
         else {
-            newElId = 10;
-            adjustStartId = 0;
-            adjustEndId = 0;
-            changeValue = 1;
+            throw new RuntimeException("not implemented");
         }
 
         List<Category> categoryList = categoryRepository.findAllByOrderIdBetween(adjustStartId, adjustEndId);
@@ -101,13 +96,14 @@ public class AdminCategoryService {
      */
     private long getNextBigInOrderId(Category category) {
 
-        if (category.getChildren().size() > 0) {
-            return category.getChildren().stream()
-                    .max( Comparator.comparingLong(Category::getOrderId) )
-                    .get().getOrderId() + 1;
+        if (category.getChildren().size() == 0) {
+            return category.getOrderId() + 1;
         }
 
-        return category.getOrderId() + 1;
+        return category.getChildren().stream()
+                .max( Comparator.comparingLong(Category::getOrderId) )
+                .map( cat -> getNextBigInOrderId( cat ) )
+                .get();
     }
 
     public Category findById(Long id) {
